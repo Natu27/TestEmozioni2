@@ -1,4 +1,4 @@
-package emotionalsongs.views.myplaylist;
+package emotionalsongs.views;
 
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
@@ -29,6 +29,7 @@ public class MyPlaylistView extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
         setDefaultHorizontalComponentAlignment(Alignment.CENTER);
         getStyle().set("text-align", "center");
+
     }
 
 }

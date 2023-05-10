@@ -1,4 +1,4 @@
-package emotionalsongs.views.ricercaautoreanno;
+package emotionalsongs.views;
 
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;

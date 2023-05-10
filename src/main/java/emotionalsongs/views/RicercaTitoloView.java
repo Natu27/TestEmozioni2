@@ -1,4 +1,4 @@
-package emotionalsongs.views.ricercatitolo;
+package emotionalsongs.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -29,23 +29,24 @@ public class RicercaTitoloView extends VerticalLayout {
         setSpacing(true);
         setSizeFull();
         layoutTitolo = new HorizontalLayout();
-        layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
-        iconTitolo = new Icon(VaadinIcon.SEARCH);
-        iconTitolo.setColor("#006af5");
-        titoloPagina = new H3("Titolo");
+            layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
+            iconTitolo = new Icon(VaadinIcon.SEARCH);
+            iconTitolo.setColor("#006af5");
+            titoloPagina = new H3("Titolo");
 
         layoutTitolo.add(iconTitolo, titoloPagina);
 
-        titoloDaCercare = new TextField();
-        titoloDaCercare.setPlaceholder("Inserisci titolo...");
-        searchButton = new Button("Cerca", buttonClickEvent -> {
-            search();
-        });
+            titoloDaCercare = new TextField();
+            titoloDaCercare.setPlaceholder("Inserisci titolo...");
+            searchButton = new Button("Cerca", buttonClickEvent -> {
+                search();
+            });
 
-        searchButton.setAutofocus(true);
-        searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        searchButton.setIcon(VaadinIcon.SEARCH.create());
-        toolbar = new HorizontalLayout(titoloDaCercare, searchButton);
+            searchButton.setAutofocus(true);
+            searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            searchButton.setIcon(VaadinIcon.SEARCH.create());
+            toolbar = new HorizontalLayout(titoloDaCercare, searchButton);
+
         add(layoutTitolo, toolbar);
     }
 
