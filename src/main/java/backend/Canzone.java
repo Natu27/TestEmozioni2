@@ -14,15 +14,18 @@ import javax.persistence.Id;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-
 public class Canzone {
     @EqualsAndHashCode.Include
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private int anno;
+
     private String codice;
+
     private String artista;
+
     private String titolo;
 
 }
