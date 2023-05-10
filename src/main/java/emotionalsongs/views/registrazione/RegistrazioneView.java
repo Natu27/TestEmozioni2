@@ -45,11 +45,18 @@ public class RegistrazioneView extends VerticalLayout {
         via_piazza.setSuffixComponent(VaadinIcon.HOME.create());
         email.setSuffixComponent(VaadinIcon.MAILBOX.create());
         username.setSuffixComponent(VaadinIcon.USER.create());
+        nome.setRequired(true);
+        cognome.setRequired(true);
+        codFiscale.setMaxLength(16);
+        codFiscale.setRequired(true);
+        via_piazza.setRequired(true);
+        email.setRequired(true);
+        username.setRequired(true);
 
         formLayout.add(nome, cognome, codFiscale, via_piazza, email, username, password, confirmPassword);
 
         VerticalLayout buttonLayout = new VerticalLayout();
-        Button submitButton = new Button("Iscriviti alla Community");
+        Button submitButton = new Button("Registrati");
         buttonLayout.setAlignItems(Alignment.CENTER);
         submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         submitButton.setIcon(VaadinIcon.USERS.create());
