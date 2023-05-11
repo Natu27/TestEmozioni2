@@ -12,7 +12,6 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "public.\"Canzoni\"")
-
 public class Canzone {
     @EqualsAndHashCode.Include
     @Id
@@ -26,4 +25,9 @@ public class Canzone {
 
     private String titolo;
 
+    public Canzone(String titolo, String autore, int anno) {
+        this.titolo = titolo;
+        this.artista = autore;
+        this.anno = anno;
+    }
 }

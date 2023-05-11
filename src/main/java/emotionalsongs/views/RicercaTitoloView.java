@@ -52,7 +52,7 @@ public class RicercaTitoloView extends VerticalLayout {
             searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             searchButton.setIcon(VaadinIcon.SEARCH.create());
             toolbar = new HorizontalLayout(titoloDaCercare, searchButton);
-            //grid.setItems(canzoneService.findAll());
+            //grid.setDataProvider(canzoneService.findAll());
 
         add(layoutTitolo, toolbar, grid);
     }

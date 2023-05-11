@@ -1,11 +1,13 @@
 package backend;
 
+import com.vaadin.flow.data.provider.ListDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,8 +22,9 @@ public class CanzoneService {
     @Value("${spring.datasource.password}")
     private String password;
     private final String tabella = "\"Canzoni\"";
-    public List<Canzone> findAll() {
+    public ListDataProvider<Canzone> findAll() {
         try {
+            ListDataProvider<Canzone> dataProvider = new ListDataProvider<>(new ArrayList<>());
             Connection conn = DriverManager.getConnection(url, username, password);
             Statement stmt = conn.createStatement();
             String query = "SELECT * FROM public." + tabella;
@@ -31,13 +34,14 @@ public class CanzoneService {
                 String autore = rs.getString("autore");
                 String codice = rs.getString("codice");
                 String titolo = rs.getString("titolo");
-                //System.out.println("Anno: " + anno + "\n" + "Autore: " + autore + "\n" + "Titolo: " + titolo + "\n" + "------------------------");
+                Canzone canzone = new Canzone(titolo, autore, anno);
+                dataProvider.getItems().add(canzone);
+                return dataProvider;
             }
-        }catch(
-    SQLException e){
+        }catch(SQLException e){
             e.printStackTrace();
-    }
-        return songRepository.findAll();
+        }
+        return null;
     }
 
     public void save(Canzone song) {
