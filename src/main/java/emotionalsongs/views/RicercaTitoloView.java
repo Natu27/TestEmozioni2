@@ -1,7 +1,6 @@
 package emotionalsongs.views;
 
 import backend.Canzone;
-import backend.CanzoneRepository;
 import backend.CanzoneService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -16,11 +15,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @PageTitle("Ricerca")
 @Route(value = "ricerca-titolo", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
+
 public class RicercaTitoloView extends VerticalLayout {
     HorizontalLayout layoutTitolo;
     HorizontalLayout toolbar;
@@ -28,8 +27,8 @@ public class RicercaTitoloView extends VerticalLayout {
     H3 titoloPagina;
     TextField titoloDaCercare;
     Button searchButton;
-    Grid<Canzone> grid = new Grid<>(Canzone.class);
     CanzoneService canzoneService;
+    Grid<Canzone> grid = new Grid<>(Canzone.class);
 
     public RicercaTitoloView() {
         setSpacing(true);
@@ -52,11 +51,21 @@ public class RicercaTitoloView extends VerticalLayout {
             searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             searchButton.setIcon(VaadinIcon.SEARCH.create());
             toolbar = new HorizontalLayout(titoloDaCercare, searchButton);
-            //grid.setDataProvider(canzoneService.findAll());
+            addClassName("list-view");
+            configureGrid();
+            //updateSongList();
 
         add(layoutTitolo, toolbar, grid);
     }
 
+    private void configureGrid() {
+        grid.addClassName("list-canzoni-view");
+        grid.setSizeFull();
+    }
+
+    private void updateSongList() {
+        grid.setItems(canzoneService.findAll());
+    }
     private void search() {
         titoloDaCercare.setValue("");
         titoloDaCercare.setPlaceholder("Inserisci titolo...");
