@@ -16,6 +16,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
+import java.util.List;
+
 @PageTitle("Ricerca")
 @Route(value = "ricerca-titolo", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
