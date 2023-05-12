@@ -19,8 +19,6 @@ public class Canzone {
 
     private int anno;
 
-    //private String codice;
-
     private String artista;
 
     private String titolo;
@@ -29,5 +27,17 @@ public class Canzone {
         this.titolo = titolo;
         this.artista = autore;
         this.anno = anno;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getArtista() {
+        return artista;
+    }
+
+    public String getTitolo() {
+        return titolo;
     }
 }

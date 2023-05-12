@@ -18,6 +18,8 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @PageTitle("Ricerca")
 @Route(value = "ricerca-titolo", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
