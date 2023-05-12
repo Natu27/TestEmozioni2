@@ -1,6 +1,7 @@
 package emotionalsongs.views;
 
-import backend.Canzone;
+
+import emotionalsongs.tryBackend.Canzone;
 import backend.CanzoneService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -15,6 +16,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import emotionalsongs.tryBackend.ClientES;
 
 import java.util.List;
 
@@ -31,8 +33,10 @@ public class RicercaTitoloView extends VerticalLayout {
     Button searchButton;
     CanzoneService canzoneService;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
+    List<Canzone> result;
 
     public RicercaTitoloView() {
+        //this.canzoneService = canzoneService;
         setSpacing(true);
         setSizeFull();
         layoutTitolo = new HorizontalLayout();
@@ -55,6 +59,10 @@ public class RicercaTitoloView extends VerticalLayout {
             toolbar = new HorizontalLayout(titoloDaCercare, searchButton);
             addClassName("list-view");
             configureGrid();
+            ClientES cES = new ClientES();
+            result = cES.findAll();
+            grid.setItems(result);
+            System.out.println(result.size());
             //updateSongList();
 
         add(layoutTitolo, toolbar, grid);
@@ -66,7 +74,7 @@ public class RicercaTitoloView extends VerticalLayout {
     }
 
     private void updateSongList() {
-        grid.setItems(canzoneService.findAll());
+        //grid.setItems(canzoneService.findAll());
     }
     private void search() {
         titoloDaCercare.setValue("");
