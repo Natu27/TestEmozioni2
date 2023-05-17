@@ -1,36 +1,23 @@
 package emotionalsongs.backend;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 
 public class ClientES {
+    private static final int PORT = 10002;
+    private Servizi stub = null; ////Pattern Singleton + o - ad HOC per RMI
 
-    public List<Canzone> findAll() {
-        List<Canzone> result = new ArrayList<>();
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("Select * from public.\"Canzoni\"");
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Canzone canzone = new Canzone(
-                        rs.getInt("Canzoni_id"),
-                        rs.getInt("anno"),
-                        rs.getString("autore"),
-                        rs.getString("titolo"),
-                        rs.getString("codice")
-                        );
-                result.add(canzone);
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public Servizi getStub() throws Exception {
+        if (stub == null) {
+            stub = lookUpService();
+            return stub;
         }
+        return stub;
+    }
 
-        return result;
+    private Servizi lookUpService() throws Exception {
+        Registry registry = LocateRegistry.getRegistry("localhost", PORT);
+        Servizi stub = (Servizi) registry.lookup("ServiziES");
+        return stub;
     }
 }

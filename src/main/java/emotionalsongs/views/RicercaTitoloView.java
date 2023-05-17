@@ -1,13 +1,14 @@
 package emotionalsongs.views;
 
 
-import emotionalsongs.backend.Canzone;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -15,8 +16,11 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import emotionalsongs.backend.Canzone;
 import emotionalsongs.backend.ClientES;
+import emotionalsongs.backend.Servizi;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 @PageTitle("Ricerca")
@@ -34,44 +38,41 @@ public class RicercaTitoloView extends VerticalLayout {
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
 
-    public RicercaTitoloView() {
-        //this.canzoneService = canzoneService;
+    ClientES clientES = new ClientES();
+    Servizi stub = clientES.getStub();
+
+    public RicercaTitoloView() throws Exception {
         setSpacing(true);
         setSizeFull();
         layoutTitolo = new HorizontalLayout();
-            layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
-            iconTitolo = new Icon(VaadinIcon.SEARCH);
-            iconTitolo.setColor("#006af5");
-            titoloPagina = new H3("Titolo - Autore - Anno");
+        layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
+        iconTitolo = new Icon(VaadinIcon.SEARCH);
+        iconTitolo.setColor("#006af5");
+        titoloPagina = new H3("Titolo - Autore - Anno");
 
         layoutTitolo.add(iconTitolo, titoloPagina);
 
-            titoloDaCercare = new TextField();
-            autoreDaCercare = new TextField();
-            annoDaCercare = new TextField();
-            titoloDaCercare.setPlaceholder("Inserisci titolo...");
-            autoreDaCercare.setPlaceholder("Inserisci autore...");
-            annoDaCercare.setPlaceholder("Inserisci anno...");
-            searchButton = new Button("Cerca", buttonClickEvent -> {
-                search();
-            });
+        titoloDaCercare = new TextField();
+        autoreDaCercare = new TextField();
+        annoDaCercare = new TextField();
+        titoloDaCercare.setPlaceholder("Inserisci titolo...");
+        autoreDaCercare.setPlaceholder("Inserisci autore...");
+        annoDaCercare.setPlaceholder("Inserisci anno...");
+        searchButton = new Button("Cerca", buttonClickEvent -> {
+            search();
+        });
 
-            searchButton.setAutofocus(true);
-            searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            searchButton.setIcon(VaadinIcon.SEARCH.create());
+        searchButton.setAutofocus(true);
+        searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        searchButton.setIcon(VaadinIcon.SEARCH.create());
 
-            toolbar = new HorizontalLayout(titoloDaCercare, autoreDaCercare, annoDaCercare, searchButton);
-            toolbar.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-            toolbar.setAlignItems(Alignment.CENTER);
-            toolbar.setWidthFull();
+        toolbar = new HorizontalLayout(titoloDaCercare, autoreDaCercare, annoDaCercare, searchButton);
+        toolbar.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        toolbar.setAlignItems(Alignment.CENTER);
+        toolbar.setWidthFull();
 
-            configureGrid();
+        configureGrid();
 
-            //Da modificare
-            ClientES cES = new ClientES();
-            result = cES.findAll();
-            grid.setItems(result);
-            System.out.println(result.size());
 
         add(layoutTitolo, toolbar, grid);
     }
@@ -82,7 +83,17 @@ public class RicercaTitoloView extends VerticalLayout {
     }
 
     private void search() {
-        titoloDaCercare.setValue("");
-        titoloDaCercare.setPlaceholder("Inserisci titolo...");
+        try {
+            //TO TRY - da provare con Eccezione metodo searchSong() da catchare e gestire vari casi...
+            result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(),
+                    Integer.getInteger(annoDaCercare.getValue()));
+            grid.setItems(result);
+            if (result.isEmpty()) {
+                Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 }
