@@ -1,4 +1,4 @@
-package emotionalsongs.tryBackend;
+package emotionalsongs.backend;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;

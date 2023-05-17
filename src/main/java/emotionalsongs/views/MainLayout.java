@@ -126,8 +126,7 @@ public class MainLayout extends AppLayout {
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         AppNav nav = new AppNav();
 
-        nav.addItem(new AppNavItem("Ricerca Titolo", RicercaTitoloView.class, LineAwesomeIcon.SEARCH_SOLID.create()));
-        nav.addItem(new AppNavItem("Ricerca Autore e Anno", RicercaAutoreAnnoView.class, LineAwesomeIcon.SEARCH_SOLID.create()));
+        nav.addItem(new AppNavItem("Ricerca", RicercaTitoloView.class, LineAwesomeIcon.SEARCH_SOLID.create()));
         nav.addItem(new AppNavItem("My Playlist", MyPlaylistView.class, LineAwesomeIcon.MUSIC_SOLID.create()));
 
         return nav;

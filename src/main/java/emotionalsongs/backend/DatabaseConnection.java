@@ -1,4 +1,4 @@
-package emotionalsongs.tryBackend;
+package emotionalsongs.backend;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
