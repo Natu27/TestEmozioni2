@@ -3,7 +3,6 @@ package emotionalsongs.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
@@ -18,9 +17,9 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.VaadinSession;
-import emotionalsongs.backend.Canzone;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
+import emotionalsongs.backend.entities.Canzone;
 
 import java.rmi.RemoteException;
 import java.util.List;

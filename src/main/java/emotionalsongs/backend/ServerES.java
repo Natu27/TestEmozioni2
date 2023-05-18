@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import emotionalsongs.backend.entities.Canzone;
 import java.util.List;
 
 public class ServerES implements Servizi {
