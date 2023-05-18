@@ -16,11 +16,13 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.Canzone;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 
 @PageTitle("Ricerca")
@@ -42,6 +44,10 @@ public class RicercaTitoloView extends VerticalLayout {
     Servizi stub = clientES.getStub();
 
     public RicercaTitoloView() throws Exception {
+        result = VaadinSession.getCurrent().getAttribute(List.class);
+        if (result != null) {
+            grid.setItems(result);
+        }
         setSpacing(true);
         setSizeFull();
         layoutTitolo = new HorizontalLayout();
@@ -88,6 +94,8 @@ public class RicercaTitoloView extends VerticalLayout {
             result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(),
                     Integer.getInteger(annoDaCercare.getValue()));
             grid.setItems(result);
+            //Per memorizzare la grid corrente
+            VaadinSession.getCurrent().setAttribute(List.class, result);
             if (result.isEmpty()) {
                 Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);

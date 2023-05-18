@@ -23,11 +23,12 @@ public class ServerES implements Servizi {
         System.out.println("Server RMI OK");
     }
 
-    public List<Canzone> searchSong(String daCercare, String auoreDaCercare, Integer anno) {
+    public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer anno) {
         List<Canzone> result = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM public.\"Canzoni\" WHERE titolo LIKE '%" + daCercare + "%'");
+                     "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " +
+                             "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')");
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
