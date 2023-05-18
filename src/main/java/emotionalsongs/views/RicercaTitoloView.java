@@ -3,6 +3,7 @@ package emotionalsongs.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
@@ -22,7 +23,6 @@ import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 @PageTitle("Ricerca")
@@ -36,6 +36,7 @@ public class RicercaTitoloView extends VerticalLayout {
     TextField titoloDaCercare;
     TextField autoreDaCercare;
     TextField annoDaCercare;
+    //ComboBox<Integer> annoDaCercare;
     Button searchButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
