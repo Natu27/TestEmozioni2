@@ -26,16 +26,12 @@ public class ServerES implements Servizi {
 
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) {
         List<Canzone> result = new ArrayList<>();
-        String query;
-        System.out.println(year);
         if(titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null)
             return new ArrayList<>();
+        String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " +
+                "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')";
         if(year != null) {
-            query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " +
-                    "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%') AND anno = " + year;
-        } else {
-            query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " +
-                    "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')";
+            query = query + " AND anno = " + year;
         }
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
