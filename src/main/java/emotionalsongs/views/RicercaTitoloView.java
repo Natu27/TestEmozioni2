@@ -64,12 +64,13 @@ public class RicercaTitoloView extends VerticalLayout {
 
         titoloDaCercare = new TextField();
         autoreDaCercare = new TextField();
-        annoDaCercare = new ComboBox<Integer>();
+        annoDaCercare = new ComboBox<>();
         titoloDaCercare.setPlaceholder("Inserisci titolo...");
         autoreDaCercare.setPlaceholder("Inserisci autore...");
         annoDaCercare.setPlaceholder("Inserisci anno...");
         anni = generaAnni(1922, LocalDate.now().getYear());
         annoDaCercare.setItems(anni);
+
         searchButton = new Button("Cerca", buttonClickEvent -> {
             search();
         });
@@ -97,8 +98,7 @@ public class RicercaTitoloView extends VerticalLayout {
     private void search() {
         try {
             //TO TRY - da provare con Eccezione metodo searchSong() da catchare e gestire vari casi...
-            result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(),
-                    Integer.getInteger(String.valueOf(annoDaCercare.getValue())));
+            result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
             grid.setItems(result);
             //Per memorizzare la grid corrente
             VaadinSession.getCurrent().setAttribute(List.class, result);
