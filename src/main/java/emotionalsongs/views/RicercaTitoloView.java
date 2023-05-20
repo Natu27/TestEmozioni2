@@ -23,6 +23,7 @@ import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 
 import java.rmi.RemoteException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class RicercaTitoloView extends VerticalLayout {
         titoloDaCercare.setPlaceholder("Inserisci titolo...");
         autoreDaCercare.setPlaceholder("Inserisci autore...");
         annoDaCercare.setPlaceholder("Inserisci anno...");
-        anni = generaAnni(1922, 2023);
+        anni = generaAnni(1922, LocalDate.now().getYear());
         annoDaCercare.setItems(anni);
         searchButton = new Button("Cerca", buttonClickEvent -> {
             search();
