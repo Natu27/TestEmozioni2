@@ -1,5 +1,7 @@
 package emotionalsongs.views;
 
+import com.helger.commons.collection.impl.ICommonsList;
+import com.helger.commons.csv.CSVReader;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.button.Button;
@@ -16,7 +18,11 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import emotionalsongs.backend.codicefiscale.CodiceFiscale;
+import org.springframework.beans.factory.annotation.Value;
 
+import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,6 +40,9 @@ public class RegistrazioneView extends VerticalLayout {
     List<String> scelteSesso;
     ComboBox<String> sesso;
     ComboBox<String> luogoNascita;
+
+    @Value("src/main/resources/META-INF/resources/data/Comuni.csv")
+    String fileComuni;
     TextField codFiscale;
     Button calcolaCf;
     TextField via_piazza;
@@ -85,12 +94,34 @@ public class RegistrazioneView extends VerticalLayout {
         username = new TextField("Username");
         password = new PasswordField("Password");
         confirmPassword = new PasswordField("Conferma Password");
-        //registrazione.setColspan(via_piazza,2);
-        //registrazione.setColspan(luogoNascita,2);
+        registrazione.setColspan(via_piazza,2);
+        registrazione.setColspan(luogoNascita,2);
+        try {
+            CSVReader reader = new CSVReader(new FileReader("src/main/resources/META-INF/resources/data/Comuni.csv"));
+            ICommonsList<ICommonsList<String>> data = reader.readAll();
+            List<String> items = new ArrayList<>();
+            for (ICommonsList<String> row : data) {
+                items.add(row.get(0));
+            }
+            luogoNascita.setItems(items);
 
-        registrazione.add(nome, cognome, dataNascita, sesso,
-                          luogoNascita, via_piazza, codFiscale,
-                          calcolaCf, email, username,
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        calcolaCf.addClickListener(event -> {
+            String nomeCf = nome.getValue();
+            String cognomeCf = cognome.getValue();
+            String luogoNascitaCf = luogoNascita.getValue();
+            int meseCf = dataNascita.getValue().getMonthValue();
+            int annoCf = dataNascita.getValue().getYear();
+            int giornoCf = dataNascita.getValue().getDayOfMonth();
+            String sessoCf = sesso.getValue();
+            codFiscale.setValue(CodiceFiscale.codiceFiscale(cognomeCf, nomeCf, giornoCf, meseCf, annoCf, sessoCf, luogoNascitaCf));
+        });
+
+            registrazione.add(nome, cognome, dataNascita, sesso,
+                          luogoNascita, codFiscale,
+                          calcolaCf, via_piazza, email, username,
                           password,confirmPassword);
     }
 
