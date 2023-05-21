@@ -33,7 +33,7 @@ public class RegistrazioneView extends VerticalLayout {
     DatePicker dataNascita;
     List<String> scelteSesso;
     ComboBox<String> sesso;
-    //ComboBox<String> luogoNascita;
+    ComboBox<String> luogoNascita;
     TextField codFiscale;
     Button calcolaCf;
     TextField via_piazza;
@@ -48,54 +48,67 @@ public class RegistrazioneView extends VerticalLayout {
     public RegistrazioneView() {
         setSpacing(false);
         setSizeFull();
+
+        registerButton = new Button("Registrati", buttonClickEvent -> {
+            registration();
+        });
+
+        configureLayoutTitolo();
+        configureLayoutRegistrazione();
+        setComponent();
+        configureButton();
+        configurePageLayout();
+        add(layoutTitolo, pageLayout);
+    }
+
+    private void configureLayoutTitolo() {
         layoutTitolo = new HorizontalLayout();
-            layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
-            iconTitolo = new Icon(VaadinIcon.USERS);
-            iconTitolo.setColor("#006af5");
-            titoloPagina = new H3("Nuovo Utente");
-            layoutTitolo.add(iconTitolo, titoloPagina);
+        layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
+        iconTitolo = new Icon(VaadinIcon.USERS);
+        iconTitolo.setColor("#006af5");
+        titoloPagina = new H3("Nuovo Utente");
+        layoutTitolo.add(iconTitolo, titoloPagina);
+    }
 
-
+    private void configureLayoutRegistrazione() {
         registrazione = new FormLayout();
-            nome = new TextField("Nome");
-            cognome = new TextField("Cognome");
-            dataNascita = new DatePicker("Data di nascita");
-            //luogoNascita = new ComboBox<>("Luogo di nascita");
-            scelteSesso = Arrays.asList("M", "F");
-            sesso = new ComboBox<>("Sesso", scelteSesso);
-            codFiscale = new TextField("Codice Fiscale");
-            calcolaCf = new Button("Calcola codice fiscale");
-            via_piazza = new TextField("Via/Piazza");
-            email = new EmailField("Email");
-            username = new TextField("Username");
-            password = new PasswordField("Password");
-            confirmPassword = new PasswordField("Conferma Password");
-
-            setComponent();
-
-        registrazione.setColspan(via_piazza,2);
+        nome = new TextField("Nome");
+        cognome = new TextField("Cognome");
+        dataNascita = new DatePicker("Data di nascita");
+        luogoNascita = new ComboBox<>("Luogo di nascita");
+        scelteSesso = Arrays.asList("M", "F");
+        sesso = new ComboBox<>("Sesso", scelteSesso);
+        codFiscale = new TextField("Codice Fiscale");
+        calcolaCf = new Button("Calcola codice fiscale");
+        via_piazza = new TextField("Via/Piazza");
+        email = new EmailField("Email");
+        username = new TextField("Username");
+        password = new PasswordField("Password");
+        confirmPassword = new PasswordField("Conferma Password");
+        //registrazione.setColspan(via_piazza,2);
         //registrazione.setColspan(luogoNascita,2);
 
-        registrazione.add(nome, cognome, dataNascita, sesso,/*luogoNascita,*/ codFiscale, calcolaCf, via_piazza, email, username, password, confirmPassword);
+        registrazione.add(nome, cognome, dataNascita, sesso,
+                          luogoNascita, via_piazza, codFiscale,
+                          calcolaCf, email, username,
+                          password,confirmPassword);
+    }
 
+    private void configureButton() {
         regButtonLayout = new VerticalLayout();
-            registerButton = new Button("Registrati", buttonClickEvent -> {
-                registration();
-            });
-            regButtonLayout.setAlignItems(Alignment.CENTER);
-            registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            registerButton.setIcon(VaadinIcon.USERS.create());
-            registerButton.setAutofocus(true);
-            registerButton.setWidth("420px");
-            regButtonLayout.add(registerButton);
+        regButtonLayout.setAlignItems(Alignment.CENTER);
+        registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        registerButton.setIcon(VaadinIcon.USERS.create());
+        registerButton.setAutofocus(true);
+        registerButton.setWidth("420px");
+        regButtonLayout.add(registerButton);
+    }
 
+    private void configurePageLayout() {
         pageLayout = new VerticalLayout();
-            pageLayout.setSizeFull();
-            pageLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-            pageLayout.add(registrazione, registerButton);
-
-        add(layoutTitolo, pageLayout);
-
+        pageLayout.setSizeFull();
+        pageLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+        pageLayout.add(registrazione, registerButton);
     }
 
     private void setComponent(){
@@ -110,14 +123,18 @@ public class RegistrazioneView extends VerticalLayout {
         nome.setRequired(true);
         cognome.setRequired(true);
         sesso.setRequired(true);
-        //luogoNascita.setRequired(true);
+        luogoNascita.setRequired(true);
         dataNascita.setRequired(true);
         codFiscale.setMaxLength(16);
         codFiscale.setRequired(true);
         via_piazza.setRequired(true);
         email.setRequired(true);
         username.setRequired(true);
+        password.setRequired(true);
+        confirmPassword.setRequired(true);
+
     }
+
     private void registration() {
 
     }

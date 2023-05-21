@@ -23,7 +23,6 @@ import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 
 import java.rmi.RemoteException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,57 +36,58 @@ public class RicercaTitoloView extends VerticalLayout {
     H3 titoloPagina;
     TextField titoloDaCercare;
     TextField autoreDaCercare;
-    //TextField annoDaCercare;
     ComboBox<Integer> annoDaCercare;
-    List<Integer> anni;
+    List<Integer> anni = generaAnni();
     Button searchButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
-
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
 
     public RicercaTitoloView() throws Exception {
+        setSpacing(true);
+        setSizeFull();
+
         result = VaadinSession.getCurrent().getAttribute(List.class);
         if (result != null) {
             grid.setItems(result);
         }
-        setSpacing(true);
-        setSizeFull();
+
+        searchButton = new Button("Cerca", buttonClickEvent -> {
+            search();
+        });
+
+        configureLayout();
+        configureSearchBar();
+        configureGrid();
+        add(layoutTitolo, toolbar, grid);
+
+    }
+
+    private void configureLayout() {
         layoutTitolo = new HorizontalLayout();
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
         iconTitolo = new Icon(VaadinIcon.SEARCH);
         iconTitolo.setColor("#006af5");
         titoloPagina = new H3("Titolo - Autore - Anno");
-
         layoutTitolo.add(iconTitolo, titoloPagina);
+    }
 
+    private void configureSearchBar() {
         titoloDaCercare = new TextField();
         autoreDaCercare = new TextField();
         annoDaCercare = new ComboBox<>();
         titoloDaCercare.setPlaceholder("Inserisci titolo...");
         autoreDaCercare.setPlaceholder("Inserisci autore...");
         annoDaCercare.setPlaceholder("Inserisci anno...");
-        anni = generaAnni(1922, LocalDate.now().getYear());
         annoDaCercare.setItems(anni);
-
-        searchButton = new Button("Cerca", buttonClickEvent -> {
-            search();
-        });
-
         searchButton.setAutofocus(true);
         searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         searchButton.setIcon(VaadinIcon.SEARCH.create());
-
         toolbar = new HorizontalLayout(titoloDaCercare, autoreDaCercare, annoDaCercare, searchButton);
         toolbar.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         toolbar.setAlignItems(Alignment.CENTER);
         toolbar.setWidthFull();
-
-        configureGrid();
-
-
-        add(layoutTitolo, toolbar, grid);
     }
 
     private void configureGrid() {
@@ -97,7 +97,6 @@ public class RicercaTitoloView extends VerticalLayout {
 
     private void search() {
         try {
-            //TO TRY - da provare con Eccezione metodo searchSong() da catchare e gestire vari casi...
             result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
             grid.setItems(result);
             //Per memorizzare la grid corrente
@@ -110,12 +109,14 @@ public class RicercaTitoloView extends VerticalLayout {
             e.printStackTrace();
         }
     }
-    private List<Integer> generaAnni(int annoInizio, int annoFine) {
+
+    private List<Integer> generaAnni() {
         List<Integer> anni = new ArrayList<>();
-        for (int i = annoInizio; i <= annoFine; i++) {
+        for (int i = 1922; i <= 2023; i++) {
             anni.add(i);
         }
         return anni;
     }
+
 
 }

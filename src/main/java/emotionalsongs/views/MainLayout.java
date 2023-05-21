@@ -38,55 +38,72 @@ public class MainLayout extends AppLayout {
     Dialog dialog;
 
     public MainLayout() {
-        top = new HorizontalLayout();
-            top.setWidthFull();
-            top.setMargin(true);
-            top.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
 
-        loginForm = new LoginForm();
-            loginForm.setI18n(createLoginI18n());
-            //loginForm.setForgotPasswordButtonVisible(false);
-            registerButton = new Button("Non hai ancora un account? Registrati", VaadinIcon.USERS.create());
-            registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-        middle = new HorizontalLayout(registerButton);
-            middle.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-            middle.setAlignSelf(FlexComponent.Alignment.CENTER, registerButton);
+        configureTopLayout();
+        configureMiddleLayout();
+        configureBottomLayout();
+        configureLoginForm();
 
         dialog = new Dialog(loginForm, middle);
             registerButton.addClickListener(click -> {
                 register();
             });
-            exitButton = new Button(VaadinIcon.CLOSE.create(), click -> {
+            exitButton.addClickListener(click -> {
                 dialog.close();
             });
-            exitButton.getStyle().set("color", "red");
-
-        bottom = new HorizontalLayout();
-            bottom.add(exitButton);
-            bottom.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-            bottom.setAlignSelf(FlexComponent.Alignment.END, exitButton);
 
             dialog.addComponentAsFirst(bottom);
             dialog.setCloseOnEsc(true);
-            login = new Button("Login", VaadinIcon.USER.create(), click -> {
+
+            login.addClickListener(click -> {
                 login();
             });
-            login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-
-            top.setAlignItems(FlexComponent.Alignment.CENTER);
-            top.setAlignSelf(FlexComponent.Alignment.END, login);
-            top.add(login);
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
         addHeaderContent();
         addToNavbar(top);
+
+    }
+
+    private void configureTopLayout() {
+        login = new Button("Login", VaadinIcon.USER.create());
+        login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        top = new HorizontalLayout(login);
+        top.setWidthFull();
+        top.setMargin(true);
+        top.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        top.setAlignSelf(FlexComponent.Alignment.END, login);
+        top.add(login);
+    }
+
+    private void configureMiddleLayout() {
+        registerButton = new Button("Non hai ancora un account? Registrati", VaadinIcon.USERS.create());
+        registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        middle = new HorizontalLayout(registerButton);
+        middle.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        middle.setAlignSelf(FlexComponent.Alignment.CENTER, registerButton);
+    }
+
+    private void configureBottomLayout() {
+        exitButton = new Button(VaadinIcon.CLOSE.create());
+        exitButton.getStyle().set("color", "red");
+        bottom = new HorizontalLayout();
+        bottom.add(exitButton);
+        bottom.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        bottom.setAlignSelf(FlexComponent.Alignment.END, exitButton);
+    }
+
+    private void configureLoginForm() {
+        loginForm = new LoginForm();
+        loginForm.setI18n(createLoginI18n());
+        //loginForm.setForgotPasswordButtonVisible(false);
     }
 
     private void login() {
         dialog.setOpened(true);
     }
+
     private void register() {
         UI.getCurrent().navigate(RegistrazioneView.class);
         dialog.close();
