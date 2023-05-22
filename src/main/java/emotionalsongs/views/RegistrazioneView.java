@@ -62,6 +62,10 @@ public class RegistrazioneView extends VerticalLayout {
             registration();
         });
 
+        calcolaCf = new Button("Calcola CF", buttonClickEvent -> {
+            calcolaCodFiscale();
+        });
+
         configureLayoutTitolo();
         configureLayoutRegistrazione();
         setComponent();
@@ -88,14 +92,14 @@ public class RegistrazioneView extends VerticalLayout {
         scelteSesso = Arrays.asList("M", "F");
         sesso = new ComboBox<>("Sesso", scelteSesso);
         codFiscale = new TextField("Codice Fiscale");
-        calcolaCf = new Button("Calcola codice fiscale");
+        //calcolaCf = new Button("Calcola codice fiscale");
         via_piazza = new TextField("Via/Piazza");
         email = new EmailField("Email");
         username = new TextField("Username");
         password = new PasswordField("Password");
         confirmPassword = new PasswordField("Conferma Password");
-        registrazione.setColspan(via_piazza,2);
-        registrazione.setColspan(luogoNascita,2);
+        //registrazione.setColspan(via_piazza,2);
+        //registrazione.setColspan(luogoNascita,2);
         try {
             CSVReader reader = new CSVReader(new FileReader("src/main/resources/META-INF/resources/data/Comuni.csv"));
             ICommonsList<ICommonsList<String>> data = reader.readAll();
@@ -108,20 +112,10 @@ public class RegistrazioneView extends VerticalLayout {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        calcolaCf.addClickListener(event -> {
-            String nomeCf = nome.getValue();
-            String cognomeCf = cognome.getValue();
-            String luogoNascitaCf = luogoNascita.getValue();
-            int meseCf = dataNascita.getValue().getMonthValue();
-            int annoCf = dataNascita.getValue().getYear();
-            int giornoCf = dataNascita.getValue().getDayOfMonth();
-            String sessoCf = sesso.getValue();
-            codFiscale.setValue(CodiceFiscale.codiceFiscale(cognomeCf, nomeCf, giornoCf, meseCf, annoCf, sessoCf, luogoNascitaCf));
-        });
 
             registrazione.add(nome, cognome, dataNascita, sesso,
-                          luogoNascita, codFiscale,
-                          calcolaCf, via_piazza, email, username,
+                          luogoNascita, via_piazza, codFiscale,
+                          calcolaCf, email, username,
                           password,confirmPassword);
     }
 
@@ -164,6 +158,20 @@ public class RegistrazioneView extends VerticalLayout {
         password.setRequired(true);
         confirmPassword.setRequired(true);
 
+    }
+
+    private void calcolaCodFiscale() {
+        if(nome != null && cognome != null & luogoNascita != null & dataNascita != null & sesso != null) {
+            String nomeCf = nome.getValue();
+            String cognomeCf = cognome.getValue();
+            String luogoNascitaCf = luogoNascita.getValue();
+            int meseCf = dataNascita.getValue().getMonthValue();
+            int annoCf = dataNascita.getValue().getYear();
+            int giornoCf = dataNascita.getValue().getDayOfMonth();
+            String sessoCf = sesso.getValue();
+            codFiscale.setValue(CodiceFiscale.codiceFiscale(cognomeCf, nomeCf, giornoCf,
+                                                            meseCf, annoCf, sessoCf, luogoNascitaCf));
+        }
     }
 
     private void registration() {
