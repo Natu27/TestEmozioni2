@@ -15,8 +15,8 @@ public class Comune {
     private static String linea = "";
     private static String delimitatore = ",";
     static String codice;
-    @Value("${csv.file.path.2}")
-    private static String csvFile;
+    @Value("${csv.file.path.2}") // non funziona per qualche ragione
+    private static String csvFile; // questa variabile è nulla
 
     /**
      * Ottiene il codice di controllo alfabetico associato al comune di nascita.
@@ -25,6 +25,8 @@ public class Comune {
      * @return in codice alfanumerico abbinato al comune di nascita come {@code String}
      */
     public static String getCodice(String comuneNascita){
+        // per ora popolata a mano
+        csvFile = "src/main/resources/META-INF/resources/data/ComuniECodici.csv";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             br.readLine();
 

@@ -58,13 +58,9 @@ public class RegistrazioneView extends VerticalLayout {
         setSpacing(false);
         setSizeFull();
 
-        registerButton = new Button("Registrati", buttonClickEvent -> {
-            registration();
-        });
+        registerButton = new Button("Registrati", buttonClickEvent -> registration());
 
-        calcolaCf = new Button("Calcola CF", buttonClickEvent -> {
-            calcolaCodFiscale();
-        });
+        calcolaCf = new Button("Calcola CF", buttonClickEvent -> calcolaCodFiscale());
 
         configureLayoutTitolo();
         configureLayoutRegistrazione();
@@ -162,6 +158,7 @@ public class RegistrazioneView extends VerticalLayout {
 
     private void calcolaCodFiscale() {
         if(nome != null && cognome != null & luogoNascita != null & dataNascita != null & sesso != null) {
+            // TODO: gestire valori nulli (lato form e/o backend)
             String nomeCf = nome.getValue();
             String cognomeCf = cognome.getValue();
             String luogoNascitaCf = luogoNascita.getValue();
