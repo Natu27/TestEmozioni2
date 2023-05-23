@@ -11,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import emotionalsongs.backend.entities.Canzone;
+import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
+
 import java.util.List;
 
 public class ServerES implements Servizi {
@@ -24,10 +26,10 @@ public class ServerES implements Servizi {
         System.out.println("Server RMI OK");
     }
 
-    public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) {
+    public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata {
         List<Canzone> result = new ArrayList<>();
         if(titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null)
-            return new ArrayList<>();
+            throw new NessunaCanzoneTrovata();
         String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " +
                 "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')";
         if(year != null) {
@@ -47,7 +49,7 @@ public class ServerES implements Servizi {
                 );
                 result.add(canzone);
             }
-
+        if(result.isEmpty()) throw new NessunaCanzoneTrovata();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -21,6 +21,7 @@ import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
+import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -99,12 +100,16 @@ public class RicercaTitoloView extends VerticalLayout {
             grid.setItems(result);
             //Per memorizzare la grid corrente
             VaadinSession.getCurrent().setAttribute(List.class, result);
-            if (result.isEmpty()) {
-                Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            }
-        } catch (RemoteException e) {
+        }
+        catch (RemoteException e) {
             e.printStackTrace();
+        }
+        catch (NessunaCanzoneTrovata e) {
+            result = new ArrayList<Canzone>();
+            grid.setItems(result);
+            VaadinSession.getCurrent().setAttribute(List.class, result);
+            Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }
 
