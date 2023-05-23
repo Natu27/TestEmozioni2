@@ -45,19 +45,13 @@ public class MainLayout extends AppLayout {
         configureLoginForm();
 
         dialog = new Dialog(loginForm, middle);
-            registerButton.addClickListener(click -> {
-                register();
-            });
-            exitButton.addClickListener(click -> {
-                dialog.close();
-            });
+            registerButton.addClickListener(click -> register());
+            exitButton.addClickListener(click -> dialog.close());
 
             dialog.addComponentAsFirst(bottom);
             dialog.setCloseOnEsc(true);
 
-            login.addClickListener(click -> {
-                login();
-            });
+            login.addClickListener(click -> login());
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();

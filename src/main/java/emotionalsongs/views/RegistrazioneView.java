@@ -157,7 +157,7 @@ public class RegistrazioneView extends VerticalLayout {
     }
 
     private void calcolaCodFiscale() {
-        if(nome != null && cognome != null & luogoNascita != null & dataNascita != null & sesso != null) {
+        if(nome != null && cognome != null && luogoNascita != null && dataNascita != null && sesso != null) {
             // TODO: gestire valori nulli (lato form e/o backend)
             String nomeCf = nome.getValue();
             String cognomeCf = cognome.getValue();

@@ -53,9 +53,7 @@ public class RicercaTitoloView extends VerticalLayout {
             grid.setItems(result);
         }
 
-        searchButton = new Button("Cerca", buttonClickEvent -> {
-            search();
-        });
+        searchButton = new Button("Cerca", buttonClickEvent -> search());
 
         configureLayout();
         configureSearchBar();
