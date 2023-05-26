@@ -5,15 +5,13 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 
 import java.util.List;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class ServerES implements Servizi {
     private final static int PORT = 10002;
@@ -55,6 +53,28 @@ public class ServerES implements Servizi {
         }
 
         return result;
+    }
+    public void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password ){
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        String query = "INSERT INTO public.\"User\" (nome, cognome, username, hashed_password, indirizzo, cf, email) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, nome);
+            stmt.setString(2, cognome);
+            stmt.setString(3, username);
+            stmt.setString(4, hashedPassword);
+            stmt.setString(5, indirizzo);
+            stmt.setString(6, codiceFiscale);
+            stmt.setString(7, email);
+
+            int utentiRegistrati = stmt.executeUpdate();
+
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
