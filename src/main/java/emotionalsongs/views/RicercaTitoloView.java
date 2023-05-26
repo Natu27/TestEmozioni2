@@ -38,12 +38,12 @@ public class RicercaTitoloView extends VerticalLayout {
     TextField titoloDaCercare;
     TextField autoreDaCercare;
     ComboBox<Integer> annoDaCercare;
-    List<Integer> anni = generaAnni();
     Button searchButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
+    List<Integer> anni = stub.getAnni();
 
     public RicercaTitoloView() throws Exception {
         setSpacing(true);
@@ -55,10 +55,10 @@ public class RicercaTitoloView extends VerticalLayout {
         }
 
         searchButton = new Button("Cerca", buttonClickEvent -> search());
-
         configureLayout();
         configureSearchBar();
         configureGrid();
+
         add(layoutTitolo, toolbar, grid);
 
     }
@@ -100,25 +100,15 @@ public class RicercaTitoloView extends VerticalLayout {
             grid.setItems(result);
             //Per memorizzare la grid corrente
             VaadinSession.getCurrent().setAttribute(List.class, result);
-        }
-        catch (RemoteException e) {
+        } catch (RemoteException e) {
             e.printStackTrace();
-        }
-        catch (NessunaCanzoneTrovata e) {
+        } catch (NessunaCanzoneTrovata e) {
             result = new ArrayList<Canzone>();
             grid.setItems(result);
             VaadinSession.getCurrent().setAttribute(List.class, result);
             Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
-    }
-
-    private List<Integer> generaAnni() {
-        List<Integer> anni = new ArrayList<>();
-        for (int i = 1922; i <= 2023; i++) {
-            anni.add(i);
-        }
-        return anni;
     }
 
 
