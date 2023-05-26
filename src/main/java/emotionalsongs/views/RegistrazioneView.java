@@ -172,6 +172,12 @@ public class RegistrazioneView extends VerticalLayout {
     }
 
     private void registration() {
-
+        String nome = this.nome.getValue();
+        String cognome = this.cognome.getValue();
+        String user = username.getValue();
+        String password = this.password.getValue();
+        String indirizzo = this.via_piazza.getValue();
+        String codFiscale = this.codFiscale.getValue();
+        String email = this.email.getValue();
     }
 }
