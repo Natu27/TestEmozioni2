@@ -3,7 +3,10 @@ package emotionalsongs.views;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.charts.Chart;
+import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
@@ -33,12 +36,14 @@ import java.util.List;
 public class RicercaTitoloView extends VerticalLayout {
     HorizontalLayout layoutTitolo;
     HorizontalLayout toolbar;
+    HorizontalLayout emotions;
     Icon iconTitolo;
     H3 titoloPagina;
     TextField titoloDaCercare;
     TextField autoreDaCercare;
     ComboBox<Integer> annoDaCercare;
     Button searchButton;
+    Button emoButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
     ClientES clientES = new ClientES();
@@ -51,15 +56,17 @@ public class RicercaTitoloView extends VerticalLayout {
 
         result = VaadinSession.getCurrent().getAttribute(List.class);
         if (result != null) {
-            grid.setItems(result);
+        grid.setItems(result);
         }
 
         searchButton = new Button("Cerca", buttonClickEvent -> search());
+        emoButton = new Button("Visualizza Emozioni", buttonClickEvent -> visualizzaEmo());
         configureLayout();
         configureSearchBar();
         configureGrid();
+        configureEmotions();
 
-        add(layoutTitolo, toolbar, grid);
+        add(layoutTitolo, toolbar, grid, emotions);
 
     }
 
@@ -94,6 +101,16 @@ public class RicercaTitoloView extends VerticalLayout {
         grid.setColumns("titolo","artista","anno");
     }
 
+    private void configureEmotions() {
+        emoButton.setAutofocus(true);
+        emoButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        emoButton.setIcon(VaadinIcon.HEART.create());
+        emotions = new HorizontalLayout(emoButton);
+        emotions.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        emotions.setAlignItems(Alignment.CENTER);
+        emotions.setWidthFull();
+    }
+
     private void search() {
         try {
             result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
@@ -103,7 +120,7 @@ public class RicercaTitoloView extends VerticalLayout {
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NessunaCanzoneTrovata e) {
-            result = new ArrayList<Canzone>();
+            result = new ArrayList<>();
             grid.setItems(result);
             VaadinSession.getCurrent().setAttribute(List.class, result);
             Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
@@ -111,5 +128,79 @@ public class RicercaTitoloView extends VerticalLayout {
         }
     }
 
+    private void visualizzaEmo() {
+        Canzone selectedTuple = grid.asSingleSelect().getValue();
+        if (selectedTuple != null) {
+            // Apri la finestra di dialogo per mostrare le informazioni aggiuntive
+            openDetailsDialog(selectedTuple);
+        } else {
+            Notification.show("Nessuna canzone selezionata", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
+    }
+
+    private void openDetailsDialog(Canzone selectedTuple) {
+        Dialog dialog = new Dialog();
+        //dialog.setSizeFull();
+
+        // Crea il layout per le informazioni dettagliate
+        VerticalLayout layout = new VerticalLayout();
+        layout.setJustifyContentMode(JustifyContentMode.CENTER);
+        layout.setAlignItems(Alignment.CENTER);
+        layout.setPadding(true);
+        layout.setSpacing(true);
+
+        // Aggiungi le informazioni dettagliate al layout
+        String info = "Titolo: " + selectedTuple.getTitolo() +
+                " - Artista: " + selectedTuple.getArtista() +
+                " - Anno: " + selectedTuple.getAnno();
+        layout.add(new H3(info));
+
+        Chart chart = createHistogramChart();
+        layout.add(chart);
+
+        dialog.add(layout);
+
+        // Aggiungi un pulsante per chiudere la finestra di dialogo
+        Button closeButton = new Button("Chiudi", buttonClickEvent -> {
+            dialog.close();
+        });
+        closeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
+        layout.add(closeButton);
+
+        dialog.open();
+        // Deseleziona la tupla dopo aver aperto il dialogo
+        grid.asSingleSelect().clear();
+    }
+
+    private Chart createHistogramChart() {
+        Chart chart = new Chart(ChartType.COLUMN);
+
+        Configuration configuration = chart.getConfiguration();
+        configuration.setTitle("Distribuzione Emozioni");
+
+        XAxis xAxis = configuration.getxAxis();
+        xAxis.setTitle("Emozioni");
+        xAxis.setCategories("Amazement", "Solemnity", "Tenderness",
+                            "Nostalgia", "Calmness", "Power",
+                            "Joy", "Tension", "Sadness");
+
+        YAxis yAxis = configuration.getyAxis();
+        yAxis.setTitle("Media");
+
+        ListSeries series = new ListSeries();
+        // Aggiunta i dati dell'istogramma --> per Luca V - la query andrà inserita qua
+        // e poi andranno settati i dati di conseguenza
+        series.setData(1, 2.5, 0, 0, 5, 0, 0, 0, 0);
+
+        PlotOptionsColumn plotOptions = new PlotOptionsColumn();
+        plotOptions.setColorByPoint(true);
+        series.setPlotOptions(plotOptions);
+
+        configuration.setSeries(series);
+
+        return chart;
+    }
 
 }
