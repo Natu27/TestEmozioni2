@@ -18,6 +18,8 @@ import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import emotionalsongs.backend.ClientES;
+import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.codicefiscale.CodiceFiscale;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -53,8 +55,10 @@ public class RegistrazioneView extends VerticalLayout {
     VerticalLayout regButtonLayout;
     Button registerButton;
     VerticalLayout pageLayout;
+    ClientES clientES = new ClientES();
+    Servizi stub = clientES.getStub();
 
-    public RegistrazioneView() {
+    public RegistrazioneView() throws Exception {
         setSpacing(false);
         setSizeFull();
 
@@ -179,5 +183,6 @@ public class RegistrazioneView extends VerticalLayout {
         String indirizzo = this.via_piazza.getValue();
         String codFiscale = this.codFiscale.getValue();
         String email = this.email.getValue();
+        //stub.registrazione();
     }
 }
