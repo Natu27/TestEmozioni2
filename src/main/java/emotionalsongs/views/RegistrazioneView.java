@@ -24,6 +24,7 @@ import emotionalsongs.backend.codicefiscale.CodiceFiscale;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.FileReader;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,7 +63,13 @@ public class RegistrazioneView extends VerticalLayout {
         setSpacing(false);
         setSizeFull();
 
-        registerButton = new Button("Registrati", buttonClickEvent -> registration());
+        registerButton = new Button("Registrati", buttonClickEvent -> {
+            try {
+                registration();
+            } catch (RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         calcolaCf = new Button("Calcola CF", buttonClickEvent -> calcolaCodFiscale());
 
@@ -175,7 +182,7 @@ public class RegistrazioneView extends VerticalLayout {
         }
     }
 
-    private void registration() {
+    private void registration() throws RemoteException {
         String nome = this.nome.getValue();
         String cognome = this.cognome.getValue();
         String user = username.getValue();
@@ -183,6 +190,6 @@ public class RegistrazioneView extends VerticalLayout {
         String indirizzo = this.via_piazza.getValue();
         String codFiscale = this.codFiscale.getValue();
         String email = this.email.getValue();
-        //stub.registrazione();
+        stub.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
     }
 }
