@@ -1,6 +1,7 @@
 package emotionalsongs.views;
 
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.charts.Chart;
@@ -20,7 +21,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
@@ -54,7 +54,7 @@ public class RicercaTitoloView extends VerticalLayout {
         setSpacing(true);
         setSizeFull();
 
-        result = VaadinSession.getCurrent().getAttribute(List.class);
+        result = UI.getCurrent().getSession().getAttribute(List.class);
         if (result != null) {
         grid.setItems(result);
         }
@@ -116,13 +116,13 @@ public class RicercaTitoloView extends VerticalLayout {
             result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
             grid.setItems(result);
             //Per memorizzare la grid corrente
-            VaadinSession.getCurrent().setAttribute(List.class, result);
+            UI.getCurrent().getSession().setAttribute(List.class, result);
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NessunaCanzoneTrovata e) {
             result = new ArrayList<>();
             grid.setItems(result);
-            VaadinSession.getCurrent().setAttribute(List.class, result);
+            UI.getCurrent().getSession().setAttribute(List.class, result);
             Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
