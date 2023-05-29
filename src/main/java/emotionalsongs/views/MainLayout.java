@@ -7,8 +7,16 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.login.LoginI18n;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import emotionalsongs.backend.ClientES;
+import emotionalsongs.backend.Servizi;
+import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
+import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
+import emotionalsongs.backend.exceptions.Utente.UsernameNotFound;
 import emotionalsongs.components.appnav.AppNav;
 import emotionalsongs.components.appnav.AppNavItem;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -23,6 +31,8 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 import com.vaadin.flow.component.button.Button;
 
+import java.rmi.RemoteException;
+
 /**
  * The main view is a top-level placeholder for other views.
  */
@@ -36,8 +46,10 @@ public class MainLayout extends AppLayout {
     Button registerButton;
     Button exitButton;
     Dialog dialog;
-
-    public MainLayout() {
+    ClientES clientES = new ClientES();
+    Servizi stub = clientES.getStub();
+    TextField user;
+    public MainLayout() throws Exception {
 
         configureTopLayout();
         configureMiddleLayout();
@@ -51,7 +63,24 @@ public class MainLayout extends AppLayout {
             dialog.addComponentAsFirst(bottom);
             dialog.setCloseOnEsc(true);
 
-            login.addClickListener(click -> login());
+            login.addClickListener(click -> {
+                try {
+                    login();
+                } catch (UsernameErrato e) {
+                    Notification.show("Username Errato", 3000, Notification.Position.MIDDLE)
+                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                } catch (PasswordErrata e) {
+                    Notification.show("Password Errata", 3000, Notification.Position.MIDDLE)
+                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                } catch (UsernameNotFound e) {
+                    Notification.show("Username Non Trovato", 3000, Notification.Position.MIDDLE)
+                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                } catch (RemoteException e) {
+                     throw new RuntimeException(e);
+                } catch (RuntimeException e) {
+                     System.err.println(e);
+                }
+            });
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -80,10 +109,11 @@ public class MainLayout extends AppLayout {
     }
 
     private void configureBottomLayout() {
+        user = new TextField();
         exitButton = new Button(VaadinIcon.CLOSE.create());
         exitButton.getStyle().set("color", "red");
         bottom = new HorizontalLayout();
-        bottom.add(exitButton);
+        bottom.add(user, exitButton);
         bottom.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
         bottom.setAlignSelf(FlexComponent.Alignment.END, exitButton);
     }
@@ -94,8 +124,15 @@ public class MainLayout extends AppLayout {
         loginForm.setForgotPasswordButtonVisible(false);
     }
 
-    private void login() {
+    private void login() throws UsernameErrato, PasswordErrata, UsernameNotFound, RemoteException {
         dialog.setOpened(true);
+        loginForm.addLoginListener(event->{
+            try {
+                stub.login(user.getValue(), event.getPassword());
+            }catch (UsernameErrato | PasswordErrata | UsernameNotFound | RemoteException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void register() {

@@ -2,6 +2,9 @@ package emotionalsongs.backend;
 
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
+import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
+import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
+import emotionalsongs.backend.exceptions.Utente.UsernameNotFound;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.rmi.Remote;
@@ -15,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  *
@@ -37,6 +41,7 @@ public class ServerES implements Servizi {
      * @return
      * @throws NessunaCanzoneTrovata
      */
+    @Override
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata {
         List<Canzone> result = new ArrayList<>();
         if (titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null)
@@ -78,6 +83,7 @@ public class ServerES implements Servizi {
      * @param password
      * @throws RemoteException
      */
+    @Override
     public void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws RemoteException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         String query = "INSERT INTO public.\"User\" (nome, cognome, username, hashed_password, indirizzo, cf, email) VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -101,10 +107,10 @@ public class ServerES implements Servizi {
         }
     }
 
-    @/**
+    /**
      *
      */
-            Override
+    @Override
     public List<Integer> getAnni() throws RemoteException {
 
         List<Integer> result = new ArrayList<>();
@@ -124,24 +130,25 @@ public class ServerES implements Servizi {
         return result;
     }
 
-    public String login(String userid, String password){
+    @Override
+    public boolean login(String userid, String password) throws UsernameNotFound, PasswordErrata, UsernameErrato, RemoteException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        String query = "SELECT hashed_password FROM public.\"User\" WHERE username = userid";
+        String query = "SELECT hashed_password FROM public.\"User\" WHERE username = " + userid;
+        String username = "";
+        String pass = "";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
-
+            if (!rs.next()) throw new UsernameNotFound();
             while (rs.next()) {
-                        userid = rs.getString("username");
-                        password = rs.getString("hashed_password");
-
+                username = rs.getString("username");
+                pass = rs.getString("hashed_password");
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return password;
+        if (!userid.equals(username)) throw new UsernameErrato();
+        if (!pass.equals(hashedPassword)) throw new PasswordErrata();
+        return true;
     }
-
 }
