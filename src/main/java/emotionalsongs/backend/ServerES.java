@@ -124,4 +124,24 @@ public class ServerES implements Servizi {
         return result;
     }
 
+    public String login(String userid, String password){
+        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        String query = "SELECT hashed_password FROM public.\"User\" WHERE username = userid";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                        userid = rs.getString("username");
+                        password = rs.getString("hashed_password");
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return password;
+    }
+
 }

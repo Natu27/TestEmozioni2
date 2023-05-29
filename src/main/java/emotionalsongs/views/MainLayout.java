@@ -91,7 +91,7 @@ public class MainLayout extends AppLayout {
     private void configureLoginForm() {
         loginForm = new LoginForm();
         loginForm.setI18n(createLoginI18n());
-        //loginForm.setForgotPasswordButtonVisible(false);
+        loginForm.setForgotPasswordButtonVisible(false);
     }
 
     private void login() {
