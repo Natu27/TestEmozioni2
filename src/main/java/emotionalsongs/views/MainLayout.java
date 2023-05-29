@@ -4,13 +4,14 @@ package emotionalsongs.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.login.LoginForm;
-import com.vaadin.flow.component.login.LoginI18n;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
@@ -21,10 +22,6 @@ import emotionalsongs.components.appnav.AppNav;
 import emotionalsongs.components.appnav.AppNavItem;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.theme.lumo.LumoUtility;
@@ -39,48 +36,42 @@ import java.rmi.RemoteException;
 public class MainLayout extends AppLayout {
     private H2 viewTitle;
     HorizontalLayout top;
-    HorizontalLayout middle;
-    HorizontalLayout bottom;
-    LoginForm loginForm;
+    VerticalLayout loginForm;
     Button login;
     Button registerButton;
+    Button loginButton;
     Button exitButton;
     Dialog dialog;
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
     TextField user;
+    PasswordField password;
     public MainLayout() throws Exception {
 
         configureTopLayout();
-        configureMiddleLayout();
-        configureBottomLayout();
         configureLoginForm();
 
-        dialog = new Dialog(loginForm, middle);
-            registerButton.addClickListener(click -> register());
-            exitButton.addClickListener(click -> dialog.close());
+        login.addClickListener(click -> dialog.setOpened(true));
 
-            dialog.addComponentAsFirst(bottom);
-            dialog.setCloseOnEsc(true);
-
-            login.addClickListener(click -> {
+        dialog = new Dialog(loginForm);
+            loginButton.addClickListener(click -> {
                 try {
                     login();
-                } catch (UsernameErrato e) {
-                    Notification.show("Username Errato", 3000, Notification.Position.MIDDLE)
-                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                } catch (PasswordErrata e) {
-                    Notification.show("Password Errata", 3000, Notification.Position.MIDDLE)
-                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } catch (UsernameNotFound e) {
                     Notification.show("Username Non Trovato", 3000, Notification.Position.MIDDLE)
-                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                } catch (PasswordErrata e) {
+                    throw new RuntimeException(e);
+                } catch (UsernameErrato e) {
+                    Notification.show("Username Errato", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } catch (RemoteException e) {
-                     throw new RuntimeException(e);
-                } catch (RuntimeException e) {
-                     System.err.println(e);
+                    throw new RuntimeException(e);
                 }
             });
+            registerButton.addClickListener(click -> register());
+            exitButton.addClickListener(click -> dialog.close());
+            dialog.setCloseOnEsc(true);
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -100,55 +91,37 @@ public class MainLayout extends AppLayout {
         top.add(login);
     }
 
-    private void configureMiddleLayout() {
-        registerButton = new Button("Non hai ancora un account? Registrati", VaadinIcon.USERS.create());
-        registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        middle = new HorizontalLayout(registerButton);
-        middle.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        middle.setAlignSelf(FlexComponent.Alignment.CENTER, registerButton);
-    }
-
-    private void configureBottomLayout() {
-        user = new TextField();
-        exitButton = new Button(VaadinIcon.CLOSE.create());
-        exitButton.getStyle().set("color", "red");
-        bottom = new HorizontalLayout();
-        bottom.add(user, exitButton);
-        bottom.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
-        bottom.setAlignSelf(FlexComponent.Alignment.END, exitButton);
-    }
-
     private void configureLoginForm() {
-        loginForm = new LoginForm();
-        loginForm.setI18n(createLoginI18n());
-        loginForm.setForgotPasswordButtonVisible(false);
+        H1 titleLogin = new H1("Login");
+        user = new TextField();
+        password = new PasswordField();
+        user.setWidthFull();
+        password.setWidthFull();
+        user.setRequired(true);
+        password.setRequired(true);
+        loginButton = new Button("Accedi", VaadinIcon.USER.create());
+        loginButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        loginButton.setWidthFull();
+        registerButton = new Button("Registrati", VaadinIcon.USERS.create());
+        registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        registerButton.setWidthFull();
+        exitButton = new Button("Chiudi",VaadinIcon.CLOSE_CIRCLE.create());
+        exitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        loginForm = new VerticalLayout(titleLogin, user, password, loginButton, registerButton, exitButton);
+        loginForm.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        loginForm.setAlignItems(FlexComponent.Alignment.CENTER);
+        //exitButton.getStyle().set("color", "red");
     }
 
-    private void login() throws UsernameErrato, PasswordErrata, UsernameNotFound, RemoteException {
-        dialog.setOpened(true);
-        loginForm.addLoginListener(event->{
-            try {
-                stub.login(user.getValue(), event.getPassword());
-            }catch (UsernameErrato | PasswordErrata | UsernameNotFound | RemoteException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    private void login() throws UsernameNotFound, PasswordErrata, UsernameErrato, RemoteException {
+        stub.login(user.getValue(), password.getValue());
     }
 
     private void register() {
         UI.getCurrent().navigate(RegistrazioneView.class);
         dialog.close();
     }
-    private LoginI18n createLoginI18n() {
-        final LoginI18n i18n = LoginI18n.createDefault();
-        i18n.setHeader(new LoginI18n.Header());
-        i18n.getForm().setTitle("Login");
-        i18n.getForm().setUsername("Username");
-        i18n.getForm().setSubmit("Accedi");
-        i18n.getForm().setPassword("Password");
-        i18n.getForm().setForgotPassword("Password dimenticata?");
-        return i18n;
-    }
+
     private void addHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
         toggle.getElement().setAttribute("aria-label", "Menu toggle");

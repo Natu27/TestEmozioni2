@@ -133,7 +133,8 @@ public class ServerES implements Servizi {
     @Override
     public boolean login(String userid, String password) throws UsernameNotFound, PasswordErrata, UsernameErrato, RemoteException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-        String query = "SELECT hashed_password FROM public.\"User\" WHERE username = " + userid;
+        String query = "SELECT * FROM public.\"User\" WHERE username = '" + userid + "'";
+        System.out.println(userid);
         String username = "";
         String pass = "";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -142,6 +143,7 @@ public class ServerES implements Servizi {
             if (!rs.next()) throw new UsernameNotFound();
             while (rs.next()) {
                 username = rs.getString("username");
+                System.out.println(username);
                 pass = rs.getString("hashed_password");
             }
         } catch (SQLException e) {
