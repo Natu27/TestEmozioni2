@@ -2,10 +2,10 @@ package emotionalsongs.views;
 
 import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.csv.CSVReader;
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
@@ -191,5 +191,6 @@ public class RegistrazioneView extends VerticalLayout {
         String codFiscale = this.codFiscale.getValue();
         String email = this.email.getValue();
         stub.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
+        // TODO: implementare redirect alla home con notifica di avvenuta registrazione
     }
 }

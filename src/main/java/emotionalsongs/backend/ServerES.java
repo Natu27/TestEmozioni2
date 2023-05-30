@@ -4,6 +4,7 @@ import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
+import emotionalsongs.backend.exceptions.Utente.UsernameNotFound;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.rmi.Remote;
@@ -130,27 +131,24 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public boolean login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException {
-        String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+    public boolean login(String userid, String password) throws UsernameNotFound, PasswordErrata, UsernameErrato, RemoteException {
         String query = "SELECT * FROM public.\"User\" WHERE username = '" + userid + "'";
-        //System.out.println(userid);
-        String username = "";
-        String pass = "";
+        System.out.println(userid);
+        String username = "", hashed_pass = "";
+
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
-            //if (!rs.next()) throw new UsernameNotFound();
             while (rs.next()) {
                 username = rs.getString("username");
-                System.out.println(username);
-                pass = rs.getString("hashed_password");
+                hashed_pass = rs.getString("hashed_password");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        System.out.println(userid.equals(username));
-        if (userid.equals(username)) throw new UsernameErrato();
-        if (pass.equals(hashedPassword)) throw new PasswordErrata();
+        if (!userid.equals(username)) throw new UsernameErrato();
+        if (!BCrypt.checkpw(password, hashed_pass)) throw new PasswordErrata();
         return true;
     }
 }

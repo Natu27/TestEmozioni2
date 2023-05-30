@@ -2,30 +2,33 @@ package emotionalsongs.views;
 
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.applayout.AppLayout;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Footer;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Header;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
 import emotionalsongs.components.appnav.AppNav;
 import emotionalsongs.components.appnav.AppNavItem;
-import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.orderedlayout.Scroller;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import org.vaadin.lineawesome.LineAwesomeIcon;
-import com.vaadin.flow.component.button.Button;
 
 import java.rmi.RemoteException;
 
@@ -112,6 +115,7 @@ public class MainLayout extends AppLayout {
 
     private void login() throws PasswordErrata, UsernameErrato, RemoteException {
         stub.login(user.getValue(), password.getValue());
+        // TODO: implementare redirect alla home con notifica di avvenuto login
     }
 
     private void register() {
