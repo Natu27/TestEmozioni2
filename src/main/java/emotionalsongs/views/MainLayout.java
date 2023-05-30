@@ -59,10 +59,10 @@ public class MainLayout extends AppLayout {
             loginButton.addClickListener(click -> {
                 try {
                     login();
-                } catch (PasswordErrata e) {
+                } catch (UsernameErrato e) {
                     Notification.show("Username Errato", 3000, Notification.Position.MIDDLE)
                                 .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                } catch (UsernameErrato e) {
+                } catch (PasswordErrata e) {
                     Notification.show("Password Errata", 3000, Notification.Position.MIDDLE)
                                 .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } catch (RemoteException e) {
@@ -114,7 +114,11 @@ public class MainLayout extends AppLayout {
     }
 
     private void login() throws PasswordErrata, UsernameErrato, RemoteException {
-        stub.login(user.getValue(), password.getValue());
+        if(user.getValue() != null && password.getValue() != null)
+            stub.login(user.getValue(), password.getValue());
+        else
+            Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         // TODO: implementare redirect alla home con notifica di avvenuto login
     }
 

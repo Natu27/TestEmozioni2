@@ -132,7 +132,7 @@ public class ServerES implements Servizi {
     @Override
     public boolean login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException {
         String query = "SELECT * FROM public.\"User\" WHERE username = '" + userid + "'";
-        System.out.println(userid);
+        //System.out.println(userid);
         String username = "", hashed_pass = "";
 
 
