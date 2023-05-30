@@ -114,12 +114,18 @@ public class MainLayout extends AppLayout {
     }
 
     private void login() throws PasswordErrata, UsernameErrato, RemoteException {
-        if(user.getValue() != null && password.getValue() != null)
+        if(!user.getValue().equals("") && !password.getValue().equals("")) {
             stub.login(user.getValue(), password.getValue());
-        else
+            dialog.close();
+            UI.getCurrent().navigate(RicercaTitoloView.class);
+            Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        }else {
             Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
         // TODO: implementare redirect alla home con notifica di avvenuto login
+
     }
 
     private void register() {

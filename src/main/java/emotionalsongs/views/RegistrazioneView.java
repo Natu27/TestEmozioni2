@@ -10,6 +10,8 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -168,7 +170,7 @@ public class RegistrazioneView extends VerticalLayout {
     }
 
     private void calcolaCodFiscale() {
-        if(nome != null && cognome != null && luogoNascita != null && dataNascita != null && sesso != null) {
+        if(!nome.getValue().equals("") && !cognome.getValue().equals("") && !luogoNascita.getValue().equals("") && dataNascita.getValue() != null && !sesso.getValue().equals("")) {
             // TODO: gestire valori nulli (lato form e/o backend)
             String nomeCf = nome.getValue();
             String cognomeCf = cognome.getValue();
@@ -179,7 +181,9 @@ public class RegistrazioneView extends VerticalLayout {
             String sessoCf = sesso.getValue();
             codFiscale.setValue(CodiceFiscale.codiceFiscale(cognomeCf, nomeCf, giornoCf,
                                                             meseCf, annoCf, sessoCf, luogoNascitaCf));
-        }
+        }else
+            Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
     }
 
     private void registration() throws RemoteException {
