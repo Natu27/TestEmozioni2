@@ -17,7 +17,6 @@ import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
-import emotionalsongs.backend.exceptions.Utente.UsernameNotFound;
 import emotionalsongs.components.appnav.AppNav;
 import emotionalsongs.components.appnav.AppNavItem;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -57,16 +56,14 @@ public class MainLayout extends AppLayout {
             loginButton.addClickListener(click -> {
                 try {
                     login();
-                } catch (UsernameNotFound e) {
-                    Notification.show("Username Non Trovato", 3000, Notification.Position.MIDDLE)
-                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } catch (PasswordErrata e) {
-                    throw new RuntimeException(e);
-                } catch (UsernameErrato e) {
                     Notification.show("Username Errato", 3000, Notification.Position.MIDDLE)
-                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                } catch (UsernameErrato e) {
+                    Notification.show("Password Errata", 3000, Notification.Position.MIDDLE)
+                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } catch (RemoteException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             });
             registerButton.addClickListener(click -> register());
@@ -113,7 +110,7 @@ public class MainLayout extends AppLayout {
         //exitButton.getStyle().set("color", "red");
     }
 
-    private void login() throws UsernameNotFound, PasswordErrata, UsernameErrato, RemoteException {
+    private void login() throws PasswordErrata, UsernameErrato, RemoteException {
         stub.login(user.getValue(), password.getValue());
     }
 
