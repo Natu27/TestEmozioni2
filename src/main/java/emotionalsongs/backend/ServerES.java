@@ -4,7 +4,6 @@ import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
-import emotionalsongs.backend.exceptions.Utente.UsernameNotFound;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.rmi.Remote;
@@ -131,7 +130,7 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public boolean login(String userid, String password) throws UsernameNotFound, PasswordErrata, UsernameErrato, RemoteException {
+    public boolean login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException {
         String query = "SELECT * FROM public.\"User\" WHERE username = '" + userid + "'";
         System.out.println(userid);
         String username = "", hashed_pass = "";
