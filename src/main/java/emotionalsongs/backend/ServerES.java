@@ -24,9 +24,15 @@ import java.util.List;
  */
 public class ServerES implements Servizi {
     private final static int PORT = 10002;
+    DatabaseConnection dbConn;
+
+    public ServerES(DatabaseConnection dbConn) {
+        this.dbConn = dbConn;
+    }
 
     public static <Servizi extends Remote> void main(String[] args) throws RemoteException {
-        ServerES serverES = new ServerES();
+        DatabaseConnection dbConn = new DatabaseConnection();
+        ServerES serverES = new ServerES(dbConn);
         Servizi skel = (Servizi) UnicastRemoteObject.exportObject(serverES, PORT);
         Registry registry = LocateRegistry.createRegistry(PORT);
         registry.rebind("ServiziES", skel);
@@ -43,30 +49,30 @@ public class ServerES implements Servizi {
     @Override
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata {
         List<Canzone> result = new ArrayList<>();
-        if (titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null)
-            throw new NessunaCanzoneTrovata();
-        String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " +
-                "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')";
+        if (titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null) throw new NessunaCanzoneTrovata();
+        String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " + "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')";
         if (year != null) {
             query = query + " AND anno = " + year;
         }
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
+        Connection conn = null;
+        try {
+            conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Canzone canzone = new Canzone(
-                        rs.getInt("Canzoni_id"),
-                        rs.getInt("anno"),
-                        rs.getString("autore"),
-                        rs.getString("titolo"),
-                        rs.getString("codice")
-                );
+                Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
                 result.add(canzone);
             }
             if (result.isEmpty()) throw new NessunaCanzoneTrovata();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
         }
 
         return result;
@@ -86,8 +92,9 @@ public class ServerES implements Servizi {
     public void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws RemoteException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         String query = "INSERT INTO public.\"User\" (nome, cognome, username, hashed_password, indirizzo, cf, email) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        Connection conn = null;
         try {
-            Connection conn = DatabaseConnection.getConnection();
+            conn = this.dbConn.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, nome);
             stmt.setString(2, cognome);
@@ -103,6 +110,13 @@ public class ServerES implements Servizi {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
         }
     }
 
@@ -114,16 +128,23 @@ public class ServerES implements Servizi {
 
         List<Integer> result = new ArrayList<>();
         String query = "SELECT distinct anno FROM public.\"Canzoni\" order by anno asc ;";
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
-
+        Connection conn = null;
+        try {
+            conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 result.add(rs.getInt("anno"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
         }
 
         return result;
@@ -135,16 +156,24 @@ public class ServerES implements Servizi {
         //System.out.println(userid);
         String username = "", hashed_pass = "";
 
-
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        Connection conn = null;
+        try {
+            conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 username = rs.getString("username");
                 hashed_pass = rs.getString("hashed_password");
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                }
+            }
         }
         if (!userid.equals(username)) throw new UsernameErrato();
         if (!BCrypt.checkpw(password, hashed_pass)) throw new PasswordErrata();
