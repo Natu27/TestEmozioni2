@@ -49,16 +49,18 @@ public class ServerES implements Servizi {
     @Override
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata {
         List<Canzone> result = new ArrayList<>();
-        if (titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null) throw new NessunaCanzoneTrovata();
+        //if (titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null) throw new NessunaCanzoneTrovata();
         String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " + "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')";
         if (year != null) {
             query = query + " AND anno = " + year;
         }
         Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
                 result.add(canzone);
@@ -67,11 +69,18 @@ public class ServerES implements Servizi {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (conn != null) {
-                try {
+            try {
+                if (conn != null) {
                     conn.close();
-                } catch (SQLException e) {
                 }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+
+            } catch (SQLException e) {
             }
         }
 
@@ -93,9 +102,10 @@ public class ServerES implements Servizi {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         String query = "INSERT INTO public.\"User\" (nome, cognome, username, hashed_password, indirizzo, cf, email) VALUES (?, ?, ?, ?, ?, ?, ?)";
         Connection conn = null;
+        PreparedStatement stmt = null;
         try {
             conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(query);
             stmt.setString(1, nome);
             stmt.setString(2, cognome);
             stmt.setString(3, username);
@@ -107,15 +117,18 @@ public class ServerES implements Servizi {
             int utentiRegistrati = stmt.executeUpdate();
 
             stmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (conn != null) {
-                try {
+            try {
+                if (conn != null) {
                     conn.close();
-                } catch (SQLException e) {
                 }
+                if (stmt != null) {
+                    stmt.close();
+                }
+
+            } catch (SQLException e) {
             }
         }
     }
@@ -124,26 +137,35 @@ public class ServerES implements Servizi {
      *
      */
     @Override
-    public List<Integer> getAnni() throws RemoteException {
+    public List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException {
 
         List<Integer> result = new ArrayList<>();
-        String query = "SELECT distinct anno FROM public.\"Canzoni\" order by anno asc ;";
+        String query = "SELECT distinct anno FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " + "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%') order by anno asc;";
         Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 result.add(rs.getInt("anno"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (conn != null) {
-                try {
+            try {
+                if (conn != null) {
                     conn.close();
-                } catch (SQLException e) {
                 }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+
+            } catch (SQLException e) {
             }
         }
 
@@ -155,12 +177,13 @@ public class ServerES implements Servizi {
         String query = "SELECT * FROM public.\"User\" WHERE username = '" + userid + "'";
         //System.out.println(userid);
         String username = "", hashed_pass = "";
-
         Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 username = rs.getString("username");
                 hashed_pass = rs.getString("hashed_password");
@@ -168,11 +191,18 @@ public class ServerES implements Servizi {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            if (conn != null) {
-                try {
+            try {
+                if (conn != null) {
                     conn.close();
-                } catch (SQLException e) {
                 }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+
+            } catch (SQLException e) {
             }
         }
         if (!userid.equals(username)) throw new UsernameErrato();

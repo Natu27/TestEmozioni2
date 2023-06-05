@@ -15,7 +15,7 @@ public interface Servizi extends Remote {
 
     void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws RemoteException;
 
-    // restituisce gli anni per cui ci sono canzoni
+    // restituisce gli anni per cui ci sono canzoni con il titolo e l'autore selezionato
     // (utilizzata per popolare la tendina di ricerca)
-    List<Integer> getAnni() throws RemoteException;
+    List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException;
 }
