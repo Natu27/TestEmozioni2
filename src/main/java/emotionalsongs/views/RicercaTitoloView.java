@@ -48,15 +48,15 @@ public class RicercaTitoloView extends VerticalLayout {
     List<Canzone> result;
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
-    List<Integer> anni = stub.getAnni();
+    List<Integer> anni = stub.getAnni("", "");
 
     public RicercaTitoloView() throws Exception {
         setSpacing(true);
         setSizeFull();
-
-        result = UI.getCurrent().getSession().getAttribute(List.class);
+        // TODO: se si vuole tenere il risultato della ricerca cachato, vanno cachati anche i parametri di ricerca
+        //result = UI.getCurrent().getSession().getAttribute(List.class);
         if (result != null) {
-        grid.setItems(result);
+            grid.setItems(result);
         }
 
         searchButton = new Button("Cerca", buttonClickEvent -> search());
@@ -67,7 +67,7 @@ public class RicercaTitoloView extends VerticalLayout {
         configureEmotions();
 
         add(layoutTitolo, toolbar, grid, emotions);
-
+        search();
     }
 
     private void configureLayout() {
@@ -98,7 +98,11 @@ public class RicercaTitoloView extends VerticalLayout {
 
     private void configureGrid() {
         grid.setSizeFull();
-        grid.setColumns("titolo","artista","anno");
+        grid.setColumns("titolo", "artista", "anno");
+        grid.getColumns().get(2).setSortable(false); // sort disattivato perchè non funziona su questa colonna
+        // grid.getColumns().get(2).setComparator((c1, c2) -> {
+        //    return Integer.valueOf(c1.getAnno()).compareTo(Integer.valueOf(c2.getAnno()));
+        //});
     }
 
     private void configureEmotions() {
@@ -115,6 +119,7 @@ public class RicercaTitoloView extends VerticalLayout {
         try {
             result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
             grid.setItems(result);
+            anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
             //Per memorizzare la grid corrente
             UI.getCurrent().getSession().setAttribute(List.class, result);
         } catch (RemoteException e) {
@@ -125,7 +130,19 @@ public class RicercaTitoloView extends VerticalLayout {
             UI.getCurrent().getSession().setAttribute(List.class, result);
             Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            try {
+                anni = stub.getAnni("", "");
+            } catch (RemoteException ex) {
+                e.printStackTrace();
+            }
         }
+        Integer cachedValue = annoDaCercare.getValue();
+        if (cachedValue != null && !anni.contains(cachedValue))
+            anni.add(cachedValue);
+
+        annoDaCercare.setItems(anni);
+        if (cachedValue != null)
+            annoDaCercare.setValue(cachedValue);
     }
 
     private void visualizzaEmo() {
