@@ -2,6 +2,7 @@ package emotionalsongs.views;
 
 import com.helger.commons.collection.impl.ICommonsList;
 import com.helger.commons.csv.CSVReader;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -166,6 +167,8 @@ public class RegistrazioneView extends VerticalLayout {
         username.setRequired(true);
         password.setRequired(true);
         confirmPassword.setRequired(true);
+        nome.setPattern("^[a-zA-Z]*$");
+        cognome.setPattern("^[a-zA-Z]*$");
 
     }
 
@@ -191,10 +194,19 @@ public class RegistrazioneView extends VerticalLayout {
         String cognome = this.cognome.getValue();
         String user = username.getValue();
         String password = this.password.getValue();
+        String confPassword = this.confirmPassword.getValue();
         String indirizzo = this.via_piazza.getValue();
         String codFiscale = this.codFiscale.getValue();
         String email = this.email.getValue();
-        stub.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
-        // TODO: implementare redirect alla home con notifica di avvenuta registrazione
+        if(password.equals(confPassword)) {
+            stub.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
+            Notification.show("Registrazione avvenuta", 4000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            UI.getCurrent().navigate(RicercaTitoloView.class);
+        }
+        else {
+            Notification.show("Le password non coincidono", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
     }
 }
