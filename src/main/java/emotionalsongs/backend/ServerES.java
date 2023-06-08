@@ -209,4 +209,39 @@ public class ServerES implements Servizi {
         if (!BCrypt.checkpw(password, hashed_pass)) throw new PasswordErrata();
         return true;
     }
+
+    public String welcome(String userid) throws RemoteException {
+        String query = "SELECT nome FROM public.\"User\" WHERE username = '" + userid + "'";
+        //System.out.println(userid);
+        String nome = "";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                nome = rs.getString("nome");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+
+            } catch (SQLException e) {
+            }
+        }
+        return nome;
+    }
+
 }

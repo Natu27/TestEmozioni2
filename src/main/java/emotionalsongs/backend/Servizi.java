@@ -18,4 +18,6 @@ public interface Servizi extends Remote {
     // restituisce gli anni per cui ci sono canzoni con il titolo e l'autore selezionato
     // (utilizzata per popolare la tendina di ricerca)
     List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException;
+
+    String welcome(String userid) throws RemoteException;
 }

@@ -156,7 +156,11 @@ public class RegistrazioneView extends VerticalLayout {
         calcolaCf.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         nome.setRequired(true);
+        nome.setPattern("^[a-zA-Z]*$");
+        nome.setErrorMessage("Non sono ammessi numeri e/o caratteri speciali");
         cognome.setRequired(true);
+        cognome.setErrorMessage("Non sono ammessi numeri e/o caratteri speciali");
+        cognome.setPattern("^[a-zA-Z]*$");
         sesso.setRequired(true);
         luogoNascita.setRequired(true);
         dataNascita.setRequired(true);
@@ -167,8 +171,6 @@ public class RegistrazioneView extends VerticalLayout {
         username.setRequired(true);
         password.setRequired(true);
         confirmPassword.setRequired(true);
-        nome.setPattern("^[a-zA-Z]*$");
-        cognome.setPattern("^[a-zA-Z]*$");
 
     }
 
@@ -198,15 +200,20 @@ public class RegistrazioneView extends VerticalLayout {
         String indirizzo = this.via_piazza.getValue();
         String codFiscale = this.codFiscale.getValue();
         String email = this.email.getValue();
-        if(password.equals(confPassword)) {
-            stub.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
-            Notification.show("Registrazione avvenuta", 4000, Notification.Position.MIDDLE)
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            UI.getCurrent().navigate(RicercaTitoloView.class);
-        }
-        else {
-            Notification.show("Le password non coincidono", 3000, Notification.Position.MIDDLE)
+        if(nome.isEmpty() || cognome.isEmpty() || dataNascita.isEmpty() || sesso.isEmpty() || luogoNascita.isEmpty() || via_piazza.isEmpty() ||codFiscale.isEmpty() || username.isEmpty() || email.isEmpty()
+                || password.isEmpty() || confirmPassword.isEmpty()){
+            Notification.show("Uno o più dati mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }else {
+            if (password.equals(confPassword)) {
+                stub.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
+                Notification.show("Registrazione avvenuta", 4000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                UI.getCurrent().navigate(RicercaTitoloView.class);
+            } else {
+                Notification.show("Le password non coincidono", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
         }
     }
 }

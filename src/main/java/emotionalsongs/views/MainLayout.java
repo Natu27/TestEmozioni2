@@ -7,10 +7,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Footer;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -21,6 +18,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
@@ -40,9 +38,11 @@ public class MainLayout extends AppLayout {
     HorizontalLayout top;
     VerticalLayout loginForm;
     Button login;
+    Button logout;
     Button registerButton;
     Button loginButton;
     Button exitButton;
+    Label welcome = new Label(" ");
     Dialog dialog;
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
@@ -72,6 +72,12 @@ public class MainLayout extends AppLayout {
             registerButton.addClickListener(click -> register());
             exitButton.addClickListener(click -> dialog.close());
             dialog.setCloseOnEsc(true);
+            dialog.setWidth("500px");
+            dialog.setHeight("475x");
+
+            logout.addClickListener(click -> {
+                logout();
+            });
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -83,12 +89,18 @@ public class MainLayout extends AppLayout {
     private void configureTopLayout() {
         login = new Button("Login", VaadinIcon.USER.create());
         login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        top = new HorizontalLayout(login);
+        logout = new Button("Logout", VaadinIcon.ARROW_FORWARD.create());//
+        logout.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        logout.setVisible(false);//
+        welcome.setVisible(false);
+        top = new HorizontalLayout(login,welcome,logout);
         top.setWidthFull();
         top.setMargin(true);
         top.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
+        top.setAlignSelf(FlexComponent.Alignment.END, welcome);
         top.setAlignSelf(FlexComponent.Alignment.END, login);
-        top.add(login);
+        top.setAlignSelf(FlexComponent.Alignment.END, logout);
+        top.add(login, welcome, logout);
     }
 
     private void configureLoginForm() {
@@ -96,7 +108,9 @@ public class MainLayout extends AppLayout {
         user = new TextField();
         password = new PasswordField();
         user.setWidthFull();
+        user.setLabel("Username");
         password.setWidthFull();
+        password.setLabel("Password");
         user.setRequired(true);
         password.setRequired(true);
         loginButton = new Button("Accedi", VaadinIcon.USER.create());
@@ -106,7 +120,7 @@ public class MainLayout extends AppLayout {
         registerButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         registerButton.setWidthFull();
         exitButton = new Button("Chiudi",VaadinIcon.CLOSE_CIRCLE.create());
-        exitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        exitButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         loginForm = new VerticalLayout(titleLogin, user, password, loginButton, registerButton, exitButton);
         loginForm.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         loginForm.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -117,15 +131,34 @@ public class MainLayout extends AppLayout {
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
             stub.login(user.getValue(), password.getValue());
             dialog.close();
-            UI.getCurrent().navigate(RicercaTitoloView.class);
             Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            UI.getCurrent().navigate(RicercaTitoloView.class);
+            login.setVisible(false);
+            logout.setVisible(true);
+            welcome.setVisible(true);
+            getWelcome(user.getValue());
         }else {
             Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
-        // TODO: implementare redirect alla home con notifica di avvenuto login
 
+    }
+
+    private void logout(){
+        VaadinSession.getCurrent().getSession().invalidate();
+        getUI().ifPresent(ui -> ui.navigate("RicercaTitoloView"));
+        Notification.show("Logout effettuato", 3000, Notification.Position.MIDDLE)
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+
+    }
+
+    public Label getWelcome(String user) throws RemoteException {
+        String nome = stub.welcome(user);
+        welcome.setHeightFull();
+        welcome.addClassNames("custom-label");
+        welcome.setText("Ciao, " + nome);
+        return welcome;
     }
 
     private void register() {

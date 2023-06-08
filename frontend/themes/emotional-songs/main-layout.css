@@ -14,3 +14,9 @@ vaadin-scroller[slot="drawer"] {
 [slot="drawer"]:is(header, footer):is(:empty) {
   display: none;
 }
+
+.custom-label {
+  font-size: 22px;
+  color: white;
+  text-align: center;
+}
