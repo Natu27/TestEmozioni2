@@ -36,7 +36,7 @@ import java.rmi.RemoteException;
 public class MainLayout extends AppLayout {
     private H2 viewTitle;
     HorizontalLayout top;
-    VerticalLayout loginForm;
+    static VerticalLayout loginForm;
     Button login;
     Button logout;
     Button registerButton;
@@ -138,6 +138,8 @@ public class MainLayout extends AppLayout {
             logout.setVisible(true);
             welcome.setVisible(true);
             getWelcome(user.getValue());
+            //Memorizza l'utente loggato con il nome "username", tramite VaadinSession.getCurrent().getAttribute("username") si può vedere se l'utente è loggato
+            VaadinSession.getCurrent().setAttribute("username", user);
         }else {
             Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
