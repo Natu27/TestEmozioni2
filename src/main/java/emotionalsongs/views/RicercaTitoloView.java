@@ -53,11 +53,6 @@ public class RicercaTitoloView extends VerticalLayout {
     public RicercaTitoloView() throws Exception {
         setSpacing(true);
         setSizeFull();
-        // TODO: se si vuole tenere il risultato della ricerca cachato, vanno cachati anche i parametri di ricerca
-        result = (List<Canzone>) UI.getCurrent().getSession().getAttribute("result");
-        if (result != null) {
-            grid.setItems(result);
-        }
 
         searchButton = new Button("Cerca", buttonClickEvent -> search());
         emoButton = new Button("Visualizza Emozioni", buttonClickEvent -> visualizzaEmo());
@@ -66,8 +61,15 @@ public class RicercaTitoloView extends VerticalLayout {
         configureGrid();
         configureEmotions();
 
+        // TODO: se si vuole tenere il risultato della ricerca cachato, vanno cachati anche i parametri di ricerca
+        result = (List<Canzone>) UI.getCurrent().getSession().getAttribute("result");
+        if (result != null) {
+            grid.setItems(result);
+        } else {
+            search();
+        }
+
         add(layoutTitolo, toolbar, grid, emotions);
-        search();
     }
 
     private void configureLayout() {
