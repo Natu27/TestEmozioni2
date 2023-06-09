@@ -54,7 +54,7 @@ public class RicercaTitoloView extends VerticalLayout {
         setSpacing(true);
         setSizeFull();
         // TODO: se si vuole tenere il risultato della ricerca cachato, vanno cachati anche i parametri di ricerca
-       result = (List<Canzone>) UI.getCurrent().getSession().getAttribute("result");
+        result = (List<Canzone>) UI.getCurrent().getSession().getAttribute("result");
         if (result != null) {
             grid.setItems(result);
         }
@@ -119,7 +119,7 @@ public class RicercaTitoloView extends VerticalLayout {
         try {
             result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
             grid.setItems(result);
-            //anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
+            anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
             //Per memorizzare la grid corrente
             UI.getCurrent().getSession().setAttribute("result", result);
         } catch (RemoteException e) {
