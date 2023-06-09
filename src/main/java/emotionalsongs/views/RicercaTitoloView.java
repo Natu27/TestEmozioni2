@@ -54,7 +54,7 @@ public class RicercaTitoloView extends VerticalLayout {
         setSpacing(true);
         setSizeFull();
         // TODO: se si vuole tenere il risultato della ricerca cachato, vanno cachati anche i parametri di ricerca
-        //result = UI.getCurrent().getSession().getAttribute(List.class);
+       result = (List<Canzone>) UI.getCurrent().getSession().getAttribute("result");
         if (result != null) {
             grid.setItems(result);
         }
@@ -119,15 +119,15 @@ public class RicercaTitoloView extends VerticalLayout {
         try {
             result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
             grid.setItems(result);
-            anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
+            //anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
             //Per memorizzare la grid corrente
-            UI.getCurrent().getSession().setAttribute(List.class, result);
+            UI.getCurrent().getSession().setAttribute("result", result);
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NessunaCanzoneTrovata e) {
             result = new ArrayList<>();
             grid.setItems(result);
-            UI.getCurrent().getSession().setAttribute(List.class, result);
+            UI.getCurrent().getSession().setAttribute("result", result);
             Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             try {
