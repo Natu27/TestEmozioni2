@@ -56,7 +56,7 @@ public class MyPlaylistView extends VerticalLayout {
             noLogged.getStyle().set("text-align", "center");
 
         } else {
-            H1 testo = new H1("Loggato!! ");
+            H1 testo = new H1("Loggato!! " + username);
             add(testo);
         }
 

@@ -128,16 +128,19 @@ public class MainLayout extends AppLayout {
     }
 
     private void login() throws PasswordErrata, UsernameErrato, RemoteException {
+        String nome = stub.login(user.getValue(), password.getValue());
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
             stub.login(user.getValue(), password.getValue());
             dialog.close();
             Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            UI.getCurrent().navigate(RicercaTitoloView.class);
+            //UI.getCurrent().navigate(RicercaTitoloView.class);
             login.setVisible(false);
             logout.setVisible(true);
             welcome.setVisible(true);
-            getWelcome(user.getValue());
+            welcome.setHeightFull();
+            welcome.addClassNames("custom-label");
+            welcome.setText("Ciao, " + nome);
             //Memorizza l'utente loggato con il nome "username", tramite VaadinSession.getCurrent().getAttribute("username") si può vedere se l'utente è loggato
             VaadinSession.getCurrent().setAttribute("username", user);
         }else {
@@ -153,14 +156,6 @@ public class MainLayout extends AppLayout {
         Notification.show("Logout effettuato", 3000, Notification.Position.MIDDLE)
                 .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
-    }
-
-    public Label getWelcome(String user) throws RemoteException {
-        String nome = stub.welcome(user);
-        welcome.setHeightFull();
-        welcome.addClassNames("custom-label");
-        welcome.setText("Ciao, " + nome);
-        return welcome;
     }
 
     private void register() {
