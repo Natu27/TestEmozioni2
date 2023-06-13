@@ -4,6 +4,7 @@ import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
+import emotionalsongs.views.MainLayout;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.rmi.Remote;

@@ -1,11 +1,8 @@
 package emotionalsongs.views;
 
-
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.charts.Chart;
-import com.vaadin.flow.component.charts.model.*;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -21,6 +18,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
@@ -149,6 +147,7 @@ public class RicercaTitoloView extends VerticalLayout {
 
     private void visualizzaEmo() {
         Canzone selectedTuple = grid.asSingleSelect().getValue();
+        VaadinSession.getCurrent().setAttribute("canzoneselezionata", selectedTuple);
         if (selectedTuple != null) {
             // Apri la finestra di dialogo per mostrare le informazioni aggiuntive
             openDetailsDialog(selectedTuple);
@@ -175,7 +174,7 @@ public class RicercaTitoloView extends VerticalLayout {
                 " - Anno: " + selectedTuple.getAnno();
         layout.add(new H3(info));
 
-        Chart chart = createHistogramChart();
+        HistogramView chart = new HistogramView();
         layout.add(chart);
 
         dialog.add(layout);
@@ -184,7 +183,7 @@ public class RicercaTitoloView extends VerticalLayout {
         Button closeButton = new Button("Chiudi", buttonClickEvent -> {
             dialog.close();
         });
-        closeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
         layout.add(closeButton);
 
@@ -193,33 +192,5 @@ public class RicercaTitoloView extends VerticalLayout {
         grid.asSingleSelect().clear();
     }
 
-    private Chart createHistogramChart() {
-        Chart chart = new Chart(ChartType.COLUMN);
-
-        Configuration configuration = chart.getConfiguration();
-        configuration.setTitle("Distribuzione Emozioni");
-
-        XAxis xAxis = configuration.getxAxis();
-        xAxis.setTitle("Emozioni");
-        xAxis.setCategories("Amazement", "Solemnity", "Tenderness",
-                            "Nostalgia", "Calmness", "Power",
-                            "Joy", "Tension", "Sadness");
-
-        YAxis yAxis = configuration.getyAxis();
-        yAxis.setTitle("Media");
-
-        ListSeries series = new ListSeries();
-        // Aggiunta i dati dell'istogramma --> per Luca V - la query andrà inserita qua
-        // e poi andranno settati i dati di conseguenza
-        series.setData(1, 2.5, 0, 0, 5, 0, 0, 0, 0);
-
-        PlotOptionsColumn plotOptions = new PlotOptionsColumn();
-        plotOptions.setColorByPoint(true);
-        series.setPlotOptions(plotOptions);
-
-        configuration.setSeries(series);
-
-        return chart;
-    }
 
 }

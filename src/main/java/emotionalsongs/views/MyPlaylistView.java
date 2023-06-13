@@ -27,38 +27,39 @@ public class MyPlaylistView extends VerticalLayout {
     Object username = VaadinSession.getCurrent().getAttribute("username");
     public MyPlaylistView() {
 
-        if(username == null) {
-            noLogged = new VerticalLayout();
+            if (username==null) {
+                noLogged = new VerticalLayout();
 
-            registerButton = new Button("Registrati");
-            registerButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-            registerButton.addClickListener(e ->
-                    UI.getCurrent().navigate(RegistrazioneView.class));
+                registerButton = new Button("Registrati");
+                registerButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+                registerButton.addClickListener(e ->
+                        UI.getCurrent().navigate(RegistrazioneView.class));
 
-            loginButton = new Button("Accedi");
-            loginButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+                loginButton = new Button("Accedi");
+                loginButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
 
-            logo = new Image("images/EmSongs.png", "EmoSong logo");
-            logo.setWidth("200px");
+                logo = new Image("images/EmSongs.png", "EmoSong logo");
+                logo.setWidth("200px");
 
-            header = new H2("Devi aver effettuato l'accesso per visualizzare questa pagina");
-            header.addClassNames(Margin.Top.XLARGE, Margin.Bottom.MEDIUM);
+                header = new H2("Devi aver effettuato l'accesso per visualizzare questa pagina");
+                header.addClassNames(Margin.Top.XLARGE, Margin.Bottom.MEDIUM);
 
-            horizontalLayout = new HorizontalLayout();
-            horizontalLayout.add(logo, header, loginButton, new Paragraph("o"), registerButton);
+                horizontalLayout = new HorizontalLayout();
+                horizontalLayout.add(logo, header, loginButton, new Paragraph("o"), registerButton);
 
-            noLogged.add(logo, header, horizontalLayout);
+                noLogged.add(logo, header, horizontalLayout);
 
-            add(noLogged);
+                add(noLogged);
 
-            noLogged.setJustifyContentMode(JustifyContentMode.CENTER);
-            noLogged.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-            noLogged.getStyle().set("text-align", "center");
+                noLogged.setJustifyContentMode(JustifyContentMode.CENTER);
+                noLogged.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
+                noLogged.getStyle().set("text-align", "center");
 
-        } else {
-            H1 testo = new H1("Loggato!! " + username);
-            add(testo);
-        }
+            } else {
+                H1 testo = new H1("Loggato!! " + username);
+                add(testo);
+            }
+
 
 
     }

@@ -22,12 +22,19 @@
     </parent>
 
     <repositories>
+
         <repository>
             <id>Vaadin Directory</id>
             <url>https://maven.vaadin.com/vaadin-addons</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
+        </repository>
+
+        <repository>
+            <id>chart</id>
+            <name>Maven Repository</name>
+            <url>https://mvnrepository.com/artifact/org.jfree/jfreechart</url>
         </repository>
     </repositories>
 
@@ -102,10 +109,12 @@
             <version>0.4.3</version>
         </dependency>
         <dependency>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-charts-flow</artifactId>
-            <version>24.0.0</version>
+            <groupId>org.jfree</groupId>
+            <artifactId>jfreechart</artifactId>
+            <version>1.5.4</version>
         </dependency>
+
+
     </dependencies>
 
     <build>

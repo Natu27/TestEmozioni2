@@ -11,7 +11,7 @@
     "@vaadin/board": "24.0.3",
     "@vaadin/bundles": "24.0.3",
     "@vaadin/button": "24.0.3",
-    "@vaadin/charts": "24.0.0",
+    "@vaadin/charts": "24.0.3",
     "@vaadin/checkbox": "24.0.3",
     "@vaadin/checkbox-group": "24.0.3",
     "@vaadin/combo-box": "24.0.3",
@@ -104,7 +104,7 @@
       "@vaadin/board": "24.0.3",
       "@vaadin/bundles": "24.0.3",
       "@vaadin/button": "24.0.3",
-      "@vaadin/charts": "24.0.0",
+      "@vaadin/charts": "24.0.3",
       "@vaadin/checkbox": "24.0.3",
       "@vaadin/checkbox-group": "24.0.3",
       "@vaadin/combo-box": "24.0.3",
@@ -186,7 +186,7 @@
       "workbox-core": "6.5.4",
       "workbox-precaching": "6.5.4"
     },
-    "hash": "052953a315bfe08d489e5ad9651e81298f1064c3a462ef5f1fea65edf8ccc24d"
+    "hash": "442edd095f024d2b4c5e73045bc9478d572c88f18a097c0c4c11dfe8eb163414"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",

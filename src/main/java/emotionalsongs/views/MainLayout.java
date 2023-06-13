@@ -15,7 +15,6 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
@@ -31,13 +30,14 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import java.rmi.RemoteException;
 
+
 /**
  * The main view is a top-level placeholder for other views.
  */
 public class MainLayout extends AppLayout {
     private H2 viewTitle;
     HorizontalLayout top;
-    static VerticalLayout loginForm;
+    VerticalLayout loginForm;
     Button login;
     Button logout;
     Button registerButton;
@@ -49,6 +49,7 @@ public class MainLayout extends AppLayout {
     Servizi stub = clientES.getStub();
     TextField user;
     PasswordField password;
+    String currentPage;
     public MainLayout() throws Exception {
 
         configureTopLayout();
@@ -133,19 +134,21 @@ public class MainLayout extends AppLayout {
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
             stub.login(user.getValue(), password.getValue());
             dialog.close();
+            VaadinSession.getCurrent().setAttribute("username", user);
             Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            //UI.getCurrent().navigate(RicercaTitoloView.class);
             login.setVisible(false);
             logout.setVisible(true);
             welcome.setVisible(true);
             welcome.setHeightFull();
             welcome.addClassNames("custom-label");
             welcome.setText("Ciao, " + nome);
+            currentPage = getCurrentPageTitle();
+            if(currentPage.equals("Playlist")) {
+                UI.getCurrent().navigate(RicercaTitoloView.class);
+                UI.getCurrent().navigate(MyPlaylistView.class);
+            }
             //Memorizza l'utente loggato con il nome "username", tramite VaadinSession.getCurrent().getAttribute("username") si può vedere se l'utente è loggato
-            VaadinSession.getCurrent().setAttribute("username", user);
-            Page page = getUI().get().getPage();
-            page.reload();
         }else {
             Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -155,7 +158,6 @@ public class MainLayout extends AppLayout {
 
     private void logout(){
         VaadinSession.getCurrent().getSession().invalidate();
-        getUI().ifPresent(ui -> ui.navigate("RicercaTitoloView"));
         Notification.show("Logout effettuato", 3000, Notification.Position.MIDDLE)
                 .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
 
