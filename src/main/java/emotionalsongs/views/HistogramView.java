@@ -6,7 +6,6 @@ import com.vaadin.flow.server.VaadinSession;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.axis.Axis;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -64,7 +63,7 @@ public class HistogramView extends VerticalLayout {
 
         byte[] chartImageBytes;
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            ChartUtils.writeChartAsPNG(outputStream, chart, 1000, 700);
+            ChartUtils.writeChartAsPNG(outputStream, chart, 800, 450);
             chartImageBytes = outputStream.toByteArray();
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,8 +71,8 @@ public class HistogramView extends VerticalLayout {
         }
 
         Div chartContainer = new Div();
-        chartContainer.getStyle().set("width", "1000px");
-        chartContainer.getStyle().set("height", "700px");
+        chartContainer.getStyle().set("width", "800px");
+        chartContainer.getStyle().set("height", "450px");
         chartContainer.getStyle().set("background-image", "url(data:image/png;base64," + java.util.Base64.getEncoder().encodeToString(chartImageBytes) + ")");
         setAlignSelf(Alignment.CENTER, chartContainer);
 

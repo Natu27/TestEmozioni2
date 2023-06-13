@@ -55,7 +55,7 @@ public class ServerES implements Servizi {
         if (year != null) {
             query = query + " AND anno = " + year;
         }
-        query = query + " LIMIT 500";
+        query = query + " LIMIT 300";
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
