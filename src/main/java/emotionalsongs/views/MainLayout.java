@@ -134,7 +134,8 @@ public class MainLayout extends AppLayout {
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
             stub.login(user.getValue(), password.getValue());
             dialog.close();
-            VaadinSession.getCurrent().setAttribute("username", user);
+            //Memorizza l'utente loggato con il nome "username", tramite VaadinSession.getCurrent().getAttribute("username") si può vedere se l'utente è loggato
+            VaadinSession.getCurrent().setAttribute("username", user.getValue());
             Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             login.setVisible(false);
@@ -148,7 +149,6 @@ public class MainLayout extends AppLayout {
                 UI.getCurrent().navigate(RicercaTitoloView.class);
                 UI.getCurrent().navigate(MyPlaylistView.class);
             }
-            //Memorizza l'utente loggato con il nome "username", tramite VaadinSession.getCurrent().getAttribute("username") si può vedere se l'utente è loggato
         }else {
             Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);

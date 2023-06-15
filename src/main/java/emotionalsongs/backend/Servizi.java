@@ -1,6 +1,7 @@
 package emotionalsongs.backend;
 
 import emotionalsongs.backend.entities.Canzone;
+import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
@@ -18,5 +19,8 @@ public interface Servizi extends Remote {
     // restituisce gli anni per cui ci sono canzoni con il titolo e l'autore selezionato
     // (utilizzata per popolare la tendina di ricerca)
     List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException;
+    int addPlaylist(String titolo, String username) throws RemoteException;
+    List<Playlist> myPlaylist(String username) throws RemoteException;
+
 
 }

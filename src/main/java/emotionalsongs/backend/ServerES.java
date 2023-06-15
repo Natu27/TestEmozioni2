@@ -1,12 +1,14 @@
 package emotionalsongs.backend;
 
 import emotionalsongs.backend.entities.Canzone;
+import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
 import emotionalsongs.views.MainLayout;
 import org.mindrot.jbcrypt.BCrypt;
 
+import javax.swing.text.PlainDocument;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -218,6 +220,73 @@ public class ServerES implements Servizi {
 
         }
         return null;
+    }
+
+    @Override
+    public int addPlaylist(String titolo, String username) throws RemoteException {
+        int playlistCreate = -1;
+        String query = "INSERT INTO public.\"Playlist\" (titolo, username) VALUES (?, ?)";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+            stmt.setString(1, titolo);
+            stmt.setString(2, username);
+
+            playlistCreate = stmt.executeUpdate();
+
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+
+            } catch (SQLException e) {
+            }
+            return playlistCreate;
+        }
+    }
+
+    @Override
+    public List<Playlist> myPlaylist(String username) throws RemoteException {
+        List<Playlist> result = new ArrayList<>();
+        String query = "SELECT * FROM public.\"Playlist\" WHERE username = '" + username + "'";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                Playlist playlist = new Playlist(rs.getString("titolo"), rs.getString("username"));
+                result.add(playlist);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+
+            } catch (SQLException e) {
+            }
+        }
+        return result;
     }
 
 }
