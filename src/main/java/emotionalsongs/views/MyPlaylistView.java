@@ -153,7 +153,9 @@ public class MyPlaylistView extends VerticalLayout {
     private void configureGrid() throws RemoteException {
         result = new ArrayList<>();
         result = stub.myPlaylist(username);
-        grid.setColumns("titolo");
+        grid.getColumnByKey("id").setVisible(false);
+        grid.getColumnByKey("username").setVisible(false);
+        grid.getColumnByKey("titolo").setVisible(true);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setItems(result);
     }
