@@ -12,24 +12,15 @@ public class Playlist extends AbstractEntity implements Serializable {
 
     }
 
-    public Playlist(String titolo, String username) {
+    public Playlist(String titolo) {
         this.titolo = titolo;
-        this.username = username;
     }
-
     public int getId() {
         return id;
     }
 
-    public String getTitolo() {
-        return titolo;
-    }
     public String getUsername() {
         return username;
-    }
-
-    public void setTitolo(String titolo) {
-        this.titolo = titolo;
     }
 
     public void setUsername(String username) {

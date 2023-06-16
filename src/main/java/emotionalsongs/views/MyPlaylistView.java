@@ -5,6 +5,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -13,6 +14,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -83,11 +85,13 @@ public class MyPlaylistView extends VerticalLayout {
             noLogged.getStyle().set("text-align", "center");
 
         } else {
+
             newPlaylist = new Button("Crea nuova playlist", buttonClickEvent -> dialogCreatePlaylist());
             newPlaylist.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             createPlaylist = new Button("Crea Playlist", buttonClickEvent -> {
                 try {
                     addPlaylist(playlistName.getValue(),username);
+                    dialog.close();
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
@@ -95,9 +99,10 @@ public class MyPlaylistView extends VerticalLayout {
             newPlaylist.setIcon(VaadinIcon.PLUS.create());
             createPlaylist.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             configureLayout();
-            //configureGrid();
+            configureGrid();
+            grid.setItems(result);
 
-            add(layoutTitolo, newPlaylist/*,grid*/);
+            add(layoutTitolo, newPlaylist,grid);
         }
 
     }
@@ -137,19 +142,21 @@ public class MyPlaylistView extends VerticalLayout {
         if(stub.addPlaylist(titolo,username)==1) {
             Notification.show("Playlist creata!", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            Page page = UI.getCurrent().getPage();
+            page.reload();
         }else {
             Notification.show("Impossibile creare la playlist", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }
 
-    /*private void configureGrid() throws RemoteException {
+    private void configureGrid() throws RemoteException {
         result = new ArrayList<>();
         result = stub.myPlaylist(username);
-        grid.setSizeFull();
+        grid.setColumns("titolo");
+        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setItems(result);
-        grid.setColumns("titolo", "autore");
-    }*/
+    }
 }
 
 

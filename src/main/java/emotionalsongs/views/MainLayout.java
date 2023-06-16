@@ -49,11 +49,22 @@ public class MainLayout extends AppLayout {
     Servizi stub = clientES.getStub();
     TextField user;
     PasswordField password;
+    String nome = (String) VaadinSession.getCurrent().getAttribute("nome");
     String currentPage;
+    String username = (String) VaadinSession.getCurrent().getAttribute("username");
     public MainLayout() throws Exception {
 
         configureTopLayout();
         configureLoginForm();
+
+        if (username!=null) {
+            login.setVisible(false);
+            logout.setVisible(true);
+            welcome.setVisible(true);
+            welcome.setHeightFull();
+            welcome.addClassNames("custom-label");
+            welcome.setText("Ciao, " + nome);
+        }
 
         login.addClickListener(click -> dialog.setOpened(true));
 
@@ -130,12 +141,13 @@ public class MainLayout extends AppLayout {
     }
 
     private void login() throws PasswordErrata, UsernameErrato, RemoteException {
-        String nome = stub.login(user.getValue(), password.getValue());
+        nome = stub.login(user.getValue(), password.getValue());
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
             stub.login(user.getValue(), password.getValue());
             dialog.close();
             //Memorizza l'utente loggato con il nome "username", tramite VaadinSession.getCurrent().getAttribute("username") si può vedere se l'utente è loggato
             VaadinSession.getCurrent().setAttribute("username", user.getValue());
+            VaadinSession.getCurrent().setAttribute("nome", nome);
             Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             login.setVisible(false);

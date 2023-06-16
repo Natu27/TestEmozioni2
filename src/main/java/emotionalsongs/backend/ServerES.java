@@ -5,10 +5,8 @@ import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
-import emotionalsongs.views.MainLayout;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.swing.text.PlainDocument;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -222,17 +220,40 @@ public class ServerES implements Servizi {
         return null;
     }
 
+    private int userId(String username){
+        String query = "SELECT user_id FROM public.\"User\" WHERE username = '" + username + "'";
+        int userId = -1;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try{
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                userId = rs.getInt("user_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return userId;
+
+    }
+
     @Override
     public int addPlaylist(String titolo, String username) throws RemoteException {
         int playlistCreate = -1;
-        String query = "INSERT INTO public.\"Playlist\" (titolo, username) VALUES (?, ?)";
+        int userId = userId(username);
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rs = null;
+        String query = "INSERT INTO public.\"Playlist\" (titolo, user_id) VALUES (?, ?)";
         try {
             conn = this.dbConn.getConnection();
             stmt = conn.prepareStatement(query);
             stmt.setString(1, titolo);
-            stmt.setString(2, username);
+            stmt.setInt(2, userId);
 
             playlistCreate = stmt.executeUpdate();
 
@@ -250,14 +271,15 @@ public class ServerES implements Servizi {
 
             } catch (SQLException e) {
             }
-            return playlistCreate;
         }
+        return playlistCreate;
     }
 
     @Override
     public List<Playlist> myPlaylist(String username) throws RemoteException {
+        int userId = userId(username);
         List<Playlist> result = new ArrayList<>();
-        String query = "SELECT * FROM public.\"Playlist\" WHERE username = '" + username + "'";
+        String query = "SELECT * FROM public.\"Playlist\" WHERE user_id = " + userId;
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -266,7 +288,7 @@ public class ServerES implements Servizi {
             stmt = conn.prepareStatement(query);
             rs = stmt.executeQuery();
             while (rs.next()) {
-                Playlist playlist = new Playlist(rs.getString("titolo"), rs.getString("username"));
+                Playlist playlist = new Playlist(rs.getString("titolo"));
                 result.add(playlist);
             }
         } catch (SQLException e) {
