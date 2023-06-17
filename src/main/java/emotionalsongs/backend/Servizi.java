@@ -23,4 +23,5 @@ public interface Servizi extends Remote {
     List<Playlist> myPlaylist(String username) throws RemoteException;
 
 
+
 }

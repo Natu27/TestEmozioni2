@@ -14,7 +14,6 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.page.Page;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -152,8 +151,9 @@ public class MyPlaylistView extends VerticalLayout {
             if (stub.addPlaylist(titolo, username) == 1) {
                 Notification.show("Playlist creata!", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                Page page = UI.getCurrent().getPage();
-                page.reload();
+                this.configureGrid();
+                //Page page = UI.getCurrent().getPage();
+                //page.reload();
             } else {
                 Notification.show("Impossibile creare playlist", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -177,6 +177,7 @@ public class MyPlaylistView extends VerticalLayout {
         grid.getColumnByKey("username").setVisible(false);
         grid.getColumnByKey("titolo").setVisible(true);
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        grid.setHeight("1000px");
         grid.setItems(result);
     }
 }

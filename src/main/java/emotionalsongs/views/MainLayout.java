@@ -191,9 +191,12 @@ public class MainLayout extends AppLayout {
     }
 
     private void addDrawerContent() {
-        H1 appName = new H1("EmotionalSongs \uD83C\uDFBC");
+        H1 appName = new H1("EmotionalSongs");
+        Image logo = new Image("images/EmSongs.png", "EmoSong logo");
+        logo.setWidth("40px");
+        logo.setHeight("40px");
         appName.addClassNames(LumoUtility.FontSize.LARGE, LumoUtility.Margin.NONE);
-        Header header = new Header(appName);
+        Header header = new Header(logo, appName);
 
         Scroller scroller = new Scroller(createNavigation());
 
