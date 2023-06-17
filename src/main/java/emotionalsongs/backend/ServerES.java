@@ -310,5 +310,34 @@ public class ServerES implements Servizi {
         }
         return result;
     }
+    public int removePlaylist(String username, String titolo) throws RemoteException {
+        int playlistEliminata = -1;
+        int userId = userId(username);
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        String query = "DELETE FROM public.\"Playlist\" WHERE user_id = " + userId + "AND titolo = '" + titolo + "'";
+        try {
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+
+            playlistEliminata = stmt.executeUpdate();
+
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+
+            } catch (SQLException e) {
+            }
+        }
+        return playlistEliminata;
+    }
 
 }

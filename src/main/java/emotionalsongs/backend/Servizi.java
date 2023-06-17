@@ -21,6 +21,7 @@ public interface Servizi extends Remote {
     List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException;
     int addPlaylist(String titolo, String username) throws RemoteException;
     List<Playlist> myPlaylist(String username) throws RemoteException;
+    int removePlaylist(String username, String titolo) throws RemoteException;
 
 
 

@@ -15,6 +15,7 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
@@ -48,6 +49,7 @@ public class MyPlaylistView extends VerticalLayout {
     Button newPlaylist;
     Dialog dialog;
     List<Playlist> result;
+    Div message;
     Grid<Playlist> grid = new Grid<>(Playlist.class);
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
@@ -100,8 +102,11 @@ public class MyPlaylistView extends VerticalLayout {
             });
             newPlaylist.setIcon(VaadinIcon.PLUS.create());
             createPlaylist.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            message = new Div();
+            message.setText("Non ha ancora creato nessuna playlist");
             configureLayout();
             configureGrid();
+            gridColumn();
             grid.setItems(result);
 
             add(layoutTitolo, newPlaylist,grid);
@@ -152,8 +157,7 @@ public class MyPlaylistView extends VerticalLayout {
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 this.configureGrid();
                 dialog.close();
-                //Page page = UI.getCurrent().getPage();
-                //page.reload();
+
             } else {
                 Notification.show("Impossibile creare playlist", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -179,6 +183,47 @@ public class MyPlaylistView extends VerticalLayout {
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeight("1000px");
         grid.setItems(result);
+    }
+    private void gridColumn(){
+        grid.addColumn(
+                new ComponentRenderer<>(Button::new, (button, titolo) -> {
+                    button.addThemeVariants(ButtonVariant.LUMO_ICON,
+                            ButtonVariant.LUMO_PRIMARY);
+                    //button.addClickListener(e -> this.removeInvitation(person));
+                    //TODO: DIALOGO PER RINOMINARE LA PLAYLIST PLAYLIST
+                    button.setIcon(new Icon(VaadinIcon.PENCIL));
+                })).setHeader("Rinomina");
+        grid.addColumn(
+                new ComponentRenderer<>(Button::new, (button, titolo) -> {
+                    button.addThemeVariants(ButtonVariant.LUMO_ICON,
+                            ButtonVariant.LUMO_PRIMARY);
+                    button.addClickListener(e -> {Dialog view = new Dialog();
+                        view.open();
+                    });
+                    //TODO: DIALOGO PER VISULIZZARE LE CANZONI DELLA PLAYLIST
+                    button.setIcon(new Icon(VaadinIcon.FOLDER_OPEN));
+                })).setHeader("Visualizza");
+        grid.addColumn(
+                new ComponentRenderer<>(Button::new, (button, titolo) -> {
+                    button.addThemeVariants(ButtonVariant.LUMO_ICON,
+                            ButtonVariant.LUMO_ERROR,
+                            ButtonVariant.LUMO_PRIMARY);
+                    button.addClickListener(e -> {
+                        try {
+                            if (stub.removePlaylist(username, titolo.getTitolo()) == 1){
+                                Notification.show("Playlist cancellata!", 3000, Notification.Position.MIDDLE)
+                                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                                this.configureGrid();
+                            }else {
+                                Notification.show("Impossibile cancellare la playlist", 3000, Notification.Position.MIDDLE)
+                                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                            }
+                        } catch (RemoteException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
+                    button.setIcon(new Icon(VaadinIcon.TRASH));
+                })).setHeader("Elimina");
     }
 }
 
