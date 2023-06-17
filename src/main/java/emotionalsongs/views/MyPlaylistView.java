@@ -23,6 +23,7 @@ import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Playlist;
+import emotionalsongs.backend.exceptions.playlist.NomePlaylistGiaPresente;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class MyPlaylistView extends VerticalLayout {
             header = new H2("Devi aver effettuato l'accesso per visualizzare questa pagina");
             header.addClassNames(Margin.Top.XLARGE, Margin.Bottom.MEDIUM);
 
-            //TODO: aggiungere azione al pulsanre accedi
+            //TODO: aggiungere azione al pulsante accedi
             horizontalLayout = new HorizontalLayout();
             horizontalLayout.add(logo, header, loginButton, new Paragraph("o"), registerButton);
 
@@ -94,6 +95,9 @@ public class MyPlaylistView extends VerticalLayout {
                     dialog.close();
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
+                } catch (NomePlaylistGiaPresente e) {
+                    Notification.show("Impossibile creare playlist - Nome già presente", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
             });
             newPlaylist.setIcon(VaadinIcon.PLUS.create());
@@ -138,16 +142,32 @@ public class MyPlaylistView extends VerticalLayout {
         dialog.add(newPlaylistForm);
 
     }
-    private void addPlaylist(String titolo, String username) throws RemoteException {
-        if(stub.addPlaylist(titolo,username)==1) {
-            Notification.show("Playlist creata!", 3000, Notification.Position.MIDDLE)
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            Page page = UI.getCurrent().getPage();
-            page.reload();
-        }else {
-            Notification.show("Impossibile creare la playlist", 3000, Notification.Position.MIDDLE)
+    private void addPlaylist(String titolo, String username) throws RemoteException, NomePlaylistGiaPresente {
+        titolo = titolo.trim();
+        if(titolo.equals(""))
+            Notification.show("Impossibile creare playlist - Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        else {
+            if(nomePlaylistPresente(titolo)) throw new NomePlaylistGiaPresente();
+            if (stub.addPlaylist(titolo, username) == 1) {
+                Notification.show("Playlist creata!", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                Page page = UI.getCurrent().getPage();
+                page.reload();
+            } else {
+                Notification.show("Impossibile creare playlist", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
         }
+    }
+
+    private boolean nomePlaylistPresente(String myTitle) {
+        for(Playlist p : result) {
+            if(p.getTitolo().equals(myTitle)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void configureGrid() throws RemoteException {

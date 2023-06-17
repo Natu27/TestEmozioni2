@@ -1,4 +1,4 @@
-package emotionalsongs.backend.exceptions.Utente;
+package emotionalsongs.backend.exceptions.utente;
 
 public class PasswordErrata extends Exception {
 }

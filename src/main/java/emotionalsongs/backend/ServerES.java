@@ -3,8 +3,8 @@ package emotionalsongs.backend;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
-import emotionalsongs.backend.exceptions.Utente.PasswordErrata;
-import emotionalsongs.backend.exceptions.Utente.UsernameErrato;
+import emotionalsongs.backend.exceptions.utente.PasswordErrata;
+import emotionalsongs.backend.exceptions.utente.UsernameErrato;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.rmi.Remote;
