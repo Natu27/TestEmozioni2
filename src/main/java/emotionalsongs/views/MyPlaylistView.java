@@ -85,13 +85,12 @@ public class MyPlaylistView extends VerticalLayout {
             noLogged.getStyle().set("text-align", "center");
 
         } else {
-
             newPlaylist = new Button("Crea nuova playlist", buttonClickEvent -> dialogCreatePlaylist());
             newPlaylist.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             createPlaylist = new Button("Crea Playlist", buttonClickEvent -> {
                 try {
                     addPlaylist(playlistName.getValue(),username);
-                    dialog.close();
+                    //dialog.close();
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 } catch (NomePlaylistGiaPresente e) {
@@ -152,6 +151,7 @@ public class MyPlaylistView extends VerticalLayout {
                 Notification.show("Playlist creata!", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 this.configureGrid();
+                dialog.close();
                 //Page page = UI.getCurrent().getPage();
                 //page.reload();
             } else {
