@@ -22,6 +22,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
+import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.playlist.NomePlaylistGiaPresente;
 
@@ -50,7 +51,18 @@ public class MyPlaylistView extends VerticalLayout {
     Dialog dialog;
     List<Playlist> result;
     Div message;
-    Grid<Playlist> grid = new Grid<>(Playlist.class);
+    HorizontalLayout actionButton;
+    Dialog view;
+    VerticalLayout viewForm = new VerticalLayout();
+    VerticalLayout renamePlaylist = new VerticalLayout();
+    Button rename;
+    Dialog editTitle;
+    TextField newTitle;
+    Button confirmNewTitle;
+    //Grid<Canzone> gridCanzoni = new Grid<>(Canzone.class);
+    Button addCanzone;
+    String nomePlaylist;
+    Grid<Playlist> gridPlaylist = new Grid<>(Playlist.class);
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
     String username = (String) VaadinSession.getCurrent().getAttribute("username");
@@ -106,10 +118,12 @@ public class MyPlaylistView extends VerticalLayout {
             message.setText("Non ha ancora creato nessuna playlist");
             configureLayout();
             configureGrid();
-            gridColumn();
-            grid.setItems(result);
+            playlistGridColumn();
+            gridPlaylist.setItems(result);
+            configureViewDialog();
 
-            add(layoutTitolo, newPlaylist,grid);
+
+            add(layoutTitolo, newPlaylist,gridPlaylist);
         }
 
     }
@@ -177,33 +191,27 @@ public class MyPlaylistView extends VerticalLayout {
     private void configureGrid() throws RemoteException {
         result = new ArrayList<>();
         result = stub.myPlaylist(username);
-        grid.getColumnByKey("id").setVisible(false);
-        grid.getColumnByKey("username").setVisible(false);
-        grid.getColumnByKey("titolo").setVisible(true);
-        grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
-        grid.setHeight("1000px");
-        grid.setItems(result);
+        gridPlaylist.getColumnByKey("id").setVisible(false);
+        gridPlaylist.getColumnByKey("username").setVisible(false);
+        gridPlaylist.getColumnByKey("titolo").setVisible(true);
+        gridPlaylist.addThemeVariants(GridVariant.LUMO_NO_BORDER);
+        gridPlaylist.setHeight("1000px");
+        gridPlaylist.setItems(result);
     }
-    private void gridColumn(){
-        grid.addColumn(
+    private void playlistGridColumn(){
+        gridPlaylist.addColumn(
                 new ComponentRenderer<>(Button::new, (button, titolo) -> {
                     button.addThemeVariants(ButtonVariant.LUMO_ICON,
                             ButtonVariant.LUMO_PRIMARY);
-                    //button.addClickListener(e -> this.removeInvitation(person));
-                    //TODO: DIALOGO PER RINOMINARE LA PLAYLIST PLAYLIST
-                    button.setIcon(new Icon(VaadinIcon.PENCIL));
-                })).setHeader("Rinomina");
-        grid.addColumn(
-                new ComponentRenderer<>(Button::new, (button, titolo) -> {
-                    button.addThemeVariants(ButtonVariant.LUMO_ICON,
-                            ButtonVariant.LUMO_PRIMARY);
-                    button.addClickListener(e -> {Dialog view = new Dialog();
+                    button.addClickListener(e -> {view = new Dialog(viewForm);
+                        nomePlaylist = titolo.getTitolo();
+                        view.setHeaderTitle(nomePlaylist);
                         view.open();
                     });
                     //TODO: DIALOGO PER VISULIZZARE LE CANZONI DELLA PLAYLIST
                     button.setIcon(new Icon(VaadinIcon.FOLDER_OPEN));
-                })).setHeader("Visualizza");
-        grid.addColumn(
+                })).setHeader("Visualizza/Modifica");
+        gridPlaylist.addColumn(
                 new ComponentRenderer<>(Button::new, (button, titolo) -> {
                     button.addThemeVariants(ButtonVariant.LUMO_ICON,
                             ButtonVariant.LUMO_ERROR,
@@ -225,6 +233,37 @@ public class MyPlaylistView extends VerticalLayout {
                     button.setIcon(new Icon(VaadinIcon.TRASH));
                 })).setHeader("Elimina");
     }
+
+    private void configureViewDialog(){
+        closeButton = new Button("Chiudi",VaadinIcon.CLOSE_CIRCLE.create());
+        closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        closeButton.addClickListener(e -> view.close());
+        addCanzone = new Button("Aggiungi brano", VaadinIcon.PLUS.create());
+        addCanzone.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
+        rename.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        /*rename.addClickListener(e->{
+            editTitle = new Dialog(renamePlaylist);
+            editTitle.open();
+            confirmNewTitle = new Button("Rinomina", VaadinIcon.CHECK_CIRCLE.create());
+            confirmNewTitle.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            editTitle.setHeaderTitle("Rinomina");
+            editTitle.setCloseOnEsc(true);
+            newTitle = new TextField("Nuovo titolo");
+            renamePlaylist.add(newTitle,confirmNewTitle,closeButton);
+            renamePlaylist.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+            renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);
+            closeButton.addClickListener(event-> editTitle.close());
+        });*/
+        actionButton = new HorizontalLayout();
+        actionButton.add(addCanzone, rename);
+        actionButton.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        actionButton.setAlignItems(FlexComponent.Alignment.CENTER);
+        viewForm.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        viewForm.setAlignItems(FlexComponent.Alignment.CENTER);
+        viewForm.add(/*gridCanzoni,*/actionButton,closeButton);
+    }
+
 }
 
 
