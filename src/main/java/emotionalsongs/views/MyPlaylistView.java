@@ -120,6 +120,7 @@ public class MyPlaylistView extends VerticalLayout {
             playlistGridColumn();
             gridPlaylist.setItems(result);
             configureViewDialog();
+            configureEditDialog();
 
 
             add(layoutTitolo, newPlaylist,gridPlaylist);
@@ -205,12 +206,13 @@ public class MyPlaylistView extends VerticalLayout {
                 new ComponentRenderer<>(Button::new, (button, titolo) -> {
                     button.addThemeVariants(ButtonVariant.LUMO_ICON,
                             ButtonVariant.LUMO_PRIMARY);
-                    button.addClickListener(e -> {view = new Dialog(viewForm);
+                    button.addClickListener(e -> {
+                        VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
+                        view = new Dialog(viewForm);
                         nomePlaylist = titolo.getTitolo();
                         view.setHeaderTitle(nomePlaylist);
                         view.open();
                     });
-                    // TODO: DIALOGO PER VISULIZZARE LE CANZONI DELLA PLAYLIST
                     button.setIcon(new Icon(VaadinIcon.FOLDER_OPEN));
                 })).setHeader("Visualizza/Modifica");
         gridPlaylist.addColumn(
@@ -244,25 +246,25 @@ public class MyPlaylistView extends VerticalLayout {
         addCanzone.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addCanzone.addClickListener(buttonClickEvent -> {
             view.close();
-            // TODO : rendere griglia ricerca utilizzabile per aggiungere brani alla playlist selezionata
+            //Posiamo far aprire il dialogo invece di rimandare alla vista
+            /*try {
+                AggiuntaBraniView addBrani = new AggiuntaBraniView();
+                Dialog addSong = new Dialog(addBrani);
+                addSong.open();
+                addSong.setSizeFull();
+                addSong.setCloseOnEsc(true)
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }*/
+            //TODO : rendere griglia ricerca utilizzabile per aggiungere brani alla playlist selezionata
             UI.getCurrent().navigate(AggiuntaBraniView.class);
         });
 
         rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
         rename.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        /*rename.addClickListener(e->{
-            editTitle = new Dialog(renamePlaylist);
+        rename.addClickListener(e-> {
             editTitle.open();
-            confirmNewTitle = new Button("Rinomina", VaadinIcon.CHECK_CIRCLE.create());
-            confirmNewTitle.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            editTitle.setHeaderTitle("Rinomina");
-            editTitle.setCloseOnEsc(true);
-            newTitle = new TextField("Nuovo titolo");
-            renamePlaylist.add(newTitle,confirmNewTitle,closeButton);
-            renamePlaylist.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-            renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);
-            closeButton.addClickListener(event-> editTitle.close());
-        });*/
+        });
         actionButton = new HorizontalLayout();
         actionButton.add(addCanzone, rename);
         actionButton.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -270,6 +272,40 @@ public class MyPlaylistView extends VerticalLayout {
         viewForm.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         viewForm.setAlignItems(FlexComponent.Alignment.CENTER);
         viewForm.add(/*gridCanzoni,*/actionButton,closeButton);
+    }
+
+    private void configureEditDialog(){
+        rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
+        confirmNewTitle = new Button("Rinomina", VaadinIcon.CHECK_CIRCLE.create());
+        confirmNewTitle.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        editTitle = new Dialog(renamePlaylist);
+        editTitle.setHeaderTitle("Rinomina");
+        editTitle.setCloseOnEsc(true);
+        newTitle = new TextField("Nuovo titolo");
+        newTitle.setRequired(true);
+        String nuovoTitolo = newTitle.getValue();
+        String oldTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
+        newTitle.setErrorMessage("Il campo non può essere vuoto!");
+        renamePlaylist.add(newTitle,confirmNewTitle,closeButton);
+        renamePlaylist.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);
+        confirmNewTitle.addClickListener(e->{
+            /*try {
+                if(stub.renamePlaylist(username,nuovoTitolo,oldTitle)==1){
+                    Notification.show("Playlist modificata!", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                    this.configureGrid();
+                }else {
+                    Notification.show("Impossibile modificare la playlist", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
+            } catch (RemoteException ex) {
+                throw new RuntimeException(ex);
+            }*/
+            editTitle.close();
+            newTitle.clear();
+        });
+        closeButton.addClickListener(event-> editTitle.close());
     }
 
 }

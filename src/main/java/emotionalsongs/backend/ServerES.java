@@ -241,6 +241,27 @@ public class ServerES implements Servizi {
 
     }
 
+    private int playlistId(String username, String titolo){
+        int userId = userId(username);
+        String query = "SELECT * FROM public.\"Playlist\" WHERE user_id = " + userId + "AND titolo = '" + titolo + "'";
+        int playlistId = -1;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try{
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                playlistId = rs.getInt("playlist_id");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return playlistId;
+    }
+
     @Override
     public int addPlaylist(String titolo, String username) throws RemoteException {
         int playlistCreate = -1;
@@ -339,5 +360,40 @@ public class ServerES implements Servizi {
         }
         return playlistEliminata;
     }
+    /*public int renamePlaylist(String username, String nuovoTitolo, String vecchioTitolo) throws RemoteException {
+        int playlistModificata = -1;
+        int userId = userId(username);
+        int playlistId = playlistId(username, vecchioTitolo);
+        System.err.println(playlistId);
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        String query = "UPDATE public.\"Playlist\" SET titolo = ? WHERE user_id = ? AND playlist_id = ?";
+        try {
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+
+            stmt.setString(1, nuovoTitolo);
+            stmt.setInt(2,userId);
+            stmt.setInt(3, playlistId);
+
+            playlistModificata = stmt.executeUpdate();
+
+            stmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+
+            } catch (SQLException e) {
+            }
+        }
+        return playlistModificata;
+    }*/
 
 }
