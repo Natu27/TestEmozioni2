@@ -22,7 +22,6 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
-import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.playlist.NomePlaylistGiaPresente;
 
@@ -159,12 +158,14 @@ public class MyPlaylistView extends VerticalLayout {
         dialog.add(newPlaylistForm);
 
     }
+
     private void addPlaylist(String titolo, String username) throws RemoteException, NomePlaylistGiaPresente {
         titolo = titolo.trim();
         if(titolo.equals(""))
             Notification.show("Impossibile creare playlist - Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         else {
+            result = stub.myPlaylist(username);
             if(nomePlaylistPresente(titolo)) throw new NomePlaylistGiaPresente();
             if (stub.addPlaylist(titolo, username) == 1) {
                 Notification.show("Playlist creata!", 3000, Notification.Position.MIDDLE)
@@ -198,6 +199,7 @@ public class MyPlaylistView extends VerticalLayout {
         gridPlaylist.setHeight("1000px");
         gridPlaylist.setItems(result);
     }
+
     private void playlistGridColumn(){
         gridPlaylist.addColumn(
                 new ComponentRenderer<>(Button::new, (button, titolo) -> {
@@ -208,7 +210,7 @@ public class MyPlaylistView extends VerticalLayout {
                         view.setHeaderTitle(nomePlaylist);
                         view.open();
                     });
-                    //TODO: DIALOGO PER VISULIZZARE LE CANZONI DELLA PLAYLIST
+                    // TODO: DIALOGO PER VISULIZZARE LE CANZONI DELLA PLAYLIST
                     button.setIcon(new Icon(VaadinIcon.FOLDER_OPEN));
                 })).setHeader("Visualizza/Modifica");
         gridPlaylist.addColumn(
@@ -240,6 +242,12 @@ public class MyPlaylistView extends VerticalLayout {
         closeButton.addClickListener(e -> view.close());
         addCanzone = new Button("Aggiungi brano", VaadinIcon.PLUS.create());
         addCanzone.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addCanzone.addClickListener(buttonClickEvent -> {
+            view.close();
+            // TODO : rendere griglia ricerca utilizzabile per aggiungere brani alla playlist selezionata
+            UI.getCurrent().navigate(AggiuntaBraniView.class);
+        });
+
         rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
         rename.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         /*rename.addClickListener(e->{

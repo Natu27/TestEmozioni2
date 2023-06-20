@@ -4,7 +4,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
@@ -17,8 +16,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
-import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
@@ -27,47 +24,47 @@ import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-@PageTitle("Ricerca")
-@Route(value = "ricerca", layout = MainLayout.class)
-@RouteAlias(value = "", layout = MainLayout.class)
-public class RicercaTitoloView extends VerticalLayout {
+@PageTitle("AggiuntaBrani")
+@Route(value = "aggiunta-brani", layout = MainLayout.class)
+public class AggiuntaBraniView extends VerticalLayout {
     HorizontalLayout layoutTitolo;
     HorizontalLayout toolbar;
-    HorizontalLayout emotions;
+    HorizontalLayout playlist;
     Icon iconTitolo;
     H3 titoloPagina;
     TextField titoloDaCercare;
     TextField autoreDaCercare;
     ComboBox<Integer> annoDaCercare;
     Button searchButton;
-    Button emoButton;
+    Button addButton;
+    Button fineButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
     List<Integer> anni = stub.getAnni("", "");
 
-    public RicercaTitoloView() throws Exception {
+    public AggiuntaBraniView() throws Exception {
         setSpacing(true);
         setSizeFull();
 
         searchButton = new Button("Cerca", buttonClickEvent -> search());
-        emoButton = new Button("Visualizza Emozioni", buttonClickEvent -> visualizzaEmo());
+        addButton = new Button("Aggiungi Brani", buttonClickEvent -> aggiungiBrani());
+        fineButton = new Button("FINE");
         configureLayout();
         configureSearchBar();
         configureGrid();
         configureEmotions();
 
-        // TODO: se si vuole tenere il risultato della ricerca cachato, vanno cachati anche i parametri di ricerca
-        result = (List<Canzone>) UI.getCurrent().getSession().getAttribute("result");
         if (result != null) {
             grid.setItems(result);
         } else {
             search();
         }
 
-        add(layoutTitolo, toolbar, grid, emotions);
+        add(layoutTitolo, toolbar, grid, playlist);
     }
 
     private void configureLayout() {
@@ -92,7 +89,7 @@ public class RicercaTitoloView extends VerticalLayout {
         searchButton.setIcon(VaadinIcon.SEARCH.create());
         toolbar = new HorizontalLayout(titoloDaCercare, autoreDaCercare, annoDaCercare, searchButton);
         toolbar.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        toolbar.setAlignItems(Alignment.CENTER);
+        toolbar.setAlignItems(FlexComponent.Alignment.CENTER);
         toolbar.setWidthFull();
     }
 
@@ -100,19 +97,23 @@ public class RicercaTitoloView extends VerticalLayout {
         grid.setSizeFull();
         grid.setColumns("titolo", "artista", "anno");
         grid.getColumns().get(2).setSortable(false); // sort disattivato perchè non funziona su questa colonna
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
         // grid.getColumns().get(2).setComparator((c1, c2) -> {
         //    return Integer.valueOf(c1.getAnno()).compareTo(Integer.valueOf(c2.getAnno()));
         //});
     }
 
     private void configureEmotions() {
-        emoButton.setAutofocus(true);
-        emoButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        emoButton.setIcon(VaadinIcon.BAR_CHART_H.create());
-        emotions = new HorizontalLayout(emoButton);
-        emotions.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-        emotions.setAlignItems(Alignment.CENTER);
-        emotions.setWidthFull();
+        addButton.setAutofocus(true);
+        addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        addButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
+        fineButton.setAutofocus(true);
+        fineButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        fineButton.setIcon(VaadinIcon.CHECK_CIRCLE.create());
+        playlist = new HorizontalLayout(addButton, fineButton);
+        playlist.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        playlist.setAlignItems(FlexComponent.Alignment.CENTER);
+        playlist.setWidthFull();
     }
 
     private void search() {
@@ -120,14 +121,11 @@ public class RicercaTitoloView extends VerticalLayout {
             result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
             grid.setItems(result);
             anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
-            //Per memorizzare la grid corrente
-            UI.getCurrent().getSession().setAttribute("result", result);
         } catch (RemoteException e) {
             e.printStackTrace();
         } catch (NessunaCanzoneTrovata e) {
             result = new ArrayList<>();
             grid.setItems(result);
-            UI.getCurrent().getSession().setAttribute("result", result);
             Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             try {
@@ -145,51 +143,10 @@ public class RicercaTitoloView extends VerticalLayout {
             annoDaCercare.setValue(cachedValue);
     }
 
-    private void visualizzaEmo() {
-        Canzone selectedTuple = grid.asSingleSelect().getValue();
-        VaadinSession.getCurrent().setAttribute("canzoneselezionata", selectedTuple);
-        if (selectedTuple != null) {
-            // Apri la finestra di dialogo per mostrare le informazioni aggiuntive
-            openDetailsDialog(selectedTuple);
-        } else {
-            Notification.show("Nessuna canzone selezionata", 3000, Notification.Position.MIDDLE)
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
-        }
+    private void aggiungiBrani() {
+        Set<Canzone> brani = grid.getSelectedItems();
+        for(Canzone c : brani)
+            System.out.println(c.getTitolo());
+        grid.asMultiSelect().clear();
     }
-
-    private void openDetailsDialog(Canzone selectedTuple) {
-        Dialog dialog = new Dialog();
-        //dialog.setSizeFull();
-
-        // Crea il layout per le informazioni dettagliate
-        VerticalLayout layout = new VerticalLayout();
-        layout.setJustifyContentMode(JustifyContentMode.CENTER);
-        layout.setAlignItems(Alignment.CENTER);
-        layout.setPadding(true);
-        layout.setSpacing(true);
-
-        // Aggiungi le informazioni dettagliate al layout
-        String info = "Titolo: " + selectedTuple.getTitolo() +
-                " - Artista: " + selectedTuple.getArtista() +
-                " - Anno: " + selectedTuple.getAnno();
-        layout.add(new H3(info));
-
-        HistogramView chart = new HistogramView();
-        layout.add(chart);
-
-        dialog.add(layout);
-
-        // Aggiungi un pulsante per chiudere la finestra di dialogo
-        Button closeButton = new Button("Chiudi", buttonClickEvent -> {
-            dialog.close();
-        });
-        closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
-        layout.add(closeButton);
-
-        dialog.open();
-        // Deseleziona la tupla dopo aver aperto il dialogo
-        grid.asSingleSelect().clear();
-    }
-
 }
