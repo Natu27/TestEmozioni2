@@ -1,11 +1,10 @@
 package emotionalsongs.views;
 
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -33,7 +32,7 @@ public class AggiuntaBraniView extends VerticalLayout {
     HorizontalLayout toolbar;
     HorizontalLayout playlist;
     Icon iconTitolo;
-    H3 titoloPagina;
+    H5 titoloPagina;
     TextField titoloDaCercare;
     TextField autoreDaCercare;
     ComboBox<Integer> annoDaCercare;
@@ -52,7 +51,7 @@ public class AggiuntaBraniView extends VerticalLayout {
 
         searchButton = new Button("Cerca", buttonClickEvent -> search());
         addButton = new Button("Aggiungi Brani", buttonClickEvent -> aggiungiBrani());
-        fineButton = new Button("FINE");
+        fineButton = new Button("Conferma");
         configureLayout();
         configureSearchBar();
         configureGrid();
@@ -72,7 +71,7 @@ public class AggiuntaBraniView extends VerticalLayout {
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
         iconTitolo = new Icon(VaadinIcon.SEARCH);
         iconTitolo.setColor("#006af5");
-        titoloPagina = new H3("Seleziona Brani");
+        titoloPagina = new H5("Seleziona Brani");
         layoutTitolo.add(iconTitolo, titoloPagina);
     }
 
@@ -94,7 +93,7 @@ public class AggiuntaBraniView extends VerticalLayout {
     }
 
     private void configureGrid() {
-        grid.setSizeFull();
+        //grid.setSizeFull();
         grid.setColumns("titolo", "artista", "anno");
         grid.getColumns().get(2).setSortable(false); // sort disattivato perchè non funziona su questa colonna
         grid.setSelectionMode(Grid.SelectionMode.MULTI);

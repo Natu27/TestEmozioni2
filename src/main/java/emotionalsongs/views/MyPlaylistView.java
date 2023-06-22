@@ -45,7 +45,6 @@ public class MyPlaylistView extends VerticalLayout {
     H2 header;
     Image logo;
     TextField playlistName;
-    Button closeButton;
     Button createPlaylist;
     Button newPlaylist;
     Dialog dialog;
@@ -53,6 +52,7 @@ public class MyPlaylistView extends VerticalLayout {
     Div message;
     HorizontalLayout actionButton;
     ConfirmDialog delete;
+    Dialog addSong;
     Dialog view;
     VerticalLayout viewForm = new VerticalLayout();
     VerticalLayout renamePlaylist = new VerticalLayout();
@@ -148,7 +148,7 @@ public class MyPlaylistView extends VerticalLayout {
         playlistName.setRequired(true);
         playlistName.setErrorMessage("Il campo non può essere vuoto");
         createPlaylist.setWidthFull();
-        closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
+        Button closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
         closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
         dialog.setCloseOnEsc(true);
@@ -223,7 +223,7 @@ public class MyPlaylistView extends VerticalLayout {
                             ButtonVariant.LUMO_ERROR,
                             ButtonVariant.LUMO_PRIMARY);
                     button.addClickListener(e -> {
-                        ConfirmDialog delete = new ConfirmDialog("⚠️ Conferma l'azione",
+                        delete = new ConfirmDialog("⚠️ Conferma eliminazione",
                                 "Sei sicuro di voler eliminare la playlist?", "Sì", event1 -> {
                         try {
                             if (stub.removePlaylist(username, titolo.getTitolo()) == 1) {
@@ -247,32 +247,42 @@ public class MyPlaylistView extends VerticalLayout {
     }
 
     private void configureViewDialog(){
-        closeButton = new Button("Chiudi",VaadinIcon.CLOSE_CIRCLE.create());
+        Button closeButton = new Button("Chiudi",VaadinIcon.CLOSE_CIRCLE.create());
         closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         closeButton.addClickListener(e -> view.close());
-        addCanzone = new Button("Aggiungi brano", VaadinIcon.PLUS.create());
+        addCanzone = new Button("Aggiungi brani", VaadinIcon.PLUS.create());
         addCanzone.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addCanzone.addClickListener(buttonClickEvent -> {
             view.close();
             try {
                 AggiuntaBraniView addBrani = new AggiuntaBraniView();
-                Dialog addSong = new Dialog(addBrani);
+                addSong = new Dialog(addBrani);
                 addSong.open();
                 addSong.setSizeFull();
                 addSong.setCloseOnEsc(true);
+                Button annullaButton = new Button("Annulla");
+                annullaButton.addClickListener(event -> addSong.close());
+                annullaButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+                annullaButton.setAutofocus(true);
+                annullaButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
+                HorizontalLayout annulla = new HorizontalLayout(annullaButton);
+                annulla.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+                annulla.setAlignItems(FlexComponent.Alignment.CENTER);
+                addSong.add(annulla);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
             //TODO : rendere griglia ricerca utilizzabile per aggiungere brani alla playlist selezionata
         });
-
         rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
         rename.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         rename.addClickListener(e-> {
             editTitle.open();
         });
         actionButton = new HorizontalLayout();
-        actionButton.add(addCanzone, rename);
+        HorizontalLayout chiudi = new HorizontalLayout();
+        chiudi.add(closeButton);
+        actionButton.add(addCanzone, rename,closeButton);
         actionButton.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         actionButton.setAlignItems(FlexComponent.Alignment.CENTER);
         viewForm.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
@@ -281,6 +291,8 @@ public class MyPlaylistView extends VerticalLayout {
     }
 
     private void configureEditDialog(){
+        Button closeButton = new Button("Chiudi", VaadinIcon.CLOSE_CIRCLE.create());
+        closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
         confirmNewTitle = new Button("Rinomina", VaadinIcon.CHECK_CIRCLE.create());
         confirmNewTitle.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -310,6 +322,10 @@ public class MyPlaylistView extends VerticalLayout {
             newTitle.clear();
         });
         closeButton.addClickListener(event-> editTitle.close());
+    }
+
+    public Dialog getDialog(){
+        return addSong;
     }
 
 }
