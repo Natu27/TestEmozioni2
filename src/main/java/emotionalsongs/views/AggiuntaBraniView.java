@@ -72,7 +72,7 @@ public class AggiuntaBraniView extends VerticalLayout {
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
         iconTitolo = new Icon(VaadinIcon.SEARCH);
         iconTitolo.setColor("#006af5");
-        titoloPagina = new H3("Titolo - Autore - Anno");
+        titoloPagina = new H3("Seleziona Brani");
         layoutTitolo.add(iconTitolo, titoloPagina);
     }
 

@@ -360,7 +360,7 @@ public class ServerES implements Servizi {
         }
         return playlistEliminata;
     }
-    /*public int renamePlaylist(String username, String nuovoTitolo, String vecchioTitolo) throws RemoteException {
+    public int renamePlaylist(String username, String nuovoTitolo, String vecchioTitolo) throws RemoteException {
         int playlistModificata = -1;
         int userId = userId(username);
         int playlistId = playlistId(username, vecchioTitolo);
@@ -394,6 +394,6 @@ public class ServerES implements Servizi {
             }
         }
         return playlistModificata;
-    }*/
+    }
 
 }

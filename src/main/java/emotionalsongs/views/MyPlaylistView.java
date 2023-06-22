@@ -3,6 +3,7 @@ package emotionalsongs.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -51,6 +52,7 @@ public class MyPlaylistView extends VerticalLayout {
     List<Playlist> result;
     Div message;
     HorizontalLayout actionButton;
+    ConfirmDialog delete;
     Dialog view;
     VerticalLayout viewForm = new VerticalLayout();
     VerticalLayout renamePlaylist = new VerticalLayout();
@@ -221,18 +223,24 @@ public class MyPlaylistView extends VerticalLayout {
                             ButtonVariant.LUMO_ERROR,
                             ButtonVariant.LUMO_PRIMARY);
                     button.addClickListener(e -> {
+                        ConfirmDialog delete = new ConfirmDialog("⚠️ Conferma l'azione",
+                                "Sei sicuro di voler eliminare la playlist?", "Sì", event1 -> {
                         try {
-                            if (stub.removePlaylist(username, titolo.getTitolo()) == 1){
+                            if (stub.removePlaylist(username, titolo.getTitolo()) == 1) {
                                 Notification.show("Playlist cancellata!", 3000, Notification.Position.MIDDLE)
                                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                                 this.configureGrid();
-                            }else {
+                            } else {
                                 Notification.show("Impossibile cancellare la playlist", 3000, Notification.Position.MIDDLE)
                                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                             }
                         } catch (RemoteException ex) {
                             throw new RuntimeException(ex);
                         }
+                    }, "No", event2 -> {
+                            dialog.close();
+                        });
+                        delete.open();
                     });
                     button.setIcon(new Icon(VaadinIcon.TRASH));
                 })).setHeader("Elimina");
@@ -246,18 +254,16 @@ public class MyPlaylistView extends VerticalLayout {
         addCanzone.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addCanzone.addClickListener(buttonClickEvent -> {
             view.close();
-            //Posiamo far aprire il dialogo invece di rimandare alla vista
-            /*try {
+            try {
                 AggiuntaBraniView addBrani = new AggiuntaBraniView();
                 Dialog addSong = new Dialog(addBrani);
                 addSong.open();
                 addSong.setSizeFull();
-                addSong.setCloseOnEsc(true)
+                addSong.setCloseOnEsc(true);
             } catch (Exception e) {
                 throw new RuntimeException(e);
-            }*/
+            }
             //TODO : rendere griglia ricerca utilizzabile per aggiungere brani alla playlist selezionata
-            UI.getCurrent().navigate(AggiuntaBraniView.class);
         });
 
         rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
@@ -283,15 +289,13 @@ public class MyPlaylistView extends VerticalLayout {
         editTitle.setCloseOnEsc(true);
         newTitle = new TextField("Nuovo titolo");
         newTitle.setRequired(true);
-        String nuovoTitolo = newTitle.getValue();
-        String oldTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
         newTitle.setErrorMessage("Il campo non può essere vuoto!");
         renamePlaylist.add(newTitle,confirmNewTitle,closeButton);
         renamePlaylist.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);
         confirmNewTitle.addClickListener(e->{
-            /*try {
-                if(stub.renamePlaylist(username,nuovoTitolo,oldTitle)==1){
+            try {
+                if(stub.renamePlaylist(username,newTitle.getValue(),(String) VaadinSession.getCurrent().getAttribute("playlistTitle"))==1){
                     Notification.show("Playlist modificata!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.configureGrid();
@@ -301,7 +305,7 @@ public class MyPlaylistView extends VerticalLayout {
                 }
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
-            }*/
+            }
             editTitle.close();
             newTitle.clear();
         });
@@ -309,6 +313,3 @@ public class MyPlaylistView extends VerticalLayout {
     }
 
 }
-
-
-
