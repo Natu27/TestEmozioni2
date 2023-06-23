@@ -52,7 +52,6 @@ public class MyPlaylistView extends VerticalLayout {
     Div message;
     HorizontalLayout actionButton;
     ConfirmDialog delete;
-    Dialog addSong;
     Dialog view;
     VerticalLayout viewForm = new VerticalLayout();
     VerticalLayout renamePlaylist = new VerticalLayout();
@@ -212,7 +211,7 @@ public class MyPlaylistView extends VerticalLayout {
                         VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
                         view = new Dialog(viewForm);
                         nomePlaylist = titolo.getTitolo();
-                        view.setHeaderTitle("Titolo ➡ " + nomePlaylist);
+                        view.setHeaderTitle(nomePlaylist);
                         view.open();
                     });
                     button.setIcon(new Icon(VaadinIcon.FOLDER_OPEN));
@@ -298,7 +297,10 @@ public class MyPlaylistView extends VerticalLayout {
                 if(stub.renamePlaylist(username,newTitle.getValue(),(String) VaadinSession.getCurrent().getAttribute("playlistTitle"))==1){
                     Notification.show("Playlist modificata!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                    this.configureGrid();
+                    //this.configureGrid();
+                    view.close();
+                    view.setHeaderTitle(newTitle.getValue());
+                    view.open();
                 }else {
                     Notification.show("Impossibile modificare la playlist", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);

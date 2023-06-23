@@ -43,7 +43,7 @@ public class MainLayout extends AppLayout {
     Button registerButton;
     Button loginButton;
     Button exitButton;
-    Label welcome = new Label(" ");
+    H1 welcome = new H1(" ");
     Dialog dialog;
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
