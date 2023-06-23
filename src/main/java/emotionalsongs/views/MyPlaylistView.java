@@ -116,11 +116,11 @@ public class MyPlaylistView extends VerticalLayout {
             newPlaylist.setIcon(VaadinIcon.PLUS.create());
             createPlaylist.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             message = new Div();
-            message.setText("Non ha ancora creato nessuna playlist");
+            message.setText("Non hai ancora creato nessuna playlist");
             configureLayout();
             configureGrid();
             playlistGridColumn();
-            gridPlaylist.setItems(result);
+            //gridPlaylist.setItems(result);
             configureViewDialog();
             configureEditDialog();
 
@@ -143,10 +143,10 @@ public class MyPlaylistView extends VerticalLayout {
     private void dialogCreatePlaylist() {
         H1 title = new H1("Nuova Playlist");
         dialog = new Dialog();
-        playlistName = new TextField("Nome playlist");
+        playlistName = new TextField("Titolo");
         playlistName.setWidthFull();
         playlistName.setRequired(true);
-        playlistName.setErrorMessage("Il campo non può essere vuoto");
+        //playlistName.setErrorMessage("Il campo non può essere vuoto");
         createPlaylist.setWidthFull();
         Button closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
         closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -212,7 +212,7 @@ public class MyPlaylistView extends VerticalLayout {
                         VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
                         view = new Dialog(viewForm);
                         nomePlaylist = titolo.getTitolo();
-                        view.setHeaderTitle(nomePlaylist);
+                        view.setHeaderTitle("Titolo ➡ " + nomePlaylist);
                         view.open();
                     });
                     button.setIcon(new Icon(VaadinIcon.FOLDER_OPEN));
@@ -256,19 +256,7 @@ public class MyPlaylistView extends VerticalLayout {
             view.close();
             try {
                 AggiuntaBraniView addBrani = new AggiuntaBraniView();
-                addSong = new Dialog(addBrani);
-                addSong.open();
-                addSong.setSizeFull();
-                addSong.setCloseOnEsc(true);
-                Button annullaButton = new Button("Annulla");
-                annullaButton.addClickListener(event -> addSong.close());
-                annullaButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-                annullaButton.setAutofocus(true);
-                annullaButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
-                HorizontalLayout annulla = new HorizontalLayout(annullaButton);
-                annulla.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
-                annulla.setAlignItems(FlexComponent.Alignment.CENTER);
-                addSong.add(annulla);
+                addBrani.open();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -301,7 +289,7 @@ public class MyPlaylistView extends VerticalLayout {
         editTitle.setCloseOnEsc(true);
         newTitle = new TextField("Nuovo titolo");
         newTitle.setRequired(true);
-        newTitle.setErrorMessage("Il campo non può essere vuoto!");
+        //newTitle.setErrorMessage("Il campo non può essere vuoto!");
         renamePlaylist.add(newTitle,confirmNewTitle,closeButton);
         renamePlaylist.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -322,10 +310,6 @@ public class MyPlaylistView extends VerticalLayout {
             newTitle.clear();
         });
         closeButton.addClickListener(event-> editTitle.close());
-    }
-
-    public Dialog getDialog(){
-        return addSong;
     }
 
 }

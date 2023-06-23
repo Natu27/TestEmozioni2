@@ -1,17 +1,19 @@
 package emotionalsongs.views;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -27,18 +29,19 @@ import java.util.Set;
 
 @PageTitle("AggiuntaBrani")
 @Route(value = "aggiunta-brani", layout = MainLayout.class)
-public class AggiuntaBraniView extends VerticalLayout {
+public class AggiuntaBraniView extends Dialog {
     HorizontalLayout layoutTitolo;
     HorizontalLayout toolbar;
     HorizontalLayout playlist;
     Icon iconTitolo;
-    H5 titoloPagina;
+    H3 titoloPagina;
     TextField titoloDaCercare;
     TextField autoreDaCercare;
     ComboBox<Integer> annoDaCercare;
     Button searchButton;
     Button addButton;
     Button fineButton;
+    Button closeButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
     ClientES clientES = new ClientES();
@@ -46,16 +49,20 @@ public class AggiuntaBraniView extends VerticalLayout {
     List<Integer> anni = stub.getAnni("", "");
 
     public AggiuntaBraniView() throws Exception {
-        setSpacing(true);
-        setSizeFull();
+        setWidthFull();
+        setCloseOnEsc(true);
 
         searchButton = new Button("Cerca", buttonClickEvent -> search());
         addButton = new Button("Aggiungi Brani", buttonClickEvent -> aggiungiBrani());
         fineButton = new Button("Conferma");
+        closeButton = new Button("Annulla", buttonClickEvent -> this.close());
         configureLayout();
         configureSearchBar();
         configureGrid();
-        configureEmotions();
+        configureCreazionePlaylist();
+        Component spacer1 = createSpacer();
+        Component spacer2 = createSpacer();
+        Component spacer3 = createSpacer();
 
         if (result != null) {
             grid.setItems(result);
@@ -63,15 +70,15 @@ public class AggiuntaBraniView extends VerticalLayout {
             search();
         }
 
-        add(layoutTitolo, toolbar, grid, playlist);
+        add(layoutTitolo, spacer1, toolbar, spacer2, grid, spacer3, playlist);
     }
 
     private void configureLayout() {
         layoutTitolo = new HorizontalLayout();
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
-        iconTitolo = new Icon(VaadinIcon.SEARCH);
+        iconTitolo = new Icon(VaadinIcon.PLUS);
         iconTitolo.setColor("#006af5");
-        titoloPagina = new H5("Seleziona Brani");
+        titoloPagina = new H3("Aggiungi Brani");
         layoutTitolo.add(iconTitolo, titoloPagina);
     }
 
@@ -95,21 +102,21 @@ public class AggiuntaBraniView extends VerticalLayout {
     private void configureGrid() {
         //grid.setSizeFull();
         grid.setColumns("titolo", "artista", "anno");
-        grid.getColumns().get(2).setSortable(false); // sort disattivato perchè non funziona su questa colonna
+        grid.getColumns().get(2).setSortable(false); // sort disattivato --> non funziona su questa colonna
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
-        // grid.getColumns().get(2).setComparator((c1, c2) -> {
-        //    return Integer.valueOf(c1.getAnno()).compareTo(Integer.valueOf(c2.getAnno()));
-        //});
     }
 
-    private void configureEmotions() {
+    private void configureCreazionePlaylist() {
         addButton.setAutofocus(true);
         addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addButton.setIcon(VaadinIcon.PLUS_CIRCLE.create());
         fineButton.setAutofocus(true);
         fineButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         fineButton.setIcon(VaadinIcon.CHECK_CIRCLE.create());
-        playlist = new HorizontalLayout(addButton, fineButton);
+        closeButton.setAutofocus(true);
+        closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
+        playlist = new HorizontalLayout(addButton, fineButton, closeButton);
         playlist.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         playlist.setAlignItems(FlexComponent.Alignment.CENTER);
         playlist.setWidthFull();
@@ -147,5 +154,12 @@ public class AggiuntaBraniView extends VerticalLayout {
         for(Canzone c : brani)
             System.out.println(c.getTitolo());
         grid.asMultiSelect().clear();
+    }
+
+    private Component createSpacer() {
+        Div spacer = new Div();
+        spacer.setWidth("20px");  // larghezza dello spazio vuoto
+        spacer.setHeight("20px"); // altezza dello spazio vuoto
+        return spacer;
     }
 }
