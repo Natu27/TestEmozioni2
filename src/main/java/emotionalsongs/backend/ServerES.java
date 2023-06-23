@@ -235,6 +235,20 @@ public class ServerES implements Servizi {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+
+            } catch (SQLException e) {
+            }
         }
 
         return userId;
@@ -247,7 +261,7 @@ public class ServerES implements Servizi {
         int playlistId = -1;
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
+        ResultSet rs;
         try{
             conn = this.dbConn.getConnection();
             stmt = conn.prepareStatement(query);
@@ -257,6 +271,17 @@ public class ServerES implements Servizi {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+
+            } catch (SQLException e) {
+            }
         }
 
         return playlistId;
@@ -268,7 +293,6 @@ public class ServerES implements Servizi {
         int userId = userId(username);
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         String query = "INSERT INTO public.\"Playlist\" (titolo, user_id) VALUES (?, ?)";
         try {
             conn = this.dbConn.getConnection();

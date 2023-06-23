@@ -49,10 +49,8 @@ public class MyPlaylistView extends VerticalLayout {
     Button newPlaylist;
     Dialog dialog;
     List<Playlist> result;
-    Div message;
     HorizontalLayout actionButton;
     ConfirmDialog delete;
-    Dialog addSong;
     Dialog view;
     VerticalLayout viewForm = new VerticalLayout();
     VerticalLayout renamePlaylist = new VerticalLayout();
@@ -115,8 +113,6 @@ public class MyPlaylistView extends VerticalLayout {
             });
             newPlaylist.setIcon(VaadinIcon.PLUS.create());
             createPlaylist.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-            message = new Div();
-            message.setText("Non hai ancora creato nessuna playlist");
             configureLayout();
             configureGrid();
             playlistGridColumn();
@@ -126,6 +122,7 @@ public class MyPlaylistView extends VerticalLayout {
 
 
             add(layoutTitolo, newPlaylist,gridPlaylist);
+
         }
 
     }
@@ -238,7 +235,7 @@ public class MyPlaylistView extends VerticalLayout {
                             throw new RuntimeException(ex);
                         }
                     }, "No", event2 -> {
-                            dialog.close();
+                            delete.close();
                         });
                         delete.open();
                     });
