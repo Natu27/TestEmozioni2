@@ -29,6 +29,10 @@ public class Canzone extends AbstractEntity implements Serializable {
         this.anno = anno;
     }
 
+    public Canzone(int canzoni_id) {
+        super();
+    }
+
     public int getId() {
         return id;
     }

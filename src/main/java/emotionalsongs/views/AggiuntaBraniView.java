@@ -17,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
@@ -24,6 +25,7 @@ import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,9 +46,11 @@ public class AggiuntaBraniView extends Dialog {
     Button closeButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
+    Set<Canzone> braniSelezionati = new HashSet<>();
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
     List<Integer> anni = stub.getAnni("", "");
+    String username = (String) VaadinSession.getCurrent().getAttribute("username");
 
     public AggiuntaBraniView() throws Exception {
         setWidthFull();
@@ -54,7 +58,20 @@ public class AggiuntaBraniView extends Dialog {
 
         searchButton = new Button("Cerca", buttonClickEvent -> search());
         addButton = new Button("Aggiungi Brani", buttonClickEvent -> aggiungiBrani());
-        fineButton = new Button("Conferma");
+        fineButton = new Button("Conferma", buttonClickEvent -> {
+            try {
+                stub.addBraniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"),
+                  username, (Set<Canzone>) VaadinSession.getCurrent().getAttribute("braniSelezionati"));
+                Notification.show("Brani inseriti nella Playlist!", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            } catch (RemoteException e) {
+                Notification.show("Impossibile inserire brani nella Playlist", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                //e.printStackTrace();
+            }
+            braniSelezionati = new HashSet<>();
+            VaadinSession.getCurrent().setAttribute("braniSelezionati", braniSelezionati);
+        });
         closeButton = new Button("Annulla", buttonClickEvent -> this.close());
         configureLayout();
         configureSearchBar();
@@ -151,8 +168,10 @@ public class AggiuntaBraniView extends Dialog {
 
     private void aggiungiBrani() {
         Set<Canzone> brani = grid.getSelectedItems();
+        braniSelezionati.addAll(brani);
         for(Canzone c : brani)
             System.out.println(c.getTitolo());
+        VaadinSession.getCurrent().setAttribute("braniSelezionati", braniSelezionati);
         grid.asMultiSelect().clear();
     }
 

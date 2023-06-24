@@ -168,7 +168,7 @@ public class MyPlaylistView extends VerticalLayout {
             result = stub.myPlaylist(username);
             if(nomePlaylistPresente(titolo)) throw new NomePlaylistGiaPresente();
             if (stub.addPlaylist(titolo, username) == 1) {
-                Notification.show("Playlist creata!", 3000, Notification.Position.MIDDLE)
+                Notification.show("Playlist creata", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 this.configureGrid();
                 dialog.close();
@@ -234,9 +234,7 @@ public class MyPlaylistView extends VerticalLayout {
                         } catch (RemoteException ex) {
                             throw new RuntimeException(ex);
                         }
-                    }, "No", event2 -> {
-                            delete.close();
-                        });
+                    }, "No", event2 -> delete.close());
                         delete.open();
                     });
                     button.setIcon(new Icon(VaadinIcon.TRASH));
@@ -261,9 +259,7 @@ public class MyPlaylistView extends VerticalLayout {
         });
         rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
         rename.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        rename.addClickListener(e-> {
-            editTitle.open();
-        });
+        rename.addClickListener(e-> editTitle.open());
         actionButton = new HorizontalLayout();
         HorizontalLayout chiudi = new HorizontalLayout();
         chiudi.add(closeButton);
@@ -292,18 +288,24 @@ public class MyPlaylistView extends VerticalLayout {
         renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);
         confirmNewTitle.addClickListener(e->{
             try {
+                result = stub.myPlaylist(username);
+                if(nomePlaylistPresente(newTitle.getValue())) throw new NomePlaylistGiaPresente();
                 if(stub.renamePlaylist(username,newTitle.getValue(),(String) VaadinSession.getCurrent().getAttribute("playlistTitle"))==1){
                     Notification.show("Playlist modificata!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.configureGrid();
+                    editTitle.close();
+                    view.close();
                 }else {
                     Notification.show("Impossibile modificare la playlist", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
             } catch (RemoteException ex) {
                 throw new RuntimeException(ex);
+            } catch (NomePlaylistGiaPresente ex) {
+                Notification.show("Impossibile creare playlist - Nome già presente", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
-            editTitle.close();
             newTitle.clear();
         });
         closeButton.addClickListener(event-> editTitle.close());
