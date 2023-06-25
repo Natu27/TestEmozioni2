@@ -60,8 +60,7 @@ public class AggiuntaBraniView extends Dialog {
         addButton = new Button("Aggiungi Brani", buttonClickEvent -> aggiungiBrani());
         fineButton = new Button("Conferma", buttonClickEvent -> {
             try {
-                if ((Set<Canzone>) VaadinSession.getCurrent().getAttribute("braniSelezionati")!=null
-                    || ((Set<Canzone>)VaadinSession.getCurrent().getAttribute("braniSelezionati")).isEmpty()) {
+                if (VaadinSession.getCurrent().getAttribute("braniSelezionati")!=null) {
                     stub.addBraniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"),
                             username, (Set<Canzone>) VaadinSession.getCurrent().getAttribute("braniSelezionati"));
                     Notification.show("Brani inseriti nella Playlist!", 3000, Notification.Position.MIDDLE)
@@ -72,9 +71,13 @@ public class AggiuntaBraniView extends Dialog {
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
             } catch (RemoteException e) {
-                Notification.show("Impossibile inserire brani nella Playlist", 3000, Notification.Position.MIDDLE)
+                Notification.show("Impossibile effettuare l'operazione: uno o più brani già presenti!", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 //e.printStackTrace();
+            }
+            catch (NessunaCanzoneTrovata e) {
+                Notification.show("Non hai selezionato alcun brano!", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             braniSelezionati = new HashSet<>();
             VaadinSession.getCurrent().setAttribute("braniSelezionati", braniSelezionati);

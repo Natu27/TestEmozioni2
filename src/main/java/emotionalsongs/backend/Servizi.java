@@ -25,7 +25,7 @@ public interface Servizi extends Remote {
     List<Playlist> myPlaylist(String username) throws RemoteException;
     int removePlaylist(String username, String titolo) throws RemoteException;
     int renamePlaylist(String username, String nuovoTitolo, String vecchioTitolo) throws RemoteException;
-    void addBraniPlaylist(String nomePlaylist, String nomeUtente, Set<Canzone> brani) throws RemoteException;
+    void addBraniPlaylist(String nomePlaylist, String nomeUtente, Set<Canzone> brani) throws NessunaCanzoneTrovata, RemoteException;
     ArrayList<Canzone> showCanzoniPlaylist(String nomePlaylist, String username) throws RemoteException;
 
 }

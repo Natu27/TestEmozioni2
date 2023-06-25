@@ -423,7 +423,7 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public void addBraniPlaylist(String nomePlaylist, String username, Set<Canzone> braniSelezionati) throws RemoteException {
+    public void addBraniPlaylist(String nomePlaylist, String username, Set<Canzone> braniSelezionati) throws RemoteException,NessunaCanzoneTrovata {
         Connection conn = null;
         PreparedStatement stmt = null;
         int userId = userId(username);
@@ -445,6 +445,7 @@ public class ServerES implements Servizi {
             stmt.close();
 
         } catch (SQLException e) {
+            if(query.equals("INSERT INTO public.\"CanzoniPlaylist\" VALUES")) throw new NessunaCanzoneTrovata();
             throw new RemoteException();
         } finally {
             try {
