@@ -8,6 +8,7 @@ import emotionalsongs.backend.exceptions.utente.UsernameErrato;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,5 +26,6 @@ public interface Servizi extends Remote {
     int removePlaylist(String username, String titolo) throws RemoteException;
     int renamePlaylist(String username, String nuovoTitolo, String vecchioTitolo) throws RemoteException;
     void addBraniPlaylist(String nomePlaylist, String nomeUtente, Set<Canzone> brani) throws RemoteException;
+    ArrayList<Canzone> showCanzoniPlaylist(String nomePlaylist, String username) throws RemoteException;
 
 }

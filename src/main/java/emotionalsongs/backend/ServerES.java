@@ -86,7 +86,6 @@ public class ServerES implements Servizi {
             } catch (SQLException e) {
             }
         }
-
         return result;
     }
 
@@ -391,7 +390,7 @@ public class ServerES implements Servizi {
         int playlistModificata = -1;
         int userId = userId(username);
         int playlistId = playlistId(username, vecchioTitolo);
-        System.err.println(playlistId);
+        //System.err.println(playlistId);
         Connection conn = null;
         PreparedStatement stmt = null;
         String query = "UPDATE public.\"Playlist\" SET titolo = ? WHERE user_id = ? AND playlist_id = ?";
@@ -437,7 +436,7 @@ public class ServerES implements Servizi {
             else
                 query += "(" + playlistId + ", " + canzoneId + "),";
         }
-        System.out.println(query);
+        //System.out.println(query);
         try {
             conn = this.dbConn.getConnection();
             stmt = conn.prepareStatement(query);
@@ -459,6 +458,86 @@ public class ServerES implements Servizi {
             } catch (SQLException e) {
             }
         }
+    }
+
+    @Override
+    public ArrayList<Canzone> showCanzoniPlaylist(String nomePlaylist, String username) throws RemoteException {
+        ArrayList<Integer> idSong = getIdSongPlaylist(nomePlaylist, username);
+        ArrayList<Canzone> result = new ArrayList<>();
+        String query = "SELECT * FROM public.\"Canzoni\" WHERE ";
+        if(!idSong.isEmpty()) {
+            for(Integer id : idSong) {
+                if(idSong.indexOf(id) == idSong.size()-1)
+                    query += "\"Canzoni\".\"Canzoni_id\" =" + id + ";";
+                else
+                    query += "\"Canzoni\".\"Canzoni_id\" =" + id + " OR ";
+            }
+        }
+        //System.out.println(query);
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
+                result.add(canzone);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+
+            } catch (SQLException e) {
+            }
+        }
+        return result;
+    }
+
+    private ArrayList<Integer> getIdSongPlaylist(String nomePlaylist, String username) {
+        ArrayList<Integer> result = new ArrayList<>();
+        int userId = userId(username);
+        int playlistId = playlistId(username, nomePlaylist);
+        String query = "SELECT * FROM public.\"CanzoniPlaylist\" WHERE playlist_id = " + playlistId + ";";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                result.add(rs.getInt("canzone_id"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+                if (rs != null) {
+                    rs.close();
+                }
+
+            } catch (SQLException e) {
+            }
+        }
+        return result;
     }
 
     private int canzoneId(String titolo, String autore, int anno) {

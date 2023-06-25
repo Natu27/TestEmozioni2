@@ -23,6 +23,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
+import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.playlist.NomePlaylistGiaPresente;
 
@@ -58,7 +59,8 @@ public class MyPlaylistView extends VerticalLayout {
     Dialog editTitle;
     TextField newTitle;
     Button confirmNewTitle;
-    //Grid<Canzone> gridCanzoni = new Grid<>(Canzone.class);
+    Grid<Canzone> gridCanzoni = new Grid<>(Canzone.class);
+    ArrayList<Canzone> resultSongPlaylist;
     Button addCanzone;
     String nomePlaylist;
     Grid<Playlist> gridPlaylist = new Grid<>(Playlist.class);
@@ -208,8 +210,12 @@ public class MyPlaylistView extends VerticalLayout {
                     button.addClickListener(e -> {
                         VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
                         view = new Dialog(viewForm);
+                        view.setWidth("750px");
                         nomePlaylist = titolo.getTitolo();
                         view.setHeaderTitle("Titolo ➡ " + nomePlaylist);
+
+                        configureGridCanzoni();
+
                         view.open();
                     });
                     button.setIcon(new Icon(VaadinIcon.FOLDER_OPEN));
@@ -268,7 +274,23 @@ public class MyPlaylistView extends VerticalLayout {
         actionButton.setAlignItems(FlexComponent.Alignment.CENTER);
         viewForm.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         viewForm.setAlignItems(FlexComponent.Alignment.CENTER);
-        viewForm.add(/*gridCanzoni,*/actionButton,closeButton);
+        viewForm.add(gridCanzoni,actionButton,closeButton);
+    }
+
+    private void configureGridCanzoni() {
+        //gridCanzoni.setWidthFull();
+        gridCanzoni.setColumns("titolo", "artista", "anno");
+        gridCanzoni.getColumnByKey("titolo").setWidth("250px");
+        gridCanzoni.getColumnByKey("artista").setWidth("250px");
+        gridCanzoni.getColumnByKey("anno").setWidth("100px");
+        gridCanzoni.getColumns().get(2).setSortable(false);
+        //resultSongPlaylist = new ArrayList<>();
+        try {
+            resultSongPlaylist = stub.showCanzoniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"), username);
+            gridCanzoni.setItems(resultSongPlaylist);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void configureEditDialog(){

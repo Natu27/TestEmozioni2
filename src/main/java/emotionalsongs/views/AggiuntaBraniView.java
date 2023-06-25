@@ -169,8 +169,8 @@ public class AggiuntaBraniView extends Dialog {
     private void aggiungiBrani() {
         Set<Canzone> brani = grid.getSelectedItems();
         braniSelezionati.addAll(brani);
-        for(Canzone c : brani)
-            System.out.println(c.getTitolo());
+        /*for(Canzone c : brani)
+            System.out.println(c.getTitolo());*/
         VaadinSession.getCurrent().setAttribute("braniSelezionati", braniSelezionati);
         grid.asMultiSelect().clear();
     }
