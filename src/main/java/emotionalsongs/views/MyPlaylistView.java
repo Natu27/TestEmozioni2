@@ -210,7 +210,7 @@ public class MyPlaylistView extends VerticalLayout {
                     button.addClickListener(e -> {
                         VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
                         view = new Dialog(viewForm);
-                        view.setWidth("750px");
+                        view.setWidthFull();
                         nomePlaylist = titolo.getTitolo();
                         view.setHeaderTitle("Titolo ➡ " + nomePlaylist);
 
@@ -284,6 +284,30 @@ public class MyPlaylistView extends VerticalLayout {
         gridCanzoni.getColumnByKey("artista").setWidth("250px");
         gridCanzoni.getColumnByKey("anno").setWidth("100px");
         gridCanzoni.getColumns().get(2).setSortable(false);
+        gridCanzoni.addColumn(
+                new ComponentRenderer<>(Button::new, (button, titolo) -> {
+                    button.addThemeVariants(ButtonVariant.LUMO_ICON,
+                            ButtonVariant.LUMO_PRIMARY);
+                    button.addClickListener(e -> {
+                        InsEmozioniView insEmoDialog = new InsEmozioniView(titolo);
+                        insEmoDialog.open();
+                        //System.out.println(titolo.getId()); --> SEMPRE 0!!
+                        /*
+                        VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
+                        view = new Dialog(viewForm);
+                        view.setWidth("750px");
+                        nomePlaylist = titolo.getTitolo();
+                        view.setHeaderTitle("Titolo ➡ " + nomePlaylist);
+
+                        configureGridCanzoni();
+
+                        view.open();
+
+                         */
+                    });
+                    button.setIcon(new Icon(VaadinIcon.BAR_CHART_H));
+                    button.setText("Inserisci Emozioni");
+                })).setHeader("Votazione");
         //resultSongPlaylist = new ArrayList<>();
         try {
             resultSongPlaylist = stub.showCanzoniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"), username);
