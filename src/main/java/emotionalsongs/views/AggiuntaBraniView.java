@@ -65,6 +65,7 @@ public class AggiuntaBraniView extends Dialog {
                             username, (Set<Canzone>) VaadinSession.getCurrent().getAttribute("braniSelezionati"));
                     Notification.show("Brani inseriti nella Playlist!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                    this.close();
                 }
                 else{
                     Notification.show("Non hai selezionato alcun brano!", 3000, Notification.Position.MIDDLE)
