@@ -66,6 +66,7 @@ public class ServerES implements Servizi {
             rs = stmt.executeQuery();
             while (rs.next()) {
                 Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
+                //System.out.println(canzone.getId());
                 result.add(canzone);
             }
             if (result.isEmpty()) throw new NessunaCanzoneTrovata();
@@ -333,7 +334,7 @@ public class ServerES implements Servizi {
             stmt = conn.prepareStatement(query);
             rs = stmt.executeQuery();
             while (rs.next()) {
-                Playlist playlist = new Playlist(rs.getString("titolo"));
+                Playlist playlist = new Playlist(rs.getInt("playlist_id"), rs.getString("titolo"), rs.getInt("user_id"));
                 result.add(playlist);
             }
         } catch (SQLException e) {

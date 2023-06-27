@@ -279,11 +279,12 @@ public class MyPlaylistView extends VerticalLayout {
 
     private void configureGridCanzoni() {
         //gridCanzoni.setWidthFull();
-        gridCanzoni.setColumns("titolo", "artista", "anno");
-        gridCanzoni.getColumnByKey("titolo").setWidth("250px");
-        gridCanzoni.getColumnByKey("artista").setWidth("250px");
-        gridCanzoni.getColumnByKey("anno").setWidth("100px");
-        gridCanzoni.getColumns().get(2).setSortable(false);
+        gridCanzoni.setColumns("id","titolo", "artista", "anno");
+        //gridCanzoni.getColumnByKey("titolo").setWidth("250px");
+        //gridCanzoni.getColumnByKey("artista").setWidth("250px");
+        //gridCanzoni.getColumnByKey("anno").setWidth("100px");
+        gridCanzoni.getColumnByKey("id").setVisible(false);
+        gridCanzoni.getColumns().get(3).setSortable(false);
         gridCanzoni.addColumn(
                 new ComponentRenderer<>(Button::new, (button, titolo) -> {
                     button.addThemeVariants(ButtonVariant.LUMO_ICON,

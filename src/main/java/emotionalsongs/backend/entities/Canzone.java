@@ -7,6 +7,7 @@ import java.io.Serializable;
 @Entity
 public class Canzone extends AbstractEntity implements Serializable {
 
+    private int id;
     private int anno;
     private String codice;
     private String titolo;
@@ -27,10 +28,6 @@ public class Canzone extends AbstractEntity implements Serializable {
         this.titolo = titolo;
         this.artista = autore;
         this.anno = anno;
-    }
-
-    public Canzone(int canzoni_id) {
-        super();
     }
 
     public int getId() {

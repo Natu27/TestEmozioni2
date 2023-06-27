@@ -98,8 +98,10 @@ public class RicercaTitoloView extends VerticalLayout {
 
     private void configureGrid() {
         grid.setSizeFull();
-        grid.setColumns("titolo", "artista", "anno");
-        grid.getColumns().get(2).setSortable(false); // sort disattivato perchè non funziona su questa colonna
+        grid.setColumns("id","titolo", "artista", "anno");
+        //TODO id invisibile ora valorizzato e funzionante --> per V
+        grid.getColumnByKey("id").setVisible(false);
+        grid.getColumns().get(3).setSortable(false); // sort disattivato perchè non funziona su questa colonna
         // grid.getColumns().get(2).setComparator((c1, c2) -> {
         //    return Integer.valueOf(c1.getAnno()).compareTo(Integer.valueOf(c2.getAnno()));
         //});

@@ -5,25 +5,29 @@ import java.io.Serializable;
 @Entity
 public class Playlist extends AbstractEntity implements Serializable {
 
+    private int id;
     private String titolo;
-    private String username;
+    private int username;
 
     public Playlist() {}
 
-    public Playlist(String titolo) {
+    public Playlist(int id, String titolo, int userId) {
+        this.id = id;
         this.titolo = titolo;
+        username = userId;
     }
+
     public int getId() {
         return id;
     }
     public void setId(int id) {
         this.id= id;
     }
-    public String getUsername() {
+    public int getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(int username) {
         this.username = username;
     }
 
