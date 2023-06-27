@@ -209,6 +209,7 @@ public class MyPlaylistView extends VerticalLayout {
                             ButtonVariant.LUMO_PRIMARY);
                     button.addClickListener(e -> {
                         VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
+                        VaadinSession.getCurrent().setAttribute("playlistId", titolo.getId());
                         view = new Dialog(viewForm);
                         view.setWidthFull();
                         nomePlaylist = titolo.getTitolo();
@@ -290,9 +291,13 @@ public class MyPlaylistView extends VerticalLayout {
                     button.addThemeVariants(ButtonVariant.LUMO_ICON,
                             ButtonVariant.LUMO_PRIMARY);
                     button.addClickListener(e -> {
-                        InsEmozioniView insEmoDialog = new InsEmozioniView(titolo);
+                        InsEmozioniView insEmoDialog;
+                        try {
+                            insEmoDialog = new InsEmozioniView(titolo);
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
+                        }
                         insEmoDialog.open();
-                        //System.out.println(titolo.getId()); --> SEMPRE 0!!
                         /*
                         VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
                         view = new Dialog(viewForm);
@@ -309,7 +314,6 @@ public class MyPlaylistView extends VerticalLayout {
                     button.setIcon(new Icon(VaadinIcon.BAR_CHART_H));
                     button.setText("Inserisci Emozioni");
                 })).setHeader("Votazione");
-        //resultSongPlaylist = new ArrayList<>();
         try {
             resultSongPlaylist = stub.showCanzoniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"), username);
             gridCanzoni.setItems(resultSongPlaylist);

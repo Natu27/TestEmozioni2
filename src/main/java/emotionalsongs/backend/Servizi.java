@@ -1,6 +1,7 @@
 package emotionalsongs.backend;
 
 import emotionalsongs.backend.entities.Canzone;
+import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
@@ -8,6 +9,7 @@ import emotionalsongs.backend.exceptions.utente.UsernameErrato;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -27,5 +29,6 @@ public interface Servizi extends Remote {
     int renamePlaylist(String username, String nuovoTitolo, String vecchioTitolo) throws RemoteException;
     void addBraniPlaylist(String nomePlaylist, String nomeUtente, Set<Canzone> brani) throws NessunaCanzoneTrovata, RemoteException;
     ArrayList<Canzone> showCanzoniPlaylist(String nomePlaylist, String username) throws RemoteException;
+    void voteBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException;
 
 }

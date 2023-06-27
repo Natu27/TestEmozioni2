@@ -10,6 +10,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -18,9 +20,13 @@ import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
+import emotionalsongs.backend.ClientES;
+import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
 
+import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.*;
 
 @PageTitle("InsEmozioni")
@@ -31,8 +37,10 @@ public class InsEmozioniView extends Dialog {
     String username = (String) VaadinSession.getCurrent().getAttribute("username");
     Canzone songSelected;
     Grid<Emozione> grid;
+    ClientES clientES = new ClientES();
+    Servizi stub = clientES.getStub();
 
-    public InsEmozioniView(Canzone songSelected) {
+    public InsEmozioniView(Canzone songSelected) throws Exception {
         this.songSelected = songSelected;
 
         setWidth("800px");
@@ -55,11 +63,26 @@ public class InsEmozioniView extends Dialog {
         Button confirmButton = new Button("Conferma", VaadinIcon.CHECK_CIRCLE.create());
         confirmButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         confirmButton.addClickListener(e -> {
-            List<Emozione> punteggi = getAllScores();
-            for(Emozione emo : punteggi) {
+            List<Emozione> emozioniVotate = getAllScores();
+            /*
+            for(Emozione emo : emozioniVotate) {
                 System.out.println(emo.toString());
             }
-            System.out.println(); //Separare score !=
+             */
+            try {
+                stub.voteBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
+                Notification.show("Inserimento eseguito!", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                this.close();
+            }
+            catch (SQLException ex) {
+                //TODO: da gestire con update
+                System.out.println("UPDATE");
+            }
+            catch (RemoteException ex) {
+                Notification.show("Impossibile effettuare inserimento!", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            }
         });
 
         //Button close
