@@ -117,7 +117,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void configureLoginForm() {
-        H1 titleLogin = new H1("Login");
+        H1 titleLogin = new H1("Login \uD83D\uDC64");
         user = new TextField();
         password = new PasswordField();
         user.setWidthFull();

@@ -140,7 +140,7 @@ public class MyPlaylistView extends VerticalLayout {
 
 
     private void dialogCreatePlaylist() {
-        H1 title = new H1("Nuova Playlist");
+        H1 title = new H1("Playlist \uD83C\uDFB5");
         dialog = new Dialog();
         playlistName = new TextField("Titolo");
         playlistName.setWidthFull();

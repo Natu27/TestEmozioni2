@@ -1,16 +1,19 @@
 package emotionalsongs.views;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -32,6 +35,7 @@ public class InsEmozioniView extends Dialog {
     public InsEmozioniView(Canzone songSelected) {
         this.songSelected = songSelected;
 
+        setWidth("800px");
         setCloseOnEsc(true);
 
         // Crea il layout per le informazioni dettagliate
@@ -86,6 +90,8 @@ public class InsEmozioniView extends Dialog {
         grid.setItems(getEmotions()); // Metodo per ottenere le emozioni da visualizzare
 
         grid.getColumnByKey("score").setVisible(false);
+        grid.getColumnByKey("commento").setVisible(false);
+
         grid.addComponentColumn(emotion -> {
             ComboBox<Integer> scoreComboBox = new ComboBox<>();
             scoreComboBox.setItems(0, 1, 2, 3, 4, 5);
@@ -98,8 +104,56 @@ public class InsEmozioniView extends Dialog {
             });
             return scoreComboBox;
         }).setHeader("Punteggio");
+
+        grid.addComponentColumn(emotion -> {
+            Button commentButton = new Button("Aggiungi");
+            commentButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            commentButton.addClickListener(event -> {
+                Dialog dialog = new Dialog();
+                dialog.setWidth("500px");
+
+                H3 titolo = new H3("Commento " + emotion.getName() + " ⬇");
+                HorizontalLayout titleLayout = new HorizontalLayout(titolo);
+                titleLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+                titleLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+                TextArea commentTextArea = new TextArea();
+                commentTextArea.setMaxLength(256);
+                commentTextArea.setWidth("100%");
+
+                Button saveButton = new Button("Conferma", e -> {
+                    String comment = commentTextArea.getValue();
+                    emotion.setCommento(comment);
+                    dialog.close();
+                });
+                saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+                saveButton.setIcon(VaadinIcon.CHECK_CIRCLE.create());
+                saveButton.setAutofocus(true);
+
+                Button closeButton = new Button("Annulla", e -> dialog.close());
+                closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+                closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
+                closeButton.setAutofocus(true);
+
+                HorizontalLayout buttonsLayout = new HorizontalLayout(saveButton, closeButton);
+                buttonsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+                buttonsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
+                Component spacer1 = createSpacer();
+                Component spacer2 = createSpacer();
+                dialog.add(titleLayout, spacer1, commentTextArea, spacer2, buttonsLayout);
+                dialog.open();
+            });
+            return commentButton;
+        }).setHeader("Commento");
     }
 
+    private Component createSpacer() {
+        Div spacer = new Div();
+        spacer.setWidth("20px");  // larghezza dello spazio vuoto
+        spacer.setHeight("20px"); // altezza dello spazio vuoto
+        return spacer;
+    }
     private ArrayList<Emozione> getEmotions() {
         ArrayList<Emozione> emotions = new ArrayList<>();
         emotions.add(new Emozione("Amazement"));
