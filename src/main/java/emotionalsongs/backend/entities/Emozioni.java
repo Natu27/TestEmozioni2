@@ -3,23 +3,23 @@ package emotionalsongs.backend.entities;
 import java.io.Serializable;
 
 public class Emozioni implements Serializable {
-    private int amazement;
+    private final int amazement;
     private String amazement_comment;
-    private int solemnity;
+    private final int solemnity;
     private String solemnity_comment;
-    private int tenderness;
+    private final int tenderness;
     private String tenderness_comment;
-    private int nostalgia;
+    private final int nostalgia;
     private String nostalgia_comment;
-    private int calmness;
+    private final int calmness;
     private String calmness_comment;
-    private int power;
+    private final int power;
     private String power_comment;
-    private int joy;
+    private final int joy;
     private String joy_comment;
-    private int tension;
+    private final int tension;
     private String tension_comment;
-    private int sadness;
+    private final int sadness;
     private String sadness_comment;
 
 

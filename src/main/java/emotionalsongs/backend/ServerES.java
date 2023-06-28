@@ -70,22 +70,22 @@ public class ServerES implements Servizi {
             idNotToFind.add(c.getId());
         }
 
-        String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " + "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')";
+        StringBuilder query = new StringBuilder("SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " + "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')");
         if (year != null) {
-            query = query + " AND anno = " + year;
+            query.append(" AND anno = ").append(year);
         }
         if (!idNotToFind.isEmpty()) {
-            query += "AND \"Canzoni_id\" NOT IN(";
+            query.append("AND \"Canzoni_id\" NOT IN(");
         }
         for (int id : idNotToFind) {
             if (idNotToFind.toArray()[idNotToFind.size() - 1].equals(id))
-                query += id + ")";
+                query.append(id).append(")");
             else
-                query += id + ",";
+                query.append(id).append(",");
         }
-        if (titoloDaCercare == "" && autoreDaCercare == "")
-            query = query + " LIMIT 300;";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        if (titoloDaCercare.equals("") && autoreDaCercare.equals(""))
+            query.append(" LIMIT 300;");
+        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query.toString()); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
                 //System.out.println(canzone.getId());
