@@ -53,7 +53,13 @@ public class RicercaTitoloView extends VerticalLayout {
         setSizeFull();
 
         searchButton = new Button("Cerca", buttonClickEvent -> search());
-        emoButton = new Button("Visualizza Emozioni", buttonClickEvent -> visualizzaEmo());
+        emoButton = new Button("Visualizza Emozioni", buttonClickEvent -> {
+            try {
+                visualizzaEmo();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         configureLayout();
         configureSearchBar();
         configureGrid();
@@ -147,7 +153,7 @@ public class RicercaTitoloView extends VerticalLayout {
             annoDaCercare.setValue(cachedValue);
     }
 
-    private void visualizzaEmo() {
+    private void visualizzaEmo() throws Exception {
         Canzone selectedTuple = grid.asSingleSelect().getValue();
         VaadinSession.getCurrent().setAttribute("canzoneselezionata", selectedTuple);
         if (selectedTuple != null) {
@@ -159,7 +165,7 @@ public class RicercaTitoloView extends VerticalLayout {
         }
     }
 
-    private void openDetailsDialog(Canzone selectedTuple) {
+    private void openDetailsDialog(Canzone selectedTuple) throws Exception {
         Dialog dialog = new Dialog();
         //dialog.setSizeFull();
 

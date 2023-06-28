@@ -3,13 +3,16 @@ package emotionalsongs.views;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.server.VaadinSession;
+import emotionalsongs.backend.ClientES;
+import emotionalsongs.backend.Servizi;
+import emotionalsongs.backend.entities.Canzone;
+import emotionalsongs.backend.entities.Emozioni;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.title.TextTitle;
@@ -18,23 +21,19 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.rmi.RemoteException;
 
 
 public class HistogramView extends VerticalLayout {
 
     Object canzone = VaadinSession.getCurrent().getAttribute("canzoneselezionata");
+    ClientES clientES = new ClientES();
+    Servizi stub = clientES.getStub();
 
-    public HistogramView(){
+    public HistogramView() throws Exception {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(1, "Amazement", " ");
-        dataset.addValue(1, "Solemnity", " ");
-        dataset.addValue(1, "Tenderness", " ");
-        dataset.addValue(2, "Nostalgia", " ");
-        dataset.addValue(2, "Calmness", " ");
-        dataset.addValue(3, "Power", " ");
-        dataset.addValue(4, "Joy", " ");
-        dataset.addValue(5, "Tension", " ");
-        dataset.addValue(5, "Sadness", " ");
+
+        fillDatasetWithAverageEmotions(dataset);
 
         JFreeChart chart = ChartFactory.createBarChart(
                 "Distribuzione Emozioni",
@@ -77,5 +76,24 @@ public class HistogramView extends VerticalLayout {
         setAlignSelf(Alignment.CENTER, chartContainer);
 
         add(chartContainer);
+    }
+
+    private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset) throws RemoteException {
+        int songID = ((Canzone) canzone).getId();
+        Emozioni e = stub.getAverageSongEmotions(songID);
+        if (e != null) {
+            dataset.addValue(e.getAmazement(), "Amazement", " ");
+            dataset.addValue(e.getSolemnity(), "Solemnity", " ");
+            dataset.addValue(e.getTenderness(), "Tenderness", " ");
+            dataset.addValue(e.getNostalgia(), "Nostalgia", " ");
+            dataset.addValue(e.getCalmness(), "Calmness", " ");
+            dataset.addValue(e.getPower(), "Power", " ");
+            dataset.addValue(e.getJoy(), "Joy", " ");
+            dataset.addValue(e.getTension(), "Tension", " ");
+            dataset.addValue(e.getSadness(), "Sadness", " ");
+        } else {
+            // TODO: messaggio che non ci sono votazioni per la canzone
+        }
+
     }
 }
