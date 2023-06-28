@@ -106,7 +106,7 @@ public class AggiuntaBraniView extends Dialog {
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
         iconTitolo = new Icon(VaadinIcon.PLUS);
         iconTitolo.setColor("#006af5");
-        titoloPagina = new H3("Aggiungi Brani");
+        titoloPagina = new H3("Aggiungi Brani \uD83C\uDFB6");
         layoutTitolo.add(iconTitolo, titoloPagina);
     }
 

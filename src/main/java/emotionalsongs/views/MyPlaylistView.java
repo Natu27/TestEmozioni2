@@ -323,18 +323,23 @@ public class MyPlaylistView extends VerticalLayout {
     }
 
     private void configureEditDialog(){
-        Button closeButton = new Button("Chiudi", VaadinIcon.CLOSE_CIRCLE.create());
+        H2 titleRename = new H2("Rinomina ✒");
+        Button closeButton = new Button("Annulla", VaadinIcon.CLOSE_CIRCLE.create());
         closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
-        confirmNewTitle = new Button("Rinomina", VaadinIcon.CHECK_CIRCLE.create());
+        confirmNewTitle = new Button("Conferma", VaadinIcon.CHECK_CIRCLE.create());
         confirmNewTitle.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
         editTitle = new Dialog(renamePlaylist);
-        editTitle.setHeaderTitle("Rinomina");
         editTitle.setCloseOnEsc(true);
         newTitle = new TextField("Nuovo titolo");
         newTitle.setRequired(true);
+
+        HorizontalLayout buttonsLayout = new HorizontalLayout(confirmNewTitle, closeButton);
+        buttonsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
+        buttonsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
         //newTitle.setErrorMessage("Il campo non può essere vuoto!");
-        renamePlaylist.add(newTitle,confirmNewTitle,closeButton);
+        renamePlaylist.add(titleRename, newTitle, buttonsLayout);
         renamePlaylist.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);
         confirmNewTitle.addClickListener(e->{

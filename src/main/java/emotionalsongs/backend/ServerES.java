@@ -318,7 +318,7 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public void voteBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException {
+    public void insEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException {
         StringBuilder query = new StringBuilder("INSERT INTO public.\"Emozioni\" VALUES(" + playlistId + "," + songId + ",");
         for(Emozione e : emozioni) {
             int score = e.getScore();
@@ -368,4 +368,69 @@ public class ServerES implements Servizi {
             }
         }
     }
+
+    @Override
+    public void updateEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws RemoteException {
+        StringBuilder query = new StringBuilder("UPDATE public.\"Emozioni\" SET ");
+        for (Emozione e : emozioni) {
+            int score = e.getScore();
+            String commento = e.getCommento();
+
+            // Aggiungi l'istruzione di aggiornamento per il campo "score"
+            if(emozioni.indexOf(e) != 5) {
+                query.append(e.getName()).append(" = ");
+            } else {
+                query.append("P").append(e.getName()).append(" = ");
+            }
+
+            if (score != 0)
+                query.append(score);
+            else
+                query.append("null");
+
+            if(emozioni.indexOf(e) != 8) {
+                // Aggiungi l'istruzione di aggiornamento per il campo "commento"
+                query.append(", comm").append(e.getName()).append(" = ");
+                if (!commento.equals(""))
+                    query.append("'").append(commento).append("', ");
+                else
+                    query.append("null, ");
+            } else {
+                query.append(", comm").append(e.getName()).append(" = ");
+                if (!commento.equals(""))
+                    query.append("'").append(commento).append("' ");
+                else
+                    query.append("null ");
+            }
+        }
+        // Aggiungi la clausola WHERE per specificare le condizioni di aggiornamento
+        query.append(" WHERE playlist_id = ").append(playlistId);
+        query.append(" AND canzone_id = ").append(songId).append(";");
+        System.out.println(query);
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query.toString());
+
+            stmt.executeUpdate();
+            stmt.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

@@ -29,6 +29,8 @@ public interface Servizi extends Remote {
     int renamePlaylist(String username, String nuovoTitolo, String vecchioTitolo) throws RemoteException;
     void addBraniPlaylist(String nomePlaylist, String nomeUtente, Set<Canzone> brani) throws NessunaCanzoneTrovata, RemoteException;
     ArrayList<Canzone> showCanzoniPlaylist(String nomePlaylist, String username) throws RemoteException;
-    void voteBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException;
+    void insEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException;
+    void updateEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws RemoteException;
+
 
 }

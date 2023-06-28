@@ -70,18 +70,26 @@ public class InsEmozioniView extends Dialog {
             }
              */
             try {
-                stub.voteBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
-                Notification.show("Inserimento eseguito!", 3000, Notification.Position.MIDDLE)
+                stub.insEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
+                Notification.show("Votazione eseguita!", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 this.close();
             }
             catch (SQLException ex) {
                 //TODO: da gestire con update
-                System.out.println("UPDATE");
+                try {
+                    stub.updateEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
+                    Notification.show("Votazione aggiornata!", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                    this.close();
+                } catch (RemoteException exception) {
+                    Notification.show("Impossibile effettuare l'aggiornamento!", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
             }
             catch (RemoteException ex) {
-                Notification.show("Impossibile effettuare inserimento!", 3000, Notification.Position.MIDDLE)
-                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                Notification.show("Impossibile effettuare l'inserimento!", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
 
@@ -129,13 +137,13 @@ public class InsEmozioniView extends Dialog {
         }).setHeader("Punteggio");
 
         grid.addComponentColumn(emotion -> {
-            Button commentButton = new Button("Aggiungi");
+            Button commentButton = new Button("Aggiungi", VaadinIcon.CLIPBOARD_TEXT.create());
             commentButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             commentButton.addClickListener(event -> {
                 Dialog dialog = new Dialog();
                 dialog.setWidth("500px");
 
-                H3 titolo = new H3("Commento " + emotion.getName() + " ⬇");
+                H3 titolo = new H3("Commento " + emotion.getName() + " \uD83D\uDDB9 ⬇");
                 HorizontalLayout titleLayout = new HorizontalLayout(titolo);
                 titleLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
                 titleLayout.setAlignItems(FlexComponent.Alignment.CENTER);
