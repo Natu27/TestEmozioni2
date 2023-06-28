@@ -233,7 +233,7 @@ public class ServerES implements Servizi {
         int playlistId = playlistId(username, nomePlaylist);
         StringBuilder query = new StringBuilder("INSERT INTO public.\"CanzoniPlaylist\" VALUES");
         for (Canzone c : braniSelezionati) {
-            int canzoneId = canzoneId(c.getTitolo(), c.getArtista(), c.getAnno());
+            int canzoneId = c.getId();
             if(braniSelezionati.toArray()[braniSelezionati.size() - 1].equals(c))
                 query.append("(").append(playlistId).append(", ").append(canzoneId).append(");");
             else
@@ -304,19 +304,6 @@ public class ServerES implements Servizi {
         return result;
     }
 
-    private int canzoneId(String titolo, String autore, int anno) {
-        int result = -1;
-        String query = "SELECT * FROM public.\"Canzoni\" WHERE titolo = '" + titolo
-                + "' AND autore = '" + autore + "' AND anno = " + anno + ";";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                result = rs.getInt("Canzoni_id");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
 
     @Override
     public void insEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException {
@@ -437,7 +424,6 @@ public class ServerES implements Servizi {
     @Override
     public Emozioni getAverageSongEmotions(int songId) throws RemoteException {
         Emozioni result = null;
-        //if (titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null) throw new NessunaCanzoneTrovata();
         String query = "SELECT avg(amazement),avg(solemnity),avg(tenderness),avg(nostalgia),avg(calmness),avg(ppower),avg(joy),avg(tension),avg(sadness) FROM public.\"Emozioni\" WHERE canzone_id =" + songId + ";";
 
         try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {

@@ -60,14 +60,13 @@ public class AggiuntaBraniView extends Dialog {
         addButton = new Button("Aggiungi Brani", buttonClickEvent -> aggiungiBrani());
         fineButton = new Button("Conferma", buttonClickEvent -> {
             try {
-                if (VaadinSession.getCurrent().getAttribute("braniSelezionati")!=null) {
+                if (braniSelezionati != null) {
                     stub.addBraniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"),
-                            username, (Set<Canzone>) VaadinSession.getCurrent().getAttribute("braniSelezionati"));
+                            username, braniSelezionati);
                     Notification.show("Brani inseriti nella Playlist!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();
-                }
-                else{
+                } else {
                     Notification.show("Non hai selezionato alcun brano!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
@@ -81,7 +80,6 @@ public class AggiuntaBraniView extends Dialog {
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             braniSelezionati = new HashSet<>();
-            VaadinSession.getCurrent().setAttribute("braniSelezionati", braniSelezionati);
         });
         closeButton = new Button("Annulla", buttonClickEvent -> this.close());
         configureLayout();
@@ -184,7 +182,6 @@ public class AggiuntaBraniView extends Dialog {
         braniSelezionati.addAll(brani);
         /*for(Canzone c : brani)
             System.out.println(c.getTitolo());*/
-        VaadinSession.getCurrent().setAttribute("braniSelezionati", braniSelezionati);
         grid.asMultiSelect().clear();
     }
 

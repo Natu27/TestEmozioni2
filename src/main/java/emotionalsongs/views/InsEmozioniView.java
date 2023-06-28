@@ -27,7 +27,8 @@ import emotionalsongs.backend.entities.Emozione;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @PageTitle("InsEmozioni")
 @Route(value = "ins-emozioni", layout = MainLayout.class)
