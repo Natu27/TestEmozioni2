@@ -25,9 +25,10 @@ import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @PageTitle("AggiuntaBrani")
 @Route(value = "aggiunta-brani", layout = MainLayout.class)
@@ -46,11 +47,15 @@ public class AggiuntaBraniView extends Dialog {
     Button closeButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
-    Set<Canzone> braniSelezionati = new HashSet<>();
+    ArrayList<Canzone> braniSelezionati = new ArrayList<>();
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
     List<Integer> anni = stub.getAnni("", "");
     String username = (String) VaadinSession.getCurrent().getAttribute("username");
+
+    String playlistTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
+
+    ArrayList<Canzone> braniPrecedentementeSelezionati = stub.showCanzoniPlaylist(playlistTitle, username);
 
     public AggiuntaBraniView() throws Exception {
         setWidthFull();
@@ -61,8 +66,7 @@ public class AggiuntaBraniView extends Dialog {
         fineButton = new Button("Conferma", buttonClickEvent -> {
             try {
                 if (braniSelezionati != null) {
-                    stub.addBraniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"),
-                            username, braniSelezionati);
+                    stub.addBraniPlaylist(playlistTitle, username, braniSelezionati);
                     Notification.show("Brani inseriti nella Playlist!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();
@@ -79,7 +83,7 @@ public class AggiuntaBraniView extends Dialog {
                 Notification.show("Non hai selezionato alcun brano!", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
-            braniSelezionati = new HashSet<>();
+            braniSelezionati = new ArrayList<>();
         });
         closeButton = new Button("Annulla", buttonClickEvent -> this.close());
         configureLayout();
@@ -152,7 +156,8 @@ public class AggiuntaBraniView extends Dialog {
 
     private void search() {
         try {
-            result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
+            result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue(),
+                    (ArrayList<Canzone>) Stream.concat(braniPrecedentementeSelezionati.stream(), braniSelezionati.stream()).collect(Collectors.toList()));
             grid.setItems(result);
             anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
         } catch (RemoteException e) {
@@ -180,6 +185,9 @@ public class AggiuntaBraniView extends Dialog {
     private void aggiungiBrani() {
         Set<Canzone> brani = grid.getSelectedItems();
         braniSelezionati.addAll(brani);
+        //TODO: si potrebbero rimuovere i brani dalla lista già dopo aver cliccato su aggiunta brani
+        //result.remove(brani);
+        //grid.setItems(result);
         /*for(Canzone c : brani)
             System.out.println(c.getTitolo());*/
         grid.asMultiSelect().clear();

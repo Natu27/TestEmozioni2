@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 
 public class ServerES implements Servizi {
@@ -50,6 +49,42 @@ public class ServerES implements Servizi {
             query = query + " AND anno = " + year;
         }
         query = query + " LIMIT 300";
+        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
+                //System.out.println(canzone.getId());
+                result.add(canzone);
+            }
+            if (result.isEmpty()) throw new NessunaCanzoneTrovata();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year, ArrayList<Canzone> braniDaEscludere) throws NessunaCanzoneTrovata, RemoteException {
+        List<Canzone> result = new ArrayList<>();
+        ArrayList<Integer> idNotToFind = new ArrayList<>();
+        for (Canzone c : braniDaEscludere) {
+            idNotToFind.add(c.getId());
+        }
+
+        String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " + "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')";
+        if (year != null) {
+            query = query + " AND anno = " + year;
+        }
+        if (!idNotToFind.isEmpty()) {
+            query += "AND \"Canzoni_id\" NOT IN(";
+        }
+        for (int id : idNotToFind) {
+            if (idNotToFind.toArray()[idNotToFind.size() - 1].equals(id))
+                query += id + ")";
+            else
+                query += id + ",";
+        }
+        if (titoloDaCercare == "" && autoreDaCercare == "")
+            query = query + " LIMIT 300;";
         try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
@@ -227,14 +262,14 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public void addBraniPlaylist(String nomePlaylist, String username, Set<Canzone> braniSelezionati) throws RemoteException,NessunaCanzoneTrovata {
+    public void addBraniPlaylist(String nomePlaylist, String username, ArrayList<Canzone> braniSelezionati) throws RemoteException, NessunaCanzoneTrovata {
         Connection conn = null;
         PreparedStatement stmt = null;
         int playlistId = playlistId(username, nomePlaylist);
         StringBuilder query = new StringBuilder("INSERT INTO public.\"CanzoniPlaylist\" VALUES");
         for (Canzone c : braniSelezionati) {
             int canzoneId = c.getId();
-            if(braniSelezionati.toArray()[braniSelezionati.size() - 1].equals(c))
+            if (braniSelezionati.toArray()[braniSelezionati.size() - 1].equals(c))
                 query.append("(").append(playlistId).append(", ").append(canzoneId).append(");");
             else
                 query.append("(").append(playlistId).append(", ").append(canzoneId).append("),");
