@@ -164,38 +164,6 @@ public class ServerES implements Servizi {
         return result;
     }
 
-    private int userId(String username) {
-        String query = "SELECT user_id FROM public.\"User\" WHERE username = '" + username + "'";
-        int userId = -1;
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                userId = rs.getInt("user_id");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return userId;
-
-    }
-
-    private int playlistId(String username, String titolo) {
-        int userId = userId(username);
-        String query = "SELECT * FROM public.\"Playlist\" WHERE user_id = " + userId + "AND titolo = '" + titolo + "'";
-        int playlistId = -1;
-        ResultSet rs;
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            rs = stmt.executeQuery();
-            while (rs.next()) {
-                playlistId = rs.getInt("playlist_id");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return playlistId;
-    }
-
     @Override
     public int addPlaylist(String titolo, int userId) throws RemoteException {
         int playlistCreate = -1;
@@ -230,9 +198,9 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public int removePlaylist(String username, String titolo) throws RemoteException {
+    public int removePlaylist(int userId, String titolo) throws RemoteException {
         int playlistEliminata = -1;
-        int userId = userId(username);
+        //int userId = userId(username);
         String query = "DELETE FROM public.\"Playlist\" WHERE user_id = " + userId + "AND titolo = '" + titolo + "'";
         try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -245,11 +213,8 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public int renamePlaylist(String username, String nuovoTitolo, String vecchioTitolo) throws RemoteException {
+    public int renamePlaylist(int userId, String nuovoTitolo, int playlistId) throws RemoteException {
         int playlistModificata = -1;
-        int userId = userId(username);
-        int playlistId = playlistId(username, vecchioTitolo);
-        //System.err.println(playlistId);
         String query = "UPDATE public.\"Playlist\" SET titolo = ? WHERE user_id = ? AND playlist_id = ?";
         try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
 
@@ -266,10 +231,10 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public void addBraniPlaylist(String nomePlaylist, String username, ArrayList<Canzone> braniSelezionati) throws RemoteException, NessunaCanzoneTrovata {
+    public void addBraniPlaylist(int playlistId, ArrayList<Canzone> braniSelezionati) throws RemoteException, NessunaCanzoneTrovata {
         Connection conn = null;
         PreparedStatement stmt = null;
-        int playlistId = playlistId(username, nomePlaylist);
+        //int playlistId = playlistId(username, nomePlaylist);
         StringBuilder query = new StringBuilder("INSERT INTO public.\"CanzoniPlaylist\" VALUES");
         for (Canzone c : braniSelezionati) {
             int canzoneId = c.getId();
@@ -305,8 +270,8 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public ArrayList<Canzone> showCanzoniPlaylist(String nomePlaylist, String username) throws RemoteException {
-        ArrayList<Integer> idSong = getIdSongPlaylist(nomePlaylist, username);
+    public ArrayList<Canzone> showCanzoniPlaylist(int playlistId) throws RemoteException {
+        ArrayList<Integer> idSong = getIdSongPlaylist(playlistId);
         ArrayList<Canzone> result = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT * FROM public.\"Canzoni\" WHERE ");
         if(!idSong.isEmpty()) {
@@ -329,9 +294,9 @@ public class ServerES implements Servizi {
         return result;
     }
 
-    private ArrayList<Integer> getIdSongPlaylist(String nomePlaylist, String username) {
+    private ArrayList<Integer> getIdSongPlaylist(int playlistId) {
         ArrayList<Integer> result = new ArrayList<>();
-        int playlistId = playlistId(username, nomePlaylist);
+        //int playlistId = playlistId(username, nomePlaylist);
         String query = "SELECT * FROM public.\"CanzoniPlaylist\" WHERE playlist_id = " + playlistId + ";";
         try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {

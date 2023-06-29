@@ -231,7 +231,7 @@ public class MyPlaylistView extends VerticalLayout {
                         delete = new ConfirmDialog("⚠️ Conferma eliminazione",
                                 "Sei sicuro di voler eliminare la playlist?", "Sì", event1 -> {
                         try {
-                            if (stub.removePlaylist(utente.getUsername(), titolo.getTitolo()) == 1) {
+                            if (stub.removePlaylist(utente.getId(), titolo.getTitolo()) == 1) {
                                 Notification.show("Playlist cancellata!", 3000, Notification.Position.MIDDLE)
                                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                                 this.configureGrid();
@@ -316,7 +316,7 @@ public class MyPlaylistView extends VerticalLayout {
                     button.setText("Inserisci Emozioni");
                 })).setHeader("Votazione");
         try {
-            resultSongPlaylist = stub.showCanzoniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"), utente.getUsername());
+            resultSongPlaylist = stub.showCanzoniPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"));
             gridCanzoni.setItems(resultSongPlaylist);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -347,7 +347,7 @@ public class MyPlaylistView extends VerticalLayout {
             try {
                 result = stub.myPlaylist(utente.getId());
                 if(nomePlaylistPresente(newTitle.getValue())) throw new NomePlaylistGiaPresente();
-                if(stub.renamePlaylist(utente.getUsername(),newTitle.getValue(),(String) VaadinSession.getCurrent().getAttribute("playlistTitle"))==1){
+                if(stub.renamePlaylist(utente.getId(),newTitle.getValue(),(Integer) VaadinSession.getCurrent().getAttribute("playlistId"))==1){
                     Notification.show("Playlist modificata!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.configureGrid();

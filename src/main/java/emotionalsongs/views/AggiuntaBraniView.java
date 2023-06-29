@@ -54,8 +54,9 @@ public class AggiuntaBraniView extends Dialog {
     String username = (String) VaadinSession.getCurrent().getAttribute("username");
 
     String playlistTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
+    int playlistId = (Integer) VaadinSession.getCurrent().getAttribute("playlistId");
 
-    ArrayList<Canzone> braniPrecedentementeSelezionati = stub.showCanzoniPlaylist(playlistTitle, username);
+    ArrayList<Canzone> braniPrecedentementeSelezionati = stub.showCanzoniPlaylist(playlistId);
 
     public AggiuntaBraniView() throws Exception {
         setWidthFull();
@@ -66,7 +67,7 @@ public class AggiuntaBraniView extends Dialog {
         fineButton = new Button("Conferma", buttonClickEvent -> {
             try {
                 if (braniSelezionati != null) {
-                    stub.addBraniPlaylist(playlistTitle, username, braniSelezionati);
+                    stub.addBraniPlaylist(playlistId, braniSelezionati);
                     Notification.show("Brani inseriti nella Playlist!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();
