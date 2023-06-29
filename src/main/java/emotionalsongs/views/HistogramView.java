@@ -2,11 +2,9 @@ package emotionalsongs.views;
 
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
-import emotionalsongs.backend.entities.Canzone;
-import emotionalsongs.backend.entities.Emozioni;
+import emotionalsongs.backend.entities.Emozione;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
@@ -22,18 +20,18 @@ import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.List;
 
 
 public class HistogramView extends VerticalLayout {
 
-    Object canzone = VaadinSession.getCurrent().getAttribute("canzoneselezionata");
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
 
-    public HistogramView() throws Exception {
+    public HistogramView(int idSong) throws Exception {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        fillDatasetWithAverageEmotions(dataset);
+        fillDatasetWithAverageEmotions(dataset, idSong);
 
         JFreeChart chart = ChartFactory.createBarChart(
                 "Distribuzione Emozioni",
@@ -78,22 +76,10 @@ public class HistogramView extends VerticalLayout {
         add(chartContainer);
     }
 
-    private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset) throws RemoteException {
-        int songID = ((Canzone) canzone).getId();
-        Emozioni e = stub.getAverageSongEmotions(songID);
-        if (e != null) {
-            dataset.addValue(e.getAmazement(), "Amazement", " ");
-            dataset.addValue(e.getSolemnity(), "Solemnity", " ");
-            dataset.addValue(e.getTenderness(), "Tenderness", " ");
-            dataset.addValue(e.getNostalgia(), "Nostalgia", " ");
-            dataset.addValue(e.getCalmness(), "Calmness", " ");
-            dataset.addValue(e.getPower(), "Power", " ");
-            dataset.addValue(e.getJoy(), "Joy", " ");
-            dataset.addValue(e.getTension(), "Tension", " ");
-            dataset.addValue(e.getSadness(), "Sadness", " ");
-        } else {
-            // TODO: messaggio che non ci sono votazioni per la canzone
+    private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset, int idSong) throws RemoteException {
+        List<Emozione> emozioni = stub.getVotazioni(idSong);
+        for(Emozione e : emozioni) {
+            dataset.addValue(e.getScore(), e.getName(), " ");
         }
-
     }
 }

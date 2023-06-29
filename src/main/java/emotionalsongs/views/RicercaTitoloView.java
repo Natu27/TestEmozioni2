@@ -182,15 +182,13 @@ public class RicercaTitoloView extends VerticalLayout {
                 " - Anno: " + selectedTuple.getAnno();
         layout.add(new H3(info));
 
-        HistogramView chart = new HistogramView();
+        HistogramView chart = new HistogramView(selectedTuple.getId());
         layout.add(chart);
 
         dialog.add(layout);
 
         // Aggiungi un pulsante per chiudere la finestra di dialogo
-        Button closeButton = new Button("Chiudi", buttonClickEvent -> {
-            dialog.close();
-        });
+        Button closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
         closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
         closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
         layout.add(closeButton);

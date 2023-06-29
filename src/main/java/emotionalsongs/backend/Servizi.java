@@ -2,7 +2,6 @@ package emotionalsongs.backend;
 
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
-import emotionalsongs.backend.entities.Emozioni;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
@@ -40,7 +39,6 @@ public interface Servizi extends Remote {
     ArrayList<Canzone> showCanzoniPlaylist(String nomePlaylist, String username) throws RemoteException;
     void insEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException;
     void updateEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws RemoteException;
-
-    Emozioni getAverageSongEmotions(int songId) throws  RemoteException;
+    List<Emozione> getVotazioni(int songId) throws  RemoteException;
 
 }

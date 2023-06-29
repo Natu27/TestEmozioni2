@@ -2,7 +2,6 @@ package emotionalsongs.backend;
 
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
-import emotionalsongs.backend.entities.Emozioni;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
@@ -429,7 +428,7 @@ public class ServerES implements Servizi {
         // Aggiungi la clausola WHERE per specificare le condizioni di aggiornamento
         query.append(" WHERE playlist_id = ").append(playlistId);
         query.append(" AND canzone_id = ").append(songId).append(";");
-        System.out.println(query);
+        //System.out.println(query);
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
@@ -456,14 +455,34 @@ public class ServerES implements Servizi {
         }
     }
 
+    //TODO : aggiungere colonne commenti alla query
     @Override
-    public Emozioni getAverageSongEmotions(int songId) throws RemoteException {
-        Emozioni result = null;
+    public List<Emozione> getVotazioni(int songId) throws RemoteException {
+        List<Emozione> result = new ArrayList<>();
         String query = "SELECT avg(amazement),avg(solemnity),avg(tenderness),avg(nostalgia),avg(calmness),avg(ppower),avg(joy),avg(tension),avg(sadness) FROM public.\"Emozioni\" WHERE canzone_id =" + songId + ";";
 
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try (Connection conn = this.dbConn.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                result = new Emozioni(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9));
+                Emozione amazement = new Emozione("Amazement", rs.getInt(1));
+                result.add(amazement);
+                Emozione solemnity = new Emozione("Solemnity", rs.getInt(2));
+                result.add(solemnity);
+                Emozione tenderness = new Emozione("Tenderness", rs.getInt(3));
+                result.add(tenderness);
+                Emozione nostalgia = new Emozione("Nostalgia", rs.getInt(4));
+                result.add(nostalgia);
+                Emozione calmness = new Emozione("Calmness", rs.getInt(5));
+                result.add(calmness);
+                Emozione power = new Emozione("Power", rs.getInt(6));
+                result.add(power);
+                Emozione joy = new Emozione("Joy", rs.getInt(7));
+                result.add(joy);
+                Emozione tension = new Emozione("Tension", rs.getInt(8));
+                result.add(tension);
+                Emozione sadness = new Emozione("Sadness", rs.getInt(9));
+                result.add(sadness);
             }
         } catch (SQLException e) {
             e.printStackTrace();
