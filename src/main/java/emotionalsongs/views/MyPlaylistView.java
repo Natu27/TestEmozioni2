@@ -282,9 +282,6 @@ public class MyPlaylistView extends VerticalLayout {
     private void configureGridCanzoni() {
         //gridCanzoni.setWidthFull();
         gridCanzoni.setColumns("id","titolo", "artista", "anno");
-        //gridCanzoni.getColumnByKey("titolo").setWidth("250px");
-        //gridCanzoni.getColumnByKey("artista").setWidth("250px");
-        //gridCanzoni.getColumnByKey("anno").setWidth("100px");
         gridCanzoni.getColumnByKey("id").setVisible(false);
         gridCanzoni.getColumns().get(3).setSortable(false);
         gridCanzoni.addColumn(
@@ -299,18 +296,6 @@ public class MyPlaylistView extends VerticalLayout {
                             throw new RuntimeException(ex);
                         }
                         insEmoDialog.open();
-                        /*
-                        VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
-                        view = new Dialog(viewForm);
-                        view.setWidth("750px");
-                        nomePlaylist = titolo.getTitolo();
-                        view.setHeaderTitle("Titolo ➡ " + nomePlaylist);
-
-                        configureGridCanzoni();
-
-                        view.open();
-
-                         */
                     });
                     button.setIcon(new Icon(VaadinIcon.BAR_CHART_H));
                     button.setText("Inserisci Emozioni");

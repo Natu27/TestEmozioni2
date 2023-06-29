@@ -52,13 +52,13 @@ public class MainLayout extends AppLayout {
     PasswordField password;
     Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
     String currentPage;
-    String username = (String) VaadinSession.getCurrent().getAttribute("username");
+
     public MainLayout() throws Exception {
 
         configureTopLayout();
         configureLoginForm();
 
-        if (username!=null) {
+        if (utente!=null) {
             login.setVisible(false);
             logout.setVisible(true);
             welcome.setVisible(true);

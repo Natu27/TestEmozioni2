@@ -35,7 +35,6 @@ import java.util.List;
 public class InsEmozioniView extends Dialog {
 
     String playlistTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
-    String username = (String) VaadinSession.getCurrent().getAttribute("username");
     Canzone songSelected;
     Grid<Emozione> grid;
     ClientES clientES = new ClientES();
@@ -65,11 +64,6 @@ public class InsEmozioniView extends Dialog {
         confirmButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         confirmButton.addClickListener(e -> {
             List<Emozione> emozioniVotate = getAllScores();
-            /*
-            for(Emozione emo : emozioniVotate) {
-                System.out.println(emo.toString());
-            }
-             */
             try {
                 stub.insEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
                 Notification.show("Votazione eseguita!", 3000, Notification.Position.MIDDLE)

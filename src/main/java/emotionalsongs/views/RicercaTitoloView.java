@@ -107,10 +107,7 @@ public class RicercaTitoloView extends VerticalLayout {
         grid.setColumns("id","titolo", "artista", "anno");
         //TODO id invisibile ora valorizzato e funzionante --> per V
         grid.getColumnByKey("id").setVisible(false);
-        grid.getColumns().get(3).setSortable(false); // sort disattivato perchè non funziona su questa colonna
-        // grid.getColumns().get(2).setComparator((c1, c2) -> {
-        //    return Integer.valueOf(c1.getAnno()).compareTo(Integer.valueOf(c2.getAnno()));
-        //});
+        grid.getColumns().get(3).setSortable(false); // sort disattivato perché non funziona su questa colonna
     }
 
     private void configureEmotions() {

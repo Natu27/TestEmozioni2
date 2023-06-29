@@ -108,8 +108,6 @@ public class RegistrazioneView extends VerticalLayout {
         username = new TextField("Username");
         password = new PasswordField("Password");
         confirmPassword = new PasswordField("Conferma Password");
-        //registrazione.setColspan(via_piazza,2);
-        //registrazione.setColspan(luogoNascita,2);
         try {
             CSVReader reader = new CSVReader(new FileReader("src/main/resources/META-INF/resources/data/Comuni.csv"));
             ICommonsList<ICommonsList<String>> data = reader.readAll();

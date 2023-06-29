@@ -51,9 +51,6 @@ public class AggiuntaBraniView extends Dialog {
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
     List<Integer> anni = stub.getAnni("", "");
-    String username = (String) VaadinSession.getCurrent().getAttribute("username");
-
-    String playlistTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
     int playlistId = (Integer) VaadinSession.getCurrent().getAttribute("playlistId");
 
     ArrayList<Canzone> braniPrecedentementeSelezionati = stub.showCanzoniPlaylist(playlistId);
@@ -186,11 +183,6 @@ public class AggiuntaBraniView extends Dialog {
     private void aggiungiBrani() {
         Set<Canzone> brani = grid.getSelectedItems();
         braniSelezionati.addAll(brani);
-        //TODO: si potrebbero rimuovere i brani dalla lista già dopo aver cliccato su aggiunta brani
-        //result.remove(brani);
-        //grid.setItems(result);
-        /*for(Canzone c : brani)
-            System.out.println(c.getTitolo());*/
         grid.asMultiSelect().clear();
     }
 
