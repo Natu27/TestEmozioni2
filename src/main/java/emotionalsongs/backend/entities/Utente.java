@@ -4,13 +4,17 @@ import java.io.Serializable;
 
 public class Utente extends AbstractEntity implements Serializable {
 
+    private int id;
     private String username;
 
     private String password;
+    private String nome;
 
-    public Utente(String username, String password){
+    public Utente(int id, String username, String password, String nome){
+        this.id = id;
         this.username = username;
         this.password = password;
+        this.nome = nome;
     }
 
     public String getUsername() {
@@ -27,5 +31,21 @@ public class Utente extends AbstractEntity implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -3,6 +3,7 @@ package emotionalsongs.backend;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.entities.Playlist;
+import emotionalsongs.backend.entities.Utente;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface Servizi extends Remote {
-    String login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException;
+    Utente login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException;
 
     List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer anno) throws NessunaCanzoneTrovata, RemoteException;
 
@@ -26,9 +27,9 @@ public interface Servizi extends Remote {
     // (utilizzata per popolare la tendina di ricerca)
     List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException;
 
-    int addPlaylist(String titolo, String username) throws RemoteException;
+    int addPlaylist(String titolo, int userId) throws RemoteException;
 
-    List<Playlist> myPlaylist(String username) throws RemoteException;
+    List<Playlist> myPlaylist(int userId) throws RemoteException;
 
     int removePlaylist(String username, String titolo) throws RemoteException;
 

@@ -3,6 +3,7 @@ package emotionalsongs.backend;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.entities.Playlist;
+import emotionalsongs.backend.entities.Utente;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;
@@ -134,21 +135,25 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public String login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException {
+    public Utente login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException {
         String query = "SELECT * FROM public.\"User\" WHERE username = '" + userid + "'";
+        Utente result = null;
         //System.out.println(userid);
-        String username = "", hashed_pass = "", nome = "";
+        int userId;
+        String username = "", hashed_pass = "", nome;
         try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
+                userId = rs.getInt("user_id");
                 username = rs.getString("username");
                 hashed_pass = rs.getString("hashed_password");
                 nome = rs.getString("nome");
+                result = new Utente(userId, username, hashed_pass, nome);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         if (userid.equals(username) && BCrypt.checkpw(password, hashed_pass)) {
-            return nome;
+            return result;
         } else {
             if (!userid.equals(username))
                 throw new UsernameErrato();
@@ -156,7 +161,7 @@ public class ServerES implements Servizi {
                 throw new PasswordErrata();
 
         }
-        return null;
+        return result;
     }
 
     private int userId(String username) {
@@ -192,9 +197,9 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public int addPlaylist(String titolo, String username) throws RemoteException {
+    public int addPlaylist(String titolo, int userId) throws RemoteException {
         int playlistCreate = -1;
-        int userId = userId(username);
+        //int userId = userId(username);
         String query = "INSERT INTO public.\"Playlist\" (titolo, user_id) VALUES (?, ?)";
         try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setString(1, titolo);
@@ -209,8 +214,8 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public List<Playlist> myPlaylist(String username) throws RemoteException {
-        int userId = userId(username);
+    public List<Playlist> myPlaylist(int userId) throws RemoteException {
+        //int userId = userId(username);
         List<Playlist> result = new ArrayList<>();
         String query = "SELECT * FROM public.\"Playlist\" WHERE user_id = " + userId;
         try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {

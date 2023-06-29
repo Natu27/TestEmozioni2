@@ -22,6 +22,7 @@ import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
+import emotionalsongs.backend.entities.Utente;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;
 import emotionalsongs.components.appnav.AppNav;
@@ -49,7 +50,7 @@ public class MainLayout extends AppLayout {
     Servizi stub = clientES.getStub();
     TextField user;
     PasswordField password;
-    String nome = (String) VaadinSession.getCurrent().getAttribute("nome");
+    Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
     String currentPage;
     String username = (String) VaadinSession.getCurrent().getAttribute("username");
     public MainLayout() throws Exception {
@@ -63,7 +64,7 @@ public class MainLayout extends AppLayout {
             welcome.setVisible(true);
             welcome.setHeightFull();
             welcome.addClassNames("custom-label");
-            welcome.setText("Ciao, " + nome);
+            welcome.setText("Ciao, " + utente.getNome());
         }
 
         login.addClickListener(click -> dialog.setOpened(true));
@@ -88,9 +89,7 @@ public class MainLayout extends AppLayout {
             dialog.setWidth("500px");
             dialog.setHeight("475x");
 
-            logout.addClickListener(click -> {
-                logout();
-            });
+            logout.addClickListener(click -> logout());
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -141,13 +140,13 @@ public class MainLayout extends AppLayout {
     }
 
     private void login() throws PasswordErrata, UsernameErrato, RemoteException {
-        nome = stub.login(user.getValue(), password.getValue());
+        utente = stub.login(user.getValue(), password.getValue());
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
             stub.login(user.getValue(), password.getValue());
             dialog.close();
             //Memorizza l'utente loggato con il nome "username", tramite VaadinSession.getCurrent().getAttribute("username") si può vedere se l'utente è loggato
             VaadinSession.getCurrent().setAttribute("username", user.getValue());
-            VaadinSession.getCurrent().setAttribute("nome", nome);
+            VaadinSession.getCurrent().setAttribute("utente", utente);
             Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
             login.setVisible(false);
@@ -155,7 +154,7 @@ public class MainLayout extends AppLayout {
             welcome.setVisible(true);
             welcome.setHeightFull();
             welcome.addClassNames("custom-label");
-            welcome.setText("Ciao, " + nome);
+            welcome.setText("Ciao, " + utente.getNome());
             currentPage = getCurrentPageTitle();
             if(currentPage.equals("Playlist")) {
                 UI.getCurrent().navigate(RicercaTitoloView.class);

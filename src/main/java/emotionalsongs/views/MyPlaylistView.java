@@ -25,6 +25,7 @@ import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Playlist;
+import emotionalsongs.backend.entities.Utente;
 import emotionalsongs.backend.exceptions.playlist.NomePlaylistGiaPresente;
 
 import java.rmi.RemoteException;
@@ -66,11 +67,11 @@ public class MyPlaylistView extends VerticalLayout {
     Grid<Playlist> gridPlaylist = new Grid<>(Playlist.class);
     ClientES clientES = new ClientES();
     Servizi stub = clientES.getStub();
-    String username = (String) VaadinSession.getCurrent().getAttribute("username");
+    Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
 
     public MyPlaylistView() throws Exception {
 
-        if (username==null) {
+        if (utente==null) {
             noLogged = new VerticalLayout();
 
             registerButton = new Button("Registrati");
@@ -104,7 +105,7 @@ public class MyPlaylistView extends VerticalLayout {
             newPlaylist.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             createPlaylist = new Button("Crea Playlist", buttonClickEvent -> {
                 try {
-                    addPlaylist(playlistName.getValue(),username);
+                    addPlaylist(playlistName.getValue());
                     //dialog.close();
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
@@ -161,15 +162,15 @@ public class MyPlaylistView extends VerticalLayout {
 
     }
 
-    private void addPlaylist(String titolo, String username) throws RemoteException, NomePlaylistGiaPresente {
+    private void addPlaylist(String titolo) throws RemoteException, NomePlaylistGiaPresente {
         titolo = titolo.trim();
         if(titolo.equals(""))
             Notification.show("Impossibile creare playlist - Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         else {
-            result = stub.myPlaylist(username);
+            result = stub.myPlaylist(utente.getId());
             if(nomePlaylistPresente(titolo)) throw new NomePlaylistGiaPresente();
-            if (stub.addPlaylist(titolo, username) == 1) {
+            if (stub.addPlaylist(titolo, utente.getId()) == 1) {
                 Notification.show("Playlist creata", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 this.configureGrid();
@@ -193,7 +194,7 @@ public class MyPlaylistView extends VerticalLayout {
 
     private void configureGrid() throws RemoteException {
         result = new ArrayList<>();
-        result = stub.myPlaylist(username);
+        result = stub.myPlaylist(utente.getId());
         gridPlaylist.getColumnByKey("id").setVisible(false);
         gridPlaylist.getColumnByKey("username").setVisible(false);
         gridPlaylist.getColumnByKey("titolo").setVisible(true);
@@ -230,7 +231,7 @@ public class MyPlaylistView extends VerticalLayout {
                         delete = new ConfirmDialog("⚠️ Conferma eliminazione",
                                 "Sei sicuro di voler eliminare la playlist?", "Sì", event1 -> {
                         try {
-                            if (stub.removePlaylist(username, titolo.getTitolo()) == 1) {
+                            if (stub.removePlaylist(utente.getUsername(), titolo.getTitolo()) == 1) {
                                 Notification.show("Playlist cancellata!", 3000, Notification.Position.MIDDLE)
                                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                                 this.configureGrid();
@@ -315,7 +316,7 @@ public class MyPlaylistView extends VerticalLayout {
                     button.setText("Inserisci Emozioni");
                 })).setHeader("Votazione");
         try {
-            resultSongPlaylist = stub.showCanzoniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"), username);
+            resultSongPlaylist = stub.showCanzoniPlaylist((String) VaadinSession.getCurrent().getAttribute("playlistTitle"), utente.getUsername());
             gridCanzoni.setItems(resultSongPlaylist);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -344,9 +345,9 @@ public class MyPlaylistView extends VerticalLayout {
         renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);
         confirmNewTitle.addClickListener(e->{
             try {
-                result = stub.myPlaylist(username);
+                result = stub.myPlaylist(utente.getId());
                 if(nomePlaylistPresente(newTitle.getValue())) throw new NomePlaylistGiaPresente();
-                if(stub.renamePlaylist(username,newTitle.getValue(),(String) VaadinSession.getCurrent().getAttribute("playlistTitle"))==1){
+                if(stub.renamePlaylist(utente.getUsername(),newTitle.getValue(),(String) VaadinSession.getCurrent().getAttribute("playlistTitle"))==1){
                     Notification.show("Playlist modificata!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.configureGrid();
