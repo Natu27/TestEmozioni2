@@ -5,14 +5,14 @@ import java.io.Serializable;
 public class Emozione implements Serializable {
     private String name;
     private String commento;
-    private int score;
+    private double score;
 
     public Emozione(String name) {
         this.name = name;
         this.score = 0;
         this.commento = "";
     }
-    public Emozione(String name, int score) {
+    public Emozione(String name, double score) {
         this.name = name;
         this.score = score;
     }
@@ -25,11 +25,11 @@ public class Emozione implements Serializable {
         this.name = name;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 

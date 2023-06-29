@@ -343,7 +343,7 @@ public class ServerES implements Servizi {
     public void insEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException {
         StringBuilder query = new StringBuilder("INSERT INTO public.\"Emozioni\" VALUES(" + playlistId + "," + songId + ",");
         for(Emozione e : emozioni) {
-            int score = e.getScore();
+            double score = e.getScore();
             String commento = e.getCommento();
             if(emozioni.indexOf(e) != 8) {
                 if (score != 0)
@@ -395,7 +395,7 @@ public class ServerES implements Servizi {
     public void updateEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws RemoteException {
         StringBuilder query = new StringBuilder("UPDATE public.\"Emozioni\" SET ");
         for (Emozione e : emozioni) {
-            int score = e.getScore();
+            double score = e.getScore();
             String commento = e.getCommento();
 
             // Aggiungi l'istruzione di aggiornamento per il campo "score"
@@ -465,23 +465,23 @@ public class ServerES implements Servizi {
              PreparedStatement stmt = conn.prepareStatement(query);
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                Emozione amazement = new Emozione("Amazement", rs.getInt(1));
+                Emozione amazement = new Emozione("Amazement", rs.getDouble(1));
                 result.add(amazement);
-                Emozione solemnity = new Emozione("Solemnity", rs.getInt(2));
+                Emozione solemnity = new Emozione("Solemnity", rs.getDouble(2));
                 result.add(solemnity);
-                Emozione tenderness = new Emozione("Tenderness", rs.getInt(3));
+                Emozione tenderness = new Emozione("Tenderness", rs.getDouble(3));
                 result.add(tenderness);
-                Emozione nostalgia = new Emozione("Nostalgia", rs.getInt(4));
+                Emozione nostalgia = new Emozione("Nostalgia", rs.getDouble(4));
                 result.add(nostalgia);
-                Emozione calmness = new Emozione("Calmness", rs.getInt(5));
+                Emozione calmness = new Emozione("Calmness", rs.getDouble(5));
                 result.add(calmness);
-                Emozione power = new Emozione("Power", rs.getInt(6));
+                Emozione power = new Emozione("Power", rs.getDouble(6));
                 result.add(power);
-                Emozione joy = new Emozione("Joy", rs.getInt(7));
+                Emozione joy = new Emozione("Joy", rs.getDouble(7));
                 result.add(joy);
-                Emozione tension = new Emozione("Tension", rs.getInt(8));
+                Emozione tension = new Emozione("Tension", rs.getDouble(8));
                 result.add(tension);
-                Emozione sadness = new Emozione("Sadness", rs.getInt(9));
+                Emozione sadness = new Emozione("Sadness", rs.getDouble(9));
                 result.add(sadness);
             }
         } catch (SQLException e) {

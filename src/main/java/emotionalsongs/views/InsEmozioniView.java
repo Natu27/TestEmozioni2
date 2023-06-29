@@ -127,7 +127,7 @@ public class InsEmozioniView extends Dialog {
         grid.addComponentColumn(emotion -> {
             ComboBox<Integer> scoreComboBox = new ComboBox<>();
             scoreComboBox.setItems(0, 1, 2, 3, 4, 5);
-            scoreComboBox.setValue(emotion.getScore());
+            scoreComboBox.setValue((int) emotion.getScore());
             scoreComboBox.addValueChangeListener(event -> {
                 if(event.getValue() != null) {
                     int newScore = event.getValue();
