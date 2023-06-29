@@ -1,14 +1,19 @@
 package emotionalsongs.backend.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 
+@Entity
 public class Utente extends AbstractEntity implements Serializable {
-
+    @Id
     private int id;
     private String username;
 
     private String password;
     private String nome;
+
+    public Utente() {}
 
     public Utente(int id, String username, String password, String nome){
         this.id = id;

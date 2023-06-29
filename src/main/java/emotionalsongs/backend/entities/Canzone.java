@@ -1,20 +1,20 @@
 package emotionalsongs.backend.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 
 //Classe eredita chiave primaria da AbstractEntity as Vaadin suggests
 @Entity
 public class Canzone extends AbstractEntity implements Serializable {
-
+    @Id
     private int id;
     private int anno;
     private String codice;
     private String titolo;
     private String artista;
 
-    public Canzone() {
-    }
+    public Canzone() {}
 
     public Canzone(int id, int anno, String artista, String titolo, String codice) {
         this.id = id;

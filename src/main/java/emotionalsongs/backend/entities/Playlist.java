@@ -1,10 +1,11 @@
 package emotionalsongs.backend.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.io.Serializable;
 @Entity
 public class Playlist extends AbstractEntity implements Serializable {
-
+    @Id
     private int id;
     private String titolo;
     private int username;
