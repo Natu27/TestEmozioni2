@@ -90,22 +90,6 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Adds menu item(s) inside this item, creating a hierarchy.
-     * 
-     * @param appNavItems
-     *            the menu item(s) to add
-     * @return this item for chaining
-     */
-    public AppNavItem addItem(AppNavItem... appNavItems) {
-        for (AppNavItem appNavItem : appNavItems) {
-            appNavItem.getElement().setAttribute("slot", "children");
-            getElement().appendChild(appNavItem.getElement());
-        }
-
-        return this;
-    }
-
-    /**
      * Removes the given menu item from this item.
      * <p>
      * If the given menu item is not a child of this menu item, does nothing.
@@ -124,22 +108,12 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Removes all menu items from this item.
-     * 
-     * @return this item for chaining
-     */
-    public AppNavItem removeAllItems() {
-        getElement().removeAllChildren();
-        return this;
-    }
-
-    /**
      * Gets the label for the item.
      * 
      * @return the label or null if no label has been set
      */
     public String getLabel() {
-        return getExistingLabelElement().map(e -> e.getText()).orElse(null);
+        return getExistingLabelElement().map(Element::getText).orElse(null);
     }
 
     /**
