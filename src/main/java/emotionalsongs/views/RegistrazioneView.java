@@ -24,7 +24,6 @@ import com.vaadin.flow.router.Route;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.codicefiscale.CodiceFiscale;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.FileReader;
 import java.rmi.RemoteException;
@@ -46,9 +45,6 @@ public class RegistrazioneView extends VerticalLayout {
     List<String> scelteSesso;
     ComboBox<String> sesso;
     ComboBox<String> luogoNascita;
-
-    @Value("src/main/resources/META-INF/resources/data/Comuni.csv")
-    String fileComuni;
     TextField codFiscale;
     Button calcolaCf;
     TextField via_piazza;
@@ -173,8 +169,7 @@ public class RegistrazioneView extends VerticalLayout {
     }
 
     private void calcolaCodFiscale() {
-        if(!nome.getValue().equals("") && !cognome.getValue().equals("") && !luogoNascita.getValue().equals("") && dataNascita.getValue() != null && !sesso.getValue().equals("")) {
-            // TODO: gestire valori nulli (lato form e/o backend)
+        if(!nome.getValue().equals("") && !cognome.getValue().equals("") && luogoNascita.getValue() != null && dataNascita.getValue() != null && sesso.getValue() != null) {
             String nomeCf = nome.getValue();
             String cognomeCf = cognome.getValue();
             String luogoNascitaCf = luogoNascita.getValue();
@@ -184,9 +179,10 @@ public class RegistrazioneView extends VerticalLayout {
             String sessoCf = sesso.getValue();
             codFiscale.setValue(CodiceFiscale.codiceFiscale(cognomeCf, nomeCf, giornoCf,
                                                             meseCf, annoCf, sessoCf, luogoNascitaCf));
-        }else
+        } else {
             Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
+        }
     }
 
     private void registration() throws RemoteException {

@@ -1,8 +1,10 @@
 package emotionalsongs.backend.codicefiscale;
 
+import java.io.IOException;
+
 /**
- * La classe {@code CodiceFiscale} permette di il codice fiscale
- * @package backend.codicefiscale
+ * La classe {@code CodiceFiscale} permette di ottenere il codice fiscale di un soggetto
+ * {@code @package} backend.codicefiscale
  * @see NomeCognome
  * @see DataNascita
  * @see Comune
@@ -26,12 +28,16 @@ public class CodiceFiscale {
         String annoNascita = DataNascita.getYear(anno);
         String meseNascita = DataNascita.getMonth(mese);
         String giornoNascita = DataNascita.getDay(giorno, sesso);
-        String codiceComune = Comune.getCodice(comuneNascita);
+        String codiceComune = null;
+        try {
+            codiceComune = Comune.getCodice(comuneNascita);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String cfProvvisorio = cogno + name + annoNascita + meseNascita + giornoNascita + codiceComune;
         String codiceControllo = CodiceControllo.getCodice(cfProvvisorio);
-        String cf = cogno + name + annoNascita + meseNascita + giornoNascita + codiceComune + codiceControllo;
 
-        return cf;
+        return cogno + name + annoNascita + meseNascita + giornoNascita + codiceComune + codiceControllo;
     }
 
 }
