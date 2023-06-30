@@ -101,7 +101,7 @@ public class MainLayout extends AppLayout {
     private void configureTopLayout() {
         login = new Button("Login", VaadinIcon.USER.create());
         login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        logout = new Button("Logout", VaadinIcon.ARROW_FORWARD.create());//
+        logout = new Button("Logout", VaadinIcon.ARROW_FORWARD.create());
         logout.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         logout.setVisible(false);//
         welcome.setVisible(false);

@@ -37,7 +37,6 @@ import java.util.List;
 public class MyPlaylistView extends VerticalLayout {
 
     Button registerButton;
-    Button loginButton;
     HorizontalLayout horizontalLayout;
     HorizontalLayout layoutTitolo;
     Icon iconTitolo;
@@ -74,13 +73,9 @@ public class MyPlaylistView extends VerticalLayout {
         if (utente==null) {
             noLogged = new VerticalLayout();
 
-            registerButton = new Button("Registrati");
+            registerButton = new Button("Non hai ancora un account? Registrati");
             registerButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
-            registerButton.addClickListener(e ->
-                    UI.getCurrent().navigate(RegistrazioneView.class));
-
-            loginButton = new Button("Accedi");
-            loginButton.addThemeVariants(ButtonVariant.LUMO_CONTRAST);
+            registerButton.addClickListener(e -> UI.getCurrent().navigate(RegistrazioneView.class));
 
             logo = new Image("images/EmSongs.png", "EmoSong logo");
             logo.setWidth("200px");
@@ -88,9 +83,10 @@ public class MyPlaylistView extends VerticalLayout {
             header = new H2("Devi aver effettuato l'accesso per visualizzare questa pagina");
             header.addClassNames(Margin.Top.XLARGE, Margin.Bottom.MEDIUM);
 
-            //TODO: aggiungere azione al pulsante accedi
             horizontalLayout = new HorizontalLayout();
-            horizontalLayout.add(logo, header, loginButton, new Paragraph("o"), registerButton);
+            //horizontalLayout.add(logo, header, loginButton, new Paragraph("o"), registerButton);
+            horizontalLayout.add(logo, header, registerButton);
+
 
             noLogged.add(logo, header, horizontalLayout);
 
