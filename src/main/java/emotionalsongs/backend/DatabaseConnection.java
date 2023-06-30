@@ -19,7 +19,7 @@ public class DatabaseConnection {
         return connection.getConnection();
     }
 
-    private void initConnection() throws SQLException {
+    private void initConnection() {
         connection = new Jdbc3PoolingDataSource();
         connection.setDataSourceName("EM. songs");
         connection.setServerName(DB_URL);
