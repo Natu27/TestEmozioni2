@@ -2,7 +2,7 @@ package emotionalsongs.backend.codicefiscale;
 
 /**
  * La classe {@code CodiceControlo} permette di calcolare il codice di controllo del codice fiscale
- * @package backend.codicefiscale
+ * {@code @package} backend.codicefiscale
  */
 public class CodiceControllo {
 
@@ -16,10 +16,9 @@ public class CodiceControllo {
 
         int sommaPari = 0;
         int sommaDispari = 0;
-        int somma = 0;
-        int resto = 0;
-        String letterePari = "";
-        String lettereDispari = "";
+        int somma, resto;
+        StringBuilder letterePari = new StringBuilder();
+        StringBuilder lettereDispari = new StringBuilder();
 
         String[] caratteriDispari = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E",
                 "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
@@ -34,9 +33,9 @@ public class CodiceControllo {
         for (int i = 0; i < cfProvvisorio.length(); i++) {
             char c = cfProvvisorio.charAt(i);
             if (i % 2 == 0) {
-                lettereDispari += c;
+                lettereDispari.append(c);
             } else {
-                letterePari += c;
+                letterePari.append(c);
             }
         }
         for (int i = 0; i < letterePari.length(); i++) {
@@ -57,62 +56,35 @@ public class CodiceControllo {
         }
         somma = sommaDispari + sommaPari;
         resto = somma % 26;
-        switch (resto) {
-            case 0:
-                return "A";
-            case 1:
-                return "B";
-            case 2:
-                return "C";
-            case 3:
-                return "D";
-            case 4:
-                return "E";
-            case 5:
-                return "F";
-            case 6:
-                return "G";
-            case 7:
-                return "H";
-            case 8:
-                return "I";
-            case 9:
-                return "J";
-            case 10:
-                return "K";
-            case 11:
-                return "L";
-            case 12:
-                return "M";
-            case 13:
-                return "N";
-            case 14:
-                return "O";
-            case 15:
-                return "P";
-            case 16:
-                return "Q";
-            case 17:
-                return "R";
-            case 18:
-                return "S";
-            case 19:
-                return "T";
-            case 20:
-                return "U";
-            case 21:
-                return "V";
-            case 22:
-                return "W";
-            case 23:
-                return "X";
-            case 24:
-                return "Y";
-            case 25:
-                return "Z";
-        }
-        String mese = String.valueOf(resto);
+        return switch (resto) {
+            case 0 -> "A";
+            case 1 -> "B";
+            case 2 -> "C";
+            case 3 -> "D";
+            case 4 -> "E";
+            case 5 -> "F";
+            case 6 -> "G";
+            case 7 -> "H";
+            case 8 -> "I";
+            case 9 -> "J";
+            case 10 -> "K";
+            case 11 -> "L";
+            case 12 -> "M";
+            case 13 -> "N";
+            case 14 -> "O";
+            case 15 -> "P";
+            case 16 -> "Q";
+            case 17 -> "R";
+            case 18 -> "S";
+            case 19 -> "T";
+            case 20 -> "U";
+            case 21 -> "V";
+            case 22 -> "W";
+            case 23 -> "X";
+            case 24 -> "Y";
+            case 25 -> "Z";
+            default -> String.valueOf(resto);
+        };
 
-        return mese;
     }
 }

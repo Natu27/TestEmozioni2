@@ -2,7 +2,7 @@ package emotionalsongs.backend.codicefiscale;
 
 /**
  * La classe {@code DataNascita} permette di ottenere la prime 6 lettere del codice fiscale
- * @package backend.codicefiscale
+ * {@code @package} backend.codicefiscale
  */
 public class DataNascita {
     /**
@@ -12,7 +12,7 @@ public class DataNascita {
      * @return le ultime due cifre dell'anno di nascita come {@code String}
      */
     public static String getYear(int annoNascita) {
-        String anno = "";
+        String anno;
         int year = annoNascita % 100;
         if(year < 10)
             anno = "0"+year;
@@ -26,21 +26,21 @@ public class DataNascita {
      * @return la lettere abbinata al mese di nascita come {@code String}
      */
     public static String getMonth(int mese) {
-        switch (mese) {
-            case 1: return "A";
-            case 2: return "B";
-            case 3: return "C";
-            case 4: return "D";
-            case 5: return "E";
-            case 6: return "H";
-            case 7: return "L";
-            case 8: return "M";
-            case 9: return "P";
-            case 10: return "R";
-            case 11: return "S";
-            case 12: return "T";
-            default: return "mese non valido";
-        }
+        return switch (mese) {
+            case 1 -> "A";
+            case 2 -> "B";
+            case 3 -> "C";
+            case 4 -> "D";
+            case 5 -> "E";
+            case 6 -> "H";
+            case 7 -> "L";
+            case 8 -> "M";
+            case 9 -> "P";
+            case 10 -> "R";
+            case 11 -> "S";
+            case 12 -> "T";
+            default -> "mese non valido";
+        };
     }
 
     /**

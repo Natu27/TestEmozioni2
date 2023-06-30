@@ -2,7 +2,7 @@ package emotionalsongs.backend.codicefiscale;
 
 /**
  * La classe {@code NomeCognome} permette di ottenere la prime 6 lettere del codice fiscale
- * @package backend.codicefiscale
+ * {@code @package} backend.codicefiscale
  */
 public class NomeCognome {
 
@@ -14,13 +14,13 @@ public class NomeCognome {
     public static String getCognome(String cognome) {
         String cognomeNoSpazi = cognome.replaceAll("\\s+", " ");
         String consonanti = "bcdfghjklmnpqrstvwxyz";
-        String cognomeEstratto = "";
+        StringBuilder cognomeEstratto = new StringBuilder();
         int count = 0;
 
         for (int i = 0; i < cognomeNoSpazi.length() && count < 3; i++) {
             char c = cognomeNoSpazi.charAt(i);
             if (consonanti.indexOf(Character.toLowerCase(c)) != -1) {
-                cognomeEstratto += Character.toUpperCase(c);
+                cognomeEstratto.append(Character.toUpperCase(c));
                 count++;
             }
         }
@@ -29,13 +29,13 @@ public class NomeCognome {
             for (int i = 0; i < cognomeNoSpazi.length(); i++) {
                 char c = cognomeNoSpazi.charAt(i);
                 if (consonanti.indexOf(Character.toLowerCase(c)) == -1) {
-                    cognomeEstratto += Character.toUpperCase(c);
+                    cognomeEstratto.append(Character.toUpperCase(c));
                     break;
                 }
             }
         }
 
-        return cognomeEstratto;
+        return cognomeEstratto.toString();
     }
 
     /**
@@ -46,13 +46,13 @@ public class NomeCognome {
     public static String getNome(String nome) {
         String nomeNoSpazi = nome.replaceAll("\\s+", " ");
         String consonanti = "bcdfghjklmnpqrstvwxyz";
-        String nomeEstratto = "";
+        StringBuilder nomeEstratto = new StringBuilder();
         int count = 0;
 
         for (int i = 0; i < nomeNoSpazi.length() && count < 3; i++) {
             char c = nomeNoSpazi.charAt(i);
             if (consonanti.indexOf(Character.toLowerCase(c)) != -1) {
-                nomeEstratto += Character.toUpperCase(c);
+                nomeEstratto.append(Character.toUpperCase(c));
                 count++;
             }
         }
@@ -60,12 +60,12 @@ public class NomeCognome {
             for (int i = 0; i < nomeNoSpazi.length(); i++) {
                 char c = nomeNoSpazi.charAt(i);
                 if (consonanti.indexOf(Character.toLowerCase(c)) == -1) {
-                    nomeEstratto += Character.toUpperCase(c);
+                    nomeEstratto.append(Character.toUpperCase(c));
                     break;
                 }
             }
         }
 
-        return nomeEstratto;
+        return nomeEstratto.toString();
     }
 }
