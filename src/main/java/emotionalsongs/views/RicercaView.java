@@ -31,7 +31,7 @@ import java.util.List;
 @PageTitle("Ricerca")
 @Route(value = "ricerca", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)
-public class RicercaTitoloView extends VerticalLayout {
+public class RicercaView extends VerticalLayout {
     HorizontalLayout layoutTitolo;
     HorizontalLayout toolbar;
     HorizontalLayout emotions;
@@ -48,7 +48,7 @@ public class RicercaTitoloView extends VerticalLayout {
     Servizi stub = clientES.getStub();
     List<Integer> anni = stub.getAnni("", "");
 
-    public RicercaTitoloView() throws Exception {
+    public RicercaView() throws Exception {
         setSpacing(true);
         setSizeFull();
 

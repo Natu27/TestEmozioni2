@@ -157,7 +157,7 @@ public class MainLayout extends AppLayout {
             welcome.setText("Ciao, " + utente.getNome());
             currentPage = getCurrentPageTitle();
             if(currentPage.equals("Playlist")) {
-                UI.getCurrent().navigate(RicercaTitoloView.class);
+                UI.getCurrent().navigate(RicercaView.class);
                 UI.getCurrent().navigate(MyPlaylistView.class);
             }
         }else {
@@ -207,7 +207,7 @@ public class MainLayout extends AppLayout {
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         AppNav nav = new AppNav();
 
-        nav.addItem(new AppNavItem("Ricerca", RicercaTitoloView.class, LineAwesomeIcon.SEARCH_SOLID.create()));
+        nav.addItem(new AppNavItem("Ricerca", RicercaView.class, LineAwesomeIcon.SEARCH_SOLID.create()));
         nav.addItem(new AppNavItem("My Playlist", MyPlaylistView.class, LineAwesomeIcon.MUSIC_SOLID.create()));
 
         return nav;

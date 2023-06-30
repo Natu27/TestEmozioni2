@@ -207,7 +207,7 @@ public class RegistrazioneView extends VerticalLayout {
                 stub.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
                 Notification.show("Registrazione avvenuta", 4000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                UI.getCurrent().navigate(RicercaTitoloView.class);
+                UI.getCurrent().navigate(RicercaView.class);
             } else {
                 Notification.show("Le password non coincidono", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
