@@ -5,7 +5,7 @@ import java.rmi.registry.Registry;
 
 public class ClientES {
     private static final int PORT = 10002;
-    private Servizi stub = null; ////Pattern Singleton + o - ad HOC per RMI
+    private Servizi stub = null; //Pattern Singleton + o - ad HOC per RMI
 
     public Servizi getStub() throws Exception {
         if (stub == null) {
@@ -17,7 +17,6 @@ public class ClientES {
 
     private Servizi lookUpService() throws Exception {
         Registry registry = LocateRegistry.getRegistry("localhost", PORT);
-        Servizi stub = (Servizi) registry.lookup("ServiziES");
-        return stub;
+        return (Servizi) registry.lookup("ServiziES");
     }
 }
