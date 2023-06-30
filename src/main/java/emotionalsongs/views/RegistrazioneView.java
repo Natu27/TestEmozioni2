@@ -25,7 +25,9 @@ import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.codicefiscale.CodiceFiscale;
 
-import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,7 +107,11 @@ public class RegistrazioneView extends VerticalLayout {
         password = new PasswordField("Password");
         confirmPassword = new PasswordField("Conferma Password");
         try {
-            CSVReader reader = new CSVReader(new FileReader("src/main/resources/META-INF/resources/data/Comuni.csv"));
+            String fileName = "META-INF/resources/data/ComuniECodici.csv";
+            InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
+            assert is != null;
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            CSVReader reader = new CSVReader(br);
             ICommonsList<ICommonsList<String>> data = reader.readAll();
             List<String> items = new ArrayList<>();
             for (ICommonsList<String> row : data) {
