@@ -162,7 +162,7 @@ public class MyPlaylistView extends VerticalLayout {
     private void addPlaylist(String titolo) throws RemoteException, NomePlaylistGiaPresente {
         titolo = titolo.trim();
         if(titolo.equals(""))
-            Notification.show("Impossibile creare playlist - Dati Mancanti", 3000, Notification.Position.MIDDLE)
+            Notification.show("Impossibile creare playlist - Necessario inserire titolo", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         else {
             result = stub.myPlaylist(utente.getId());
@@ -209,7 +209,7 @@ public class MyPlaylistView extends VerticalLayout {
                         VaadinSession.getCurrent().setAttribute("playlistTitle", titolo.getTitolo());
                         VaadinSession.getCurrent().setAttribute("playlistId", titolo.getId());
                         view = new Dialog(viewForm);
-                        view.setWidthFull();
+                        //view.setWidthFull();
                         nomePlaylist = titolo.getTitolo();
                         view.setHeaderTitle("Titolo ➡ " + nomePlaylist);
 
@@ -259,7 +259,8 @@ public class MyPlaylistView extends VerticalLayout {
                 AggiuntaBraniView addBrani = new AggiuntaBraniView();
                 addBrani.open();
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             //TODO : rendere griglia ricerca utilizzabile per aggiungere brani alla playlist selezionata
         });
@@ -290,10 +291,11 @@ public class MyPlaylistView extends VerticalLayout {
                         InsEmozioniView insEmoDialog;
                         try {
                             insEmoDialog = new InsEmozioniView(titolo);
+                            insEmoDialog.open();
                         } catch (Exception ex) {
-                            throw new RuntimeException(ex);
+                            Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
                         }
-                        insEmoDialog.open();
                     });
                     button.setIcon(new Icon(VaadinIcon.BAR_CHART_H));
                     button.setText("Inserisci Emozioni");
@@ -301,6 +303,12 @@ public class MyPlaylistView extends VerticalLayout {
         try {
             resultSongPlaylist = stub.showCanzoniPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"));
             gridCanzoni.setItems(resultSongPlaylist);
+
+            gridCanzoni.setVisible(!resultSongPlaylist.isEmpty());
+            if(!resultSongPlaylist.isEmpty()) {
+                view.setWidthFull();
+            }
+
         } catch (RemoteException e) {
             Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -331,15 +339,20 @@ public class MyPlaylistView extends VerticalLayout {
             try {
                 result = stub.myPlaylist(utente.getId());
                 if(nomePlaylistPresente(newTitle.getValue())) throw new NomePlaylistGiaPresente();
-                if(stub.renamePlaylist(utente.getId(),newTitle.getValue(),(Integer) VaadinSession.getCurrent().getAttribute("playlistId"))==1){
-                    Notification.show("Playlist modificata!", 3000, Notification.Position.MIDDLE)
-                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                    this.configureGrid();
-                    editTitle.close();
-                    view.close();
-                }else {
-                    Notification.show("Impossibile modificare la playlist", 3000, Notification.Position.MIDDLE)
+                if(newTitle.getValue().trim().equals("")) {
+                    Notification.show("Dati mancanti", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                } else {
+                    if (stub.renamePlaylist(utente.getId(), newTitle.getValue(), (Integer) VaadinSession.getCurrent().getAttribute("playlistId")) == 1) {
+                        Notification.show("Playlist modificata", 3000, Notification.Position.MIDDLE)
+                                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                        this.configureGrid();
+                        editTitle.close();
+                        view.close();
+                    } else {
+                        Notification.show("Impossibile modificare la playlist", 3000, Notification.Position.MIDDLE)
+                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    }
                 }
             } catch (RemoteException ex) {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
