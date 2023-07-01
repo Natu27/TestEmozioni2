@@ -68,6 +68,10 @@ public class RicercaView extends VerticalLayout {
         // TODO: se si vuole tenere il risultato della ricerca cachato, vanno cachati anche i parametri di ricerca
         result = (List<Canzone>) UI.getCurrent().getSession().getAttribute("result");
         if (result != null) {
+            if(result.isEmpty()) {
+                grid.setVisible(false);
+                emoButton.setVisible(false);
+            }
             grid.setItems(result);
         } else {
             search();
@@ -127,6 +131,10 @@ public class RicercaView extends VerticalLayout {
             anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
             //Per memorizzare la grid corrente
             UI.getCurrent().getSession().setAttribute("result", result);
+
+            grid.setVisible(true);
+            emoButton.setVisible(true);
+
         } catch (RemoteException e) {
             Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -134,6 +142,10 @@ public class RicercaView extends VerticalLayout {
             result = new ArrayList<>();
             grid.setItems(result);
             UI.getCurrent().getSession().setAttribute("result", result);
+
+            grid.setVisible(false);
+            emoButton.setVisible(false);
+
             Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             try {
