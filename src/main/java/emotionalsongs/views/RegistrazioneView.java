@@ -68,7 +68,8 @@ public class RegistrazioneView extends VerticalLayout {
             try {
                 registration();
             } catch (RemoteException e) {
-                throw new RuntimeException(e);
+                Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
 
@@ -202,12 +203,12 @@ public class RegistrazioneView extends VerticalLayout {
         String email = this.email.getValue();
         if(nome.isEmpty() || cognome.isEmpty() || dataNascita.isEmpty() || sesso.isEmpty() || luogoNascita.isEmpty() || via_piazza.isEmpty() ||codFiscale.isEmpty() || username.isEmpty() || email.isEmpty()
                 || password.isEmpty() || confirmPassword.isEmpty()){
-            Notification.show("Uno o più dati mancanti", 3000, Notification.Position.MIDDLE)
+            Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }else {
             if (password.equals(confPassword)) {
                 stub.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
-                Notification.show("Registrazione avvenuta", 4000, Notification.Position.MIDDLE)
+                Notification.show("Registrazione effettuata", 4000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 UI.getCurrent().navigate(RicercaView.class);
             } else {

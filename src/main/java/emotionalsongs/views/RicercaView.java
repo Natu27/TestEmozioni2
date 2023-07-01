@@ -128,7 +128,8 @@ public class RicercaView extends VerticalLayout {
             //Per memorizzare la grid corrente
             UI.getCurrent().getSession().setAttribute("result", result);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         } catch (NessunaCanzoneTrovata e) {
             result = new ArrayList<>();
             grid.setItems(result);
@@ -138,7 +139,8 @@ public class RicercaView extends VerticalLayout {
             try {
                 anni = stub.getAnni("", "");
             } catch (RemoteException ex) {
-                e.printStackTrace();
+                Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         }
         Integer cachedValue = annoDaCercare.getValue();

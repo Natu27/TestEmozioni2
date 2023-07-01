@@ -104,7 +104,8 @@ public class MyPlaylistView extends VerticalLayout {
                     addPlaylist(playlistName.getValue());
                     //dialog.close();
                 } catch (RemoteException e) {
-                    throw new RuntimeException(e);
+                    Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } catch (NomePlaylistGiaPresente e) {
                     Notification.show("Impossibile creare playlist - Nome già presente", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -228,7 +229,7 @@ public class MyPlaylistView extends VerticalLayout {
                                 "Sei sicuro di voler eliminare la playlist?", "Sì", event1 -> {
                         try {
                             if (stub.removePlaylist(utente.getId(), titolo.getTitolo()) == 1) {
-                                Notification.show("Playlist cancellata!", 3000, Notification.Position.MIDDLE)
+                                Notification.show("Playlist cancellata", 3000, Notification.Position.MIDDLE)
                                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                                 this.configureGrid();
                             } else {
@@ -236,7 +237,8 @@ public class MyPlaylistView extends VerticalLayout {
                                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                             }
                         } catch (RemoteException ex) {
-                            throw new RuntimeException(ex);
+                            Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
                         }
                     }, "No", event2 -> delete.close());
                         delete.open();
@@ -300,7 +302,8 @@ public class MyPlaylistView extends VerticalLayout {
             resultSongPlaylist = stub.showCanzoniPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"));
             gridCanzoni.setItems(resultSongPlaylist);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
     }
 
@@ -339,7 +342,8 @@ public class MyPlaylistView extends VerticalLayout {
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
             } catch (RemoteException ex) {
-                throw new RuntimeException(ex);
+                Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             } catch (NomePlaylistGiaPresente ex) {
                 Notification.show("Impossibile creare playlist - Nome già presente", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);

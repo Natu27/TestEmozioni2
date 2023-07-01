@@ -1,6 +1,8 @@
 package emotionalsongs.views;
 
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
@@ -63,7 +65,8 @@ public class HistogramView extends VerticalLayout {
             ChartUtils.writeChartAsPNG(outputStream, chart, 800, 450);
             chartImageBytes = outputStream.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
+            Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
             return;
         }
 

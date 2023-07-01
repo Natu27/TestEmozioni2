@@ -80,7 +80,8 @@ public class MainLayout extends AppLayout {
                     Notification.show("Password Errata", 3000, Notification.Position.MIDDLE)
                                 .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } catch (RemoteException e) {
-                    e.printStackTrace();
+                    Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
             });
             registerButton.addClickListener(click -> register());
@@ -147,8 +148,8 @@ public class MainLayout extends AppLayout {
             //Memorizza l'utente loggato con il nome "username", tramite VaadinSession.getCurrent().getAttribute("username") si può vedere se l'utente è loggato
             VaadinSession.getCurrent().setAttribute("username", user.getValue());
             VaadinSession.getCurrent().setAttribute("utente", utente);
-            Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+            /*Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);*/
             login.setVisible(false);
             logout.setVisible(true);
             welcome.setVisible(true);
@@ -169,9 +170,6 @@ public class MainLayout extends AppLayout {
 
     private void logout(){
         VaadinSession.getCurrent().getSession().invalidate();
-        Notification.show("Logout effettuato", 3000, Notification.Position.MIDDLE)
-                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-
     }
 
     private void register() {

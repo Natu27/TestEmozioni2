@@ -65,20 +65,20 @@ public class AggiuntaBraniView extends Dialog {
             try {
                 if (braniSelezionati != null) {
                     stub.addBraniPlaylist(playlistId, braniSelezionati);
-                    Notification.show("Brani inseriti nella Playlist!", 3000, Notification.Position.MIDDLE)
+                    Notification.show("Brani inseriti nella Playlist", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();
                 } else {
-                    Notification.show("Non hai selezionato alcun brano!", 3000, Notification.Position.MIDDLE)
+                    Notification.show("Non hai selezionato alcun brano", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
             } catch (RemoteException e) {
-                Notification.show("Impossibile effettuare l'operazione: uno o più brani già presenti!", 3000, Notification.Position.MIDDLE)
+                Notification.show("Impossibile effettuare l'operazione: uno o più brani già presenti", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 //e.printStackTrace();
             }
             catch (NessunaCanzoneTrovata e) {
-                Notification.show("Non hai selezionato alcun brano!", 3000, Notification.Position.MIDDLE)
+                Notification.show("Non hai selezionato alcun brano", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
             braniSelezionati = new ArrayList<>();
@@ -159,7 +159,8 @@ public class AggiuntaBraniView extends Dialog {
             grid.setItems(result);
             anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
         } catch (RemoteException e) {
-            e.printStackTrace();
+            Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
         } catch (NessunaCanzoneTrovata e) {
             result = new ArrayList<>();
             grid.setItems(result);
@@ -168,7 +169,8 @@ public class AggiuntaBraniView extends Dialog {
             try {
                 anni = stub.getAnni("", "");
             } catch (RemoteException ex) {
-                e.printStackTrace();
+                Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         }
         Integer cachedValue = annoDaCercare.getValue();

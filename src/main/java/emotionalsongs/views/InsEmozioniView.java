@@ -78,12 +78,12 @@ public class InsEmozioniView extends Dialog {
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();
                 } catch (RemoteException exception) {
-                    Notification.show("Impossibile effettuare l'aggiornamento!", 3000, Notification.Position.MIDDLE)
+                    Notification.show("Impossibile effettuare l'operazione di aggiornamento", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
             }
             catch (RemoteException ex) {
-                Notification.show("Impossibile effettuare l'inserimento!", 3000, Notification.Position.MIDDLE)
+                Notification.show("Impossibile effettuare l'operazione di inserimento", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
