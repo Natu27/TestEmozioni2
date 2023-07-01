@@ -145,11 +145,9 @@ public class MainLayout extends AppLayout {
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
             stub.login(user.getValue(), password.getValue());
             dialog.close();
-            //Memorizza l'utente loggato con il nome "username", tramite VaadinSession.getCurrent().getAttribute("username") si può vedere se l'utente è loggato
+            //Memorizza l'utente che ha effettuato login
             VaadinSession.getCurrent().setAttribute("username", user.getValue());
             VaadinSession.getCurrent().setAttribute("utente", utente);
-            /*Notification.show("Login effettuato", 3000, Notification.Position.MIDDLE)
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);*/
             login.setVisible(false);
             logout.setVisible(true);
             welcome.setVisible(true);
