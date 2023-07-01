@@ -340,7 +340,7 @@ public class MyPlaylistView extends VerticalLayout {
                 result = stub.myPlaylist(utente.getId());
                 if(nomePlaylistPresente(newTitle.getValue())) throw new NomePlaylistGiaPresente();
                 if(newTitle.getValue().trim().equals("")) {
-                    Notification.show("Dati mancanti", 3000, Notification.Position.MIDDLE)
+                    Notification.show("Impossibile rinominare playlist - Necessario inserire titolo", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } else {
                     if (stub.renamePlaylist(utente.getId(), newTitle.getValue(), (Integer) VaadinSession.getCurrent().getAttribute("playlistId")) == 1) {
