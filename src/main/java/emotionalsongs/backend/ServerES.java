@@ -5,6 +5,7 @@ import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.entities.Utente;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
+import emotionalsongs.backend.exceptions.emozioni.NoVotazioni;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;
 import org.mindrot.jbcrypt.BCrypt;
@@ -425,9 +426,8 @@ public class ServerES implements Servizi {
         }
     }
 
-    //TODO : aggiungere colonne commenti alla query
     @Override
-    public List<Emozione> getVotazioni(int songId) throws RemoteException {
+    public List<Emozione> getVotazioni(int songId) throws NoVotazioni, RemoteException {
         List<Emozione> result = new ArrayList<>();
         String query = "SELECT avg(amazement),avg(solemnity),avg(tenderness),avg(nostalgia),avg(calmness),avg(ppower),avg(joy),avg(tension),avg(sadness) FROM public.\"Emozioni\" WHERE canzone_id =" + songId + ";";
 
@@ -457,6 +457,14 @@ public class ServerES implements Servizi {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        boolean votazioni = false;
+        for(Emozione e: result) {
+            if(e.getScore() != 0.0) {
+                votazioni = true;
+                break;
+            }
+        }
+        if(!votazioni) throw new NoVotazioni();
         return result;
     }
 

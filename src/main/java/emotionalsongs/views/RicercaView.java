@@ -6,7 +6,9 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -19,10 +21,12 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.VaadinSession;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
+import emotionalsongs.backend.exceptions.emozioni.NoVotazioni;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -193,17 +197,32 @@ public class RicercaView extends VerticalLayout {
                 " - Anno: " + selectedTuple.getAnno();
         layout.add(new H3(info));
 
-        HistogramView chart = new HistogramView(selectedTuple.getId());
-        layout.add(chart);
+        try {
+            HistogramView chart = new HistogramView(selectedTuple.getId());
+            layout.add(chart);
 
-        dialog.add(layout);
+            dialog.add(layout);
 
-        // Aggiungi un pulsante per chiudere la finestra di dialogo
-        Button closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
-        closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
-        layout.add(closeButton);
+            // Aggiungi un pulsante per chiudere la finestra di dialogo
+            Button closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
+            closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
+            layout.add(closeButton);
 
+        } catch (NoVotazioni e) {
+            Image logo = new Image("images/EmSongs.png", "EmoSong logo");
+            logo.setWidth("200px");
+
+            H2 header = new H2("Non sono presenti emozioni per il brano selezionato");
+            header.addClassNames(LumoUtility.Margin.Top.XLARGE, LumoUtility.Margin.Bottom.MEDIUM);
+
+            VerticalLayout noEmotions = new VerticalLayout();
+            noEmotions.setJustifyContentMode(JustifyContentMode.CENTER);
+            noEmotions.setAlignItems(Alignment.CENTER);
+            noEmotions.add(logo, header);
+            layout.add(noEmotions);
+            dialog.add(layout);
+        }
         dialog.open();
         // Deseleziona la tupla dopo aver aperto il dialogo
         grid.asSingleSelect().clear();

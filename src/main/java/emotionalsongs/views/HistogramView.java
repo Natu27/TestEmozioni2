@@ -7,6 +7,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Emozione;
+import emotionalsongs.backend.exceptions.emozioni.NoVotazioni;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
@@ -33,7 +34,12 @@ public class HistogramView extends VerticalLayout {
     public HistogramView(int idSong) throws Exception {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        fillDatasetWithAverageEmotions(dataset, idSong);
+        try {
+            fillDatasetWithAverageEmotions(dataset, idSong);
+        } catch (NoVotazioni e) {
+            this.setVisible(false);
+            throw new NoVotazioni();
+        }
 
         JFreeChart chart = ChartFactory.createBarChart(
                 "Distribuzione Emozioni",
@@ -79,7 +85,7 @@ public class HistogramView extends VerticalLayout {
         add(chartContainer);
     }
 
-    private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset, int idSong) throws RemoteException {
+    private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset, int idSong) throws RemoteException, NoVotazioni {
         List<Emozione> emozioni = stub.getVotazioni(idSong);
         for(Emozione e : emozioni) {
             dataset.addValue(e.getScore(), e.getName(), " ");
