@@ -216,10 +216,14 @@ public class RicercaView extends VerticalLayout {
             H2 header = new H2("Non sono presenti emozioni per il brano selezionato");
             header.addClassNames(LumoUtility.Margin.Top.XLARGE, LumoUtility.Margin.Bottom.MEDIUM);
 
+            Button closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
+            closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+            closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
+
             VerticalLayout noEmotions = new VerticalLayout();
             noEmotions.setJustifyContentMode(JustifyContentMode.CENTER);
             noEmotions.setAlignItems(Alignment.CENTER);
-            noEmotions.add(logo, header);
+            noEmotions.add(logo, header, closeButton);
             layout.add(noEmotions);
             dialog.add(layout);
         }
