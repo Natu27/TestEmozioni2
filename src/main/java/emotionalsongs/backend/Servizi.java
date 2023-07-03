@@ -5,6 +5,7 @@ import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.entities.Utente;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
+import emotionalsongs.backend.exceptions.emozioni.NoCommenti;
 import emotionalsongs.backend.exceptions.emozioni.NoVotazioni;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;
@@ -22,13 +23,24 @@ public interface Servizi extends Remote {
     void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws RemoteException;
     // restituisce gli anni per cui ci sono canzoni con il titolo e l'autore selezionato (utilizzata per popolare la tendina di ricerca)
     List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException;
+
     int addPlaylist(String titolo, int userId) throws RemoteException;
+
     List<Playlist> myPlaylist(int userId) throws RemoteException;
+
     int removePlaylist(int userId, String titolo) throws RemoteException;
+
     int renamePlaylist(int userId, String nuovoTitolo, int playlistId) throws RemoteException;
+
     void addBraniPlaylist(int playlistId, ArrayList<Canzone> brani) throws NessunaCanzoneTrovata, RemoteException;
+
     ArrayList<Canzone> showCanzoniPlaylist(int userId) throws RemoteException;
+
     void insEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException;
+
     void updateEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws RemoteException;
+
     List<Emozione> getVotazioni(int songId) throws NoVotazioni, RemoteException;
+
+    List<Emozione> getCommenti(int songId) throws NoCommenti, RemoteException;
 }

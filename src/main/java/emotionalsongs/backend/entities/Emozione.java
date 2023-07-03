@@ -7,13 +7,21 @@ public class Emozione implements Serializable {
     private String commento;
     private double score;
 
+
     public Emozione(String name) {
         this.name = name;
         this.score = 0;
         this.commento = "";
     }
+
     public Emozione(String name, double score) {
         this.name = name;
+        this.score = score;
+    }
+
+    public Emozione(String name, double score, String commento) {
+        this.name = name;
+        this.commento = commento;
         this.score = score;
     }
 
