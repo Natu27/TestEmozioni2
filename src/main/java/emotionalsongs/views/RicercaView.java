@@ -25,7 +25,9 @@ import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
+import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
+import emotionalsongs.backend.exceptions.emozioni.NoCommenti;
 import emotionalsongs.backend.exceptions.emozioni.NoVotazioni;
 
 import java.rmi.RemoteException;
@@ -203,33 +205,70 @@ public class RicercaView extends VerticalLayout {
 
             dialog.add(layout);
 
-            // Aggiungi un pulsante per chiudere la finestra di dialogo
-            Button closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
-            closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-            closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
-            layout.add(closeButton);
-
         } catch (NoVotazioni e) {
             Image logo = new Image("images/EmSongs.png", "EmoSong logo");
             logo.setWidth("200px");
 
-            H2 header = new H2("Non sono presenti emozioni per il brano selezionato");
+            H2 header = new H2("Nessuna emozione presente per il brano selezionato");
             header.addClassNames(LumoUtility.Margin.Top.XLARGE, LumoUtility.Margin.Bottom.MEDIUM);
-
-            Button closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
-            closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
-            closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
 
             VerticalLayout noEmotions = new VerticalLayout();
             noEmotions.setJustifyContentMode(JustifyContentMode.CENTER);
             noEmotions.setAlignItems(Alignment.CENTER);
-            noEmotions.add(logo, header, closeButton);
+            noEmotions.add(logo, header);
             layout.add(noEmotions);
             dialog.add(layout);
         }
+        Button closeButton = new Button("Chiudi", buttonClickEvent -> dialog.close());
+        closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        closeButton.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
+
+        Button commentsButton = new Button("Visualizza Commenti", buttonClickEvent ->{
+            try {
+                List<Emozione> commenti = stub.getCommenti(selectedTuple.getId());
+                cleanComments(commenti);
+                Dialog dialogCommenti = new Dialog();
+
+                Grid<Emozione> gridCommenti = new Grid<>(Emozione.class);
+                gridCommenti.setItems(commenti);
+                gridCommenti.setColumns("name","commento");
+                gridCommenti.getColumnByKey("name").setWidth("150px");
+                gridCommenti.getColumnByKey("commento").setAutoWidth(true);
+
+                Button closeButton1 = new Button("Chiudi", clickEvent -> dialogCommenti.close());
+                closeButton1.addThemeVariants(ButtonVariant.LUMO_ERROR);
+                closeButton1.setIcon(VaadinIcon.CLOSE_CIRCLE.create());
+                VerticalLayout commentsLayout = new VerticalLayout(new H3(info), gridCommenti, closeButton1);
+                commentsLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+                commentsLayout.setAlignItems(Alignment.CENTER);
+
+                dialogCommenti.add(commentsLayout);
+                dialogCommenti.setWidthFull();
+                dialogCommenti.open();
+            }
+            catch (NoCommenti e) {
+                Notification.show("Nessun commento presente per il brano selezionato", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+            catch (RemoteException e) {
+                Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
+        });
+        commentsButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        commentsButton.setIcon(VaadinIcon.CLIPBOARD_TEXT.create());
+
+        HorizontalLayout buttonsLayout = new HorizontalLayout(commentsButton, closeButton);
+        buttonsLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        buttonsLayout.setAlignItems(Alignment.CENTER);
+
+        dialog.add(buttonsLayout);
         dialog.open();
         // Deseleziona la tupla dopo aver aperto il dialogo
         grid.asSingleSelect().clear();
     }
 
+    private void cleanComments(List<Emozione> commenti) {
+        commenti.removeIf(e -> e.getCommento() == null);
+    }
 }
