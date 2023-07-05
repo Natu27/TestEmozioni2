@@ -86,7 +86,7 @@ public class HistogramView extends VerticalLayout {
     }
 
     private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset, int idSong) throws RemoteException, NoVotazioni {
-        List<Emozione> emozioni = stub.getVotazioni(idSong);
+        List<Emozione> emozioni = stub.getVotazioniMedie(idSong);
         for(Emozione e : emozioni) {
             dataset.addValue(e.getScore(), e.getName(), " ");
         }

@@ -40,7 +40,7 @@ public interface Servizi extends Remote {
 
     void updateEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws RemoteException;
 
-    List<Emozione> getVotazioni(int songId) throws NoVotazioni, RemoteException;
+    List<Emozione> getVotazioniMedie(int songId) throws NoVotazioni, RemoteException;
 
     List<Emozione> getCommenti(int songId) throws NoCommenti, RemoteException;
 }

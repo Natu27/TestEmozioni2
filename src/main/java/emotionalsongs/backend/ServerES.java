@@ -47,21 +47,33 @@ public class ServerES implements Servizi {
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata {
         List<Canzone> result = new ArrayList<>();
         //if (titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null) throw new NessunaCanzoneTrovata();
-        String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " + "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%')";
+        String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER(CONCAT( '%',?,'%')) AND LOWER(autore) LIKE LOWER(CONCAT( '%',?,'%'))";
         if (year != null) {
-            query = query + " AND anno = " + year;
+            query = query + " AND anno = ?";
         }
+        //if (titoloDaCercare == "" && autoreDaCercare == "" && year == null)
         query = query + " LIMIT 300";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        Connection conn = null;
+        try {
+            conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, titoloDaCercare);
+            stmt.setString(2, autoreDaCercare);
+            if (year != null)
+                stmt.setInt(3, year);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
-                //System.out.println(canzone.getId());
+                Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"),
+                        rs.getString("autore"), rs.getString("titolo"),
+                        rs.getString("codice"));
                 result.add(canzone);
             }
             if (result.isEmpty()) throw new NessunaCanzoneTrovata();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+
         return result;
     }
 
@@ -125,8 +137,14 @@ public class ServerES implements Servizi {
     public List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException {
 
         List<Integer> result = new ArrayList<>();
-        String query = "SELECT distinct anno FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER('%" + titoloDaCercare + "%') " + "AND LOWER(autore) LIKE LOWER('%" + autoreDaCercare + "%') order by anno asc;";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        String query = "SELECT distinct anno FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER(CONCAT( '%',?,'%')) AND LOWER(autore) LIKE LOWER(CONCAT( '%',?,'%')) order by anno asc;";
+
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, titoloDaCercare);
+            stmt.setString(2, autoreDaCercare);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 result.add(rs.getInt("anno"));
             }
@@ -139,12 +157,16 @@ public class ServerES implements Servizi {
 
     @Override
     public Utente login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException {
-        String query = "SELECT * FROM public.\"User\" WHERE username = '" + userid + "'";
+        String query = "SELECT * FROM public.\"User\" WHERE username = ?;";
         Utente result = null;
         //System.out.println(userid);
         int userId;
         String username = "", hashed_pass = "", nome;
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, userid);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 userId = rs.getInt("user_id");
                 username = rs.getString("username");
@@ -188,8 +210,12 @@ public class ServerES implements Servizi {
     public List<Playlist> myPlaylist(int userId) throws RemoteException {
         //int userId = userId(username);
         List<Playlist> result = new ArrayList<>();
-        String query = "SELECT * FROM public.\"Playlist\" WHERE user_id = " + userId;
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        String query = "SELECT * FROM public.\"Playlist\" WHERE user_id = ?;";
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Playlist playlist = new Playlist(rs.getInt("playlist_id"), rs.getString("titolo"), rs.getInt("user_id"));
                 result.add(playlist);
@@ -204,9 +230,12 @@ public class ServerES implements Servizi {
     public int removePlaylist(int userId, String titolo) throws RemoteException {
         int playlistEliminata = -1;
         //int userId = userId(username);
-        String query = "DELETE FROM public.\"Playlist\" WHERE user_id = " + userId + "AND titolo = '" + titolo + "'";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-
+        String query = "DELETE FROM public.\"Playlist\" WHERE user_id = ? AND titolo = ?";
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, userId);
+            stmt.setString(2, titolo);
             playlistEliminata = stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -300,8 +329,12 @@ public class ServerES implements Servizi {
     private ArrayList<Integer> getIdSongPlaylist(int playlistId) {
         ArrayList<Integer> result = new ArrayList<>();
         //int playlistId = playlistId(username, nomePlaylist);
-        String query = "SELECT * FROM public.\"CanzoniPlaylist\" WHERE playlist_id = " + playlistId + ";";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
+        String query = "SELECT * FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ?;";
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, playlistId);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 result.add(rs.getInt("canzone_id"));
             }
@@ -429,13 +462,16 @@ public class ServerES implements Servizi {
     }
 
     @Override
-    public List<Emozione> getVotazioni(int songId) throws NoVotazioni, RemoteException {
+    public List<Emozione> getVotazioniMedie(int songId) throws NoVotazioni, RemoteException {
         List<Emozione> result = new ArrayList<>();
-        String query = "SELECT avg(amazement),avg(solemnity),avg(tenderness),avg(nostalgia),avg(calmness),avg(ppower),avg(joy),avg(tension),avg(sadness) FROM public.\"Emozioni\" WHERE canzone_id =" + songId + ";";
+        String query = "SELECT avg(amazement),avg(solemnity),avg(tenderness),avg(nostalgia),avg(calmness),avg(ppower),avg(joy),avg(tension),avg(sadness) FROM public.\"Emozioni\" WHERE canzone_id =?;";
 
-        try (Connection conn = this.dbConn.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, songId);
+            ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
                 Emozione amazement = new Emozione("Amazement", rs.getDouble(1));
                 result.add(amazement);
@@ -473,21 +509,23 @@ public class ServerES implements Servizi {
     @Override
     public List<Emozione> getCommenti(int songId) throws NoCommenti, RemoteException {
         List<Emozione> result = new ArrayList<>();
-        String query = "SELECT amazement,solemnity,tenderness,nostalgia,calmness,ppower,joy,tension,sadness,commamazement,commsolemnity,commtenderness,commnostalgia,commcalmness,commpower,commjoy,commtension,commsadness FROM public.\"Emozioni\" WHERE canzone_id =" + songId + ";";
+        String query = "SELECT amazement,solemnity,tenderness,nostalgia,calmness,ppower,joy,tension,sadness,commamazement,commsolemnity,commtenderness,commnostalgia,commcalmness,commpower,commjoy,commtension,commsadness FROM public.\"Emozioni\" WHERE canzone_id =?;";
 
-        try (Connection conn = this.dbConn.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, songId);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Emozione amazement = new Emozione("Amazement", rs.getDouble(1),rs.getString(10));
+                Emozione amazement = new Emozione("Amazement", rs.getDouble(1), rs.getString(10));
                 result.add(amazement);
-                Emozione solemnity = new Emozione("Solemnity", rs.getDouble(2),rs.getString(11));
+                Emozione solemnity = new Emozione("Solemnity", rs.getDouble(2), rs.getString(11));
                 result.add(solemnity);
-                Emozione tenderness = new Emozione("Tenderness", rs.getDouble(3),rs.getString(12));
+                Emozione tenderness = new Emozione("Tenderness", rs.getDouble(3), rs.getString(12));
                 result.add(tenderness);
-                Emozione nostalgia = new Emozione("Nostalgia", rs.getDouble(4),rs.getString(13));
+                Emozione nostalgia = new Emozione("Nostalgia", rs.getDouble(4), rs.getString(13));
                 result.add(nostalgia);
-                Emozione calmness = new Emozione("Calmness", rs.getDouble(5),rs.getString(14));
+                Emozione calmness = new Emozione("Calmness", rs.getDouble(5), rs.getString(14));
                 result.add(calmness);
                 Emozione power = new Emozione("Power", rs.getDouble(6),rs.getString(15));
                 result.add(power);
