@@ -5,6 +5,7 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import emotionalsongs.backend.ClientES;
+import emotionalsongs.backend.DatabaseConnection;
 import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.exceptions.emozioni.NoVotazioni;
@@ -27,9 +28,7 @@ import java.util.List;
 
 
 public class HistogramView extends VerticalLayout {
-
     ClientES clientES = new ClientES();
-    Servizi stub = clientES.getStub();
 
     public HistogramView(int idSong) throws Exception {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -86,7 +85,7 @@ public class HistogramView extends VerticalLayout {
     }
 
     private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset, int idSong) throws RemoteException, NoVotazioni {
-        List<Emozione> emozioni = stub.getVotazioniMedie(idSong);
+        List<Emozione> emozioni = clientES.getVotazioniMedie(idSong);
         for(Emozione e : emozioni) {
             dataset.addValue(e.getScore(), e.getName(), " ");
         }

@@ -30,7 +30,7 @@ public class DatabaseConnection {
             e.printStackTrace();
         }
         connection = new Jdbc3PoolingDataSource();
-        connection.setDataSourceName("EM. songs");
+        //connection.setDataSourceName("EM. songs");
         connection.setServerName(DB_URL);
         connection.setDatabaseName("emotionalsongs");
         connection.setUser(USER);
