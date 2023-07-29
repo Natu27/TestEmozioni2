@@ -5,7 +5,7 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 @Entity
-public class Utente extends AbstractEntity implements Serializable {
+public class Utente implements Serializable {
     @Id
     private int id;
     private String username;

@@ -5,8 +5,6 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.DatabaseConnection;
-import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.exceptions.emozioni.NoVotazioni;
 import org.jfree.chart.ChartFactory;

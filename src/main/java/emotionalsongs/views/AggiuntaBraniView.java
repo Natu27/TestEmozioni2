@@ -19,8 +19,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.DatabaseConnection;
-import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 
@@ -132,7 +130,7 @@ public class AggiuntaBraniView extends Dialog {
         grid.setColumns("id","titolo", "artista", "anno");
         //TODO id invisibile ora valorizzato e funzionante --> per V
         grid.getColumnByKey("id").setVisible(false);
-        grid.getColumns().get(3).setSortable(false); // sort disattivato perchè non funziona su questa colonna
+        grid.getColumns().get(3).setSortable(false); // sort disattivato perché non funziona su questa colonna
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
     }
 

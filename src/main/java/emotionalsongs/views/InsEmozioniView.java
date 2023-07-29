@@ -21,11 +21,8 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
-
-import emotionalsongs.backend.DatabaseConnection;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.rmi.RemoteException;
 import java.sql.SQLException;

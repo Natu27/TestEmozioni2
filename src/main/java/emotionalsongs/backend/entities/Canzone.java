@@ -4,9 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
 
-//Classe eredita chiave primaria da AbstractEntity as Vaadin suggests
 @Entity
-public class Canzone extends AbstractEntity implements Serializable {
+public class Canzone implements Serializable {
     @Id
     private int id;
     private int anno;

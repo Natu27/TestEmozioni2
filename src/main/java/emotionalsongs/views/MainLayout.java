@@ -21,8 +21,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.DatabaseConnection;
-import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Utente;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;

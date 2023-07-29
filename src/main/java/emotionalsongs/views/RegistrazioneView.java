@@ -22,8 +22,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.DatabaseConnection;
-import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.codicefiscale.CodiceFiscale;
 
 import java.io.BufferedReader;

@@ -34,7 +34,7 @@ public class ClientES implements Servizi {
         }
         //if (titoloDaCercare == "" && autoreDaCercare == "" && year == null)
         query = query + " LIMIT 300";
-        Connection conn = null;
+        Connection conn;
         try {
             conn = this.dbConn.getConnection();
             PreparedStatement stmt = conn.prepareStatement(query);
