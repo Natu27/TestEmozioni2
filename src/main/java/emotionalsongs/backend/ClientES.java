@@ -81,6 +81,7 @@ public class ClientES implements Servizi {
         }
         if (titoloDaCercare.equals("") && autoreDaCercare.equals(""))
             query.append(" LIMIT 300;");
+        //System.out.println(query);
         try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query.toString()); ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
                 Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
@@ -286,24 +287,25 @@ public class ClientES implements Servizi {
     public ArrayList<Canzone> showCanzoniPlaylist(int playlistId) throws RemoteException {
         ArrayList<Integer> idSong = getIdSongPlaylist(playlistId);
         ArrayList<Canzone> result = new ArrayList<>();
-        StringBuilder query = new StringBuilder("SELECT * FROM public.\"Canzoni\" WHERE ");
+        StringBuilder query = new StringBuilder("SELECT * FROM public.\"Canzoni\" ");
         if(!idSong.isEmpty()) {
+            query.append("WHERE ");
             for(Integer id : idSong) {
                 if(idSong.indexOf(id) == idSong.size()-1)
                     query.append("\"Canzoni\".\"Canzoni_id\" =").append(id).append(";");
                 else
                     query.append("\"Canzoni\".\"Canzoni_id\" =").append(id).append(" OR ");
             }
+            try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query.toString()); ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
+                    result.add(canzone);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         //System.out.println(query);
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query.toString()); ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
-                result.add(canzone);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return result;
     }
 
