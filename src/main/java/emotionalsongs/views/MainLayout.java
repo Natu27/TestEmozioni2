@@ -53,8 +53,8 @@ public class MainLayout extends AppLayout {
     Button exitButton;
     Label welcome = new Label(" ");
     Dialog dialog;
-    ClientES clientES = new ClientES();
-    Servizi stub = clientES.getStub();
+    ClientES client = ClientES.getInstance();
+    Servizi stub = client.getStub();
     Avatar avatar;
     MenuBar menuBar;
     TextField user;
