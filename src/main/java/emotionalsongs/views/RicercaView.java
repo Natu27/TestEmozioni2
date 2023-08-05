@@ -49,7 +49,7 @@ public class RicercaView extends VerticalLayout {
     Button emoButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
-    ClientES client = new ClientES();
+    ClientES client = ClientES.getInstance();
     List<Integer> anni = client.getAnni("", "");
 
     public RicercaView() throws Exception {

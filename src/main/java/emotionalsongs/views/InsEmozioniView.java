@@ -37,7 +37,7 @@ public class InsEmozioniView extends Dialog {
     String playlistTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
     Canzone songSelected;
     Grid<Emozione> grid;
-    ClientES client = new ClientES();
+    ClientES client = ClientES.getInstance();
 
     public InsEmozioniView(Canzone songSelected) throws NotBoundException, RemoteException {
         this.songSelected = songSelected;

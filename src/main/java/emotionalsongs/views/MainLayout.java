@@ -52,7 +52,7 @@ public class MainLayout extends AppLayout {
     Button exitButton;
     Label welcome = new Label(" ");
     Dialog dialog;
-    ClientES client = new ClientES();
+    ClientES client = ClientES.getInstance();
     Avatar avatar;
     MenuBar menuBar;
     TextField user;

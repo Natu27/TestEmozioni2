@@ -63,7 +63,7 @@ public class MyPlaylistView extends VerticalLayout {
     Button addCanzone;
     String nomePlaylist;
     Grid<Playlist> gridPlaylist = new Grid<>(Playlist.class);
-    ClientES client = new ClientES();
+    ClientES client = ClientES.getInstance();
     Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
 
     public MyPlaylistView() throws Exception {

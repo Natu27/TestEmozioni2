@@ -11,10 +11,7 @@ import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,12 +21,18 @@ import java.util.List;
 import java.util.Objects;
 
 public class ClientES implements Servizi {
-    private static final int PORT = 10002;
     private final DatabaseConnection dbConn= new DatabaseConnection();
+    private static ClientES instance;
 
-    public ClientES() {
+    private ClientES() {}
 
+    public static synchronized ClientES getInstance() throws RemoteException {
+        if (instance == null) {
+            instance = new ClientES();
+        }
+        return instance;
     }
+
     @Override
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata {
         List<Canzone> result = new ArrayList<>();

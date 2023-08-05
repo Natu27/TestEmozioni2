@@ -56,7 +56,7 @@ public class RegistrazioneView extends VerticalLayout {
     VerticalLayout regButtonLayout;
     Button registerButton;
     VerticalLayout pageLayout;
-    ClientES client = new ClientES();
+    ClientES client = ClientES.getInstance();
 
     public RegistrazioneView() throws Exception {
         setSpacing(false);

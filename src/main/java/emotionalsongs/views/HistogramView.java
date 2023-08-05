@@ -26,7 +26,7 @@ import java.util.List;
 
 
 public class HistogramView extends VerticalLayout {
-    ClientES client = new ClientES();
+    ClientES client = ClientES.getInstance();
 
     public HistogramView(int idSong) throws Exception {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();

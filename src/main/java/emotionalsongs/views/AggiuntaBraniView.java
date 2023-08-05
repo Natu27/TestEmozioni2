@@ -47,7 +47,7 @@ public class AggiuntaBraniView extends Dialog {
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
     ArrayList<Canzone> braniSelezionati = new ArrayList<>();
-    ClientES client = new ClientES();
+    ClientES client = ClientES.getInstance();
     List<Integer> anni = client.getAnni("", "");
     int playlistId = (Integer) VaadinSession.getCurrent().getAttribute("playlistId");
 

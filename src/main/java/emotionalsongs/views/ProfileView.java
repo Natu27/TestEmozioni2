@@ -30,7 +30,7 @@ import emotionalsongs.backend.entities.Utente;
 @Route(value = "profile", layout = MainLayout.class)
 public class ProfileView extends VerticalLayout {
 
-    ClientES client = new ClientES();
+    ClientES client = ClientES.getInstance();
     Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
     HorizontalLayout layoutTitolo;
     Icon iconTitolo;
