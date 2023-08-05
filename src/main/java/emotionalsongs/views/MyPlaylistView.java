@@ -298,6 +298,35 @@ public class MyPlaylistView extends VerticalLayout {
                     button.setIcon(new Icon(VaadinIcon.BAR_CHART_H));
                     button.setText("Inserisci Emozioni");
                 })).setHeader("Votazione");
+        gridCanzoni.addColumn(
+                new ComponentRenderer<>(Button::new, (button, titolo) -> {
+                    button.addThemeVariants(ButtonVariant.LUMO_ICON,
+                            ButtonVariant.LUMO_ERROR,
+                            ButtonVariant.LUMO_PRIMARY);
+                    button.addClickListener(e -> {
+                        delete = new ConfirmDialog("⚠️ Conferma eliminazione",
+                                "Sei sicuro di voler eliminare la playlist?", "Sì", event1 -> {
+                            try {
+                                if (clientES.removePlaylist(utente.getId(), titolo.getTitolo()) == 1) { //modificare query con eliminare canzone
+                                    Notification.show("Playlist cancellata", 3000, Notification.Position.MIDDLE)
+                                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                                    this.configureGrid();
+                                } else {
+                                    Notification.show("Impossibile cancellare la playlist", 3000, Notification.Position.MIDDLE)
+                                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                                }
+                            } catch (RemoteException ex) {
+                                Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
+                                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                            }
+                        }, "No", event2 -> delete.close());
+                        delete.open();
+                    });
+                    button.setIcon(new Icon(VaadinIcon.TRASH));
+                })).setHeader("Elimina");
+
+
+
         try {
             resultSongPlaylist = clientES.showCanzoniPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"));
             gridCanzoni.setItems(resultSongPlaylist);

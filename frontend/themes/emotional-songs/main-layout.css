@@ -20,3 +20,7 @@ vaadin-scroller[slot="drawer"] {
   color: white;
   text-align: center;
 }
+
+.logout {
+  color: red;
+}

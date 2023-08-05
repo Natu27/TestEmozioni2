@@ -4,11 +4,17 @@ package emotionalsongs.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.contextmenu.MenuItem;
+import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.menubar.MenuBarVariant;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -31,6 +37,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 import java.rmi.RemoteException;
 
 
+
 /**
  * The main view is a top-level placeholder for other views.
  */
@@ -39,13 +46,15 @@ public class MainLayout extends AppLayout {
     HorizontalLayout top;
     VerticalLayout loginForm;
     Button login;
-    Button logout;
+    //Button logout;
     Button registerButton;
     Button loginButton;
     Button exitButton;
     Label welcome = new Label(" ");
     Dialog dialog;
     ClientES clientES = new ClientES();
+    Avatar avatar;
+    MenuBar menuBar;
     TextField user;
     PasswordField password;
     Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
@@ -58,8 +67,10 @@ public class MainLayout extends AppLayout {
 
         if (utente!=null) {
             login.setVisible(false);
-            logout.setVisible(true);
+            //logout.setVisible(true);
+            avatar.setVisible(true);
             welcome.setVisible(true);
+            menuBar.setVisible(true);
             welcome.setHeightFull();
             welcome.addClassNames("custom-label");
             welcome.setText("Ciao, " + utente.getNome());
@@ -88,7 +99,7 @@ public class MainLayout extends AppLayout {
             dialog.setWidth("500px");
             dialog.setHeight("475x");
 
-            logout.addClickListener(click -> logout());
+            //logout.addClickListener(click -> logout());
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -100,18 +111,30 @@ public class MainLayout extends AppLayout {
     private void configureTopLayout() {
         login = new Button("Login", VaadinIcon.USER.create());
         login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        logout = new Button("Logout", VaadinIcon.ARROW_FORWARD.create());
-        logout.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        logout.setVisible(false);//
+        //logout = new Button("Logout", VaadinIcon.ARROW_FORWARD.create());
+        //logout.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        //logout.setVisible(false);
+        avatar = new Avatar();
         welcome.setVisible(false);
-        top = new HorizontalLayout(login,welcome,logout);
+        avatar.setVisible(false);
+        avatar.addThemeVariants(AvatarVariant.LUMO_LARGE);
+        menuBar = new MenuBar();
+        menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
+        MenuItem menuItem = menuBar.addItem(avatar);
+        SubMenu subMenu = menuItem.getSubMenu();
+        subMenu.addItem("Profilo", e -> UI.getCurrent().navigate(ProfileView.class));
+        subMenu.addItem("Aiuto");
+        subMenu.addItem("Logout", e-> logout()).addClassNames("logout");
+        menuBar.setVisible(false);
+        top = new HorizontalLayout(login,welcome/*,logout*/, menuBar);
         top.setWidthFull();
         top.setMargin(true);
         top.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
         top.setAlignSelf(FlexComponent.Alignment.END, welcome);
         top.setAlignSelf(FlexComponent.Alignment.END, login);
-        top.setAlignSelf(FlexComponent.Alignment.END, logout);
-        top.add(login, welcome, logout);
+        //top.setAlignSelf(FlexComponent.Alignment.END, logout);
+        top.setAlignSelf(FlexComponent.Alignment.END, menuBar);
+        top.add(login ,welcome /*,logout*/, menuBar);
     }
 
     private void configureLoginForm() {
@@ -147,8 +170,11 @@ public class MainLayout extends AppLayout {
             VaadinSession.getCurrent().setAttribute("username", user.getValue());
             VaadinSession.getCurrent().setAttribute("utente", utente);
             login.setVisible(false);
-            logout.setVisible(true);
+            //logout.setVisible(true);
             welcome.setVisible(true);
+            avatar.setVisible(true);
+            avatar.addThemeVariants(AvatarVariant.LUMO_LARGE);
+            menuBar.setVisible(true);
             welcome.setHeightFull();
             welcome.addClassNames("custom-label");
             welcome.setText("Ciao, " + utente.getNome());
@@ -201,8 +227,9 @@ public class MainLayout extends AppLayout {
         // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         AppNav nav = new AppNav();
 
-        nav.addItem(new AppNavItem("Ricerca", RicercaView.class, LineAwesomeIcon.SEARCH_SOLID.create()));
-        nav.addItem(new AppNavItem("My Playlist", MyPlaylistView.class, LineAwesomeIcon.MUSIC_SOLID.create()));
+            nav.addItem(new AppNavItem("Ricerca", RicercaView.class, LineAwesomeIcon.SEARCH_SOLID.create()));
+            nav.addItem(new AppNavItem("My Playlist", MyPlaylistView.class, LineAwesomeIcon.MUSIC_SOLID.create()));
+
 
         return nav;
     }
