@@ -27,7 +27,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Utente;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;
@@ -53,8 +52,7 @@ public class MainLayout extends AppLayout {
     Button exitButton;
     Label welcome = new Label(" ");
     Dialog dialog;
-    ClientES client = ClientES.getInstance();
-    Servizi stub = client.getStub();
+    ClientES client = new ClientES();
     Avatar avatar;
     MenuBar menuBar;
     TextField user;
@@ -164,9 +162,9 @@ public class MainLayout extends AppLayout {
     }
 
     private void login() throws PasswordErrata, UsernameErrato, RemoteException {
-        utente = stub.login(user.getValue(), password.getValue());
+        utente = client.login(user.getValue(), password.getValue());
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
-            stub.login(user.getValue(), password.getValue());
+            client.login(user.getValue(), password.getValue());
             dialog.close();
             //Memorizza l'utente che ha effettuato login
             VaadinSession.getCurrent().setAttribute("username", user.getValue());

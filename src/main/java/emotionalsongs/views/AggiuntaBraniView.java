@@ -19,7 +19,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 
@@ -48,12 +47,11 @@ public class AggiuntaBraniView extends Dialog {
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
     ArrayList<Canzone> braniSelezionati = new ArrayList<>();
-    ClientES client = ClientES.getInstance();
-    Servizi stub = client.getStub();
-    List<Integer> anni = stub.getAnni("", "");
+    ClientES client = new ClientES();
+    List<Integer> anni = client.getAnni("", "");
     int playlistId = (Integer) VaadinSession.getCurrent().getAttribute("playlistId");
 
-    ArrayList<Canzone> braniPrecedentementeSelezionati = stub.showCanzoniPlaylist(playlistId);
+    ArrayList<Canzone> braniPrecedentementeSelezionati = client.showCanzoniPlaylist(playlistId);
 
     public AggiuntaBraniView() throws Exception {
         setWidthFull();
@@ -64,7 +62,7 @@ public class AggiuntaBraniView extends Dialog {
         fineButton = new Button("Conferma", buttonClickEvent -> {
             try {
                 if (braniSelezionati != null) {
-                    stub.addBraniPlaylist(playlistId, braniSelezionati);
+                    client.addBraniPlaylist(playlistId, braniSelezionati);
                     Notification.show("Brani inseriti nella Playlist", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();
@@ -154,10 +152,10 @@ public class AggiuntaBraniView extends Dialog {
 
     private void search() {
         try {
-            result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue(),
+            result = client.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue(),
                     (ArrayList<Canzone>) Stream.concat(braniPrecedentementeSelezionati.stream(), braniSelezionati.stream()).collect(Collectors.toList()));
             grid.setItems(result);
-            anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
+            anni = client.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
         } catch (RemoteException e) {
             Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -167,7 +165,7 @@ public class AggiuntaBraniView extends Dialog {
             Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             try {
-                anni = stub.getAnni("", "");
+                anni = client.getAnni("", "");
             } catch (RemoteException ex) {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);

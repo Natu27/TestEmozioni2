@@ -21,7 +21,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
 
@@ -38,8 +37,7 @@ public class InsEmozioniView extends Dialog {
     String playlistTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
     Canzone songSelected;
     Grid<Emozione> grid;
-    ClientES client = ClientES.getInstance();
-    Servizi stub = client.getStub();
+    ClientES client = new ClientES();
 
     public InsEmozioniView(Canzone songSelected) throws NotBoundException, RemoteException {
         this.songSelected = songSelected;
@@ -66,7 +64,7 @@ public class InsEmozioniView extends Dialog {
         confirmButton.addClickListener(e -> {
             List<Emozione> emozioniVotate = getAllScores();
             try {
-                stub.insEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
+                client.insEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
                 Notification.show("Votazione eseguita!", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 this.close();
@@ -74,7 +72,7 @@ public class InsEmozioniView extends Dialog {
             catch (SQLException ex) {
                 //TODO: da gestire con update
                 try {
-                    stub.updateEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
+                    client.updateEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
                     Notification.show("Votazione aggiornata!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();

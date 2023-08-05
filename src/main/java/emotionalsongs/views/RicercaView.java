@@ -23,7 +23,6 @@ import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
@@ -50,9 +49,8 @@ public class RicercaView extends VerticalLayout {
     Button emoButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
-    ClientES client = ClientES.getInstance();
-    Servizi stub = client.getStub();
-    List<Integer> anni = stub.getAnni("", "");
+    ClientES client = new ClientES();
+    List<Integer> anni = client.getAnni("", "");
 
     public RicercaView() throws Exception {
         setSpacing(true);
@@ -132,9 +130,9 @@ public class RicercaView extends VerticalLayout {
 
     private void search() {
         try {
-            result = stub.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
+            result = client.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
             grid.setItems(result);
-            anni = stub.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
+            anni = client.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
             //Per memorizzare la grid corrente
             UI.getCurrent().getSession().setAttribute("result", result);
 
@@ -155,7 +153,7 @@ public class RicercaView extends VerticalLayout {
             Notification.show("Nessuna canzone trovata", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             try {
-                anni = stub.getAnni("", "");
+                anni = client.getAnni("", "");
             } catch (RemoteException ex) {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -225,7 +223,7 @@ public class RicercaView extends VerticalLayout {
 
         Button commentsButton = new Button("Visualizza Commenti", buttonClickEvent ->{
             try {
-                List<Emozione> commenti = stub.getCommenti(selectedTuple.getId());
+                List<Emozione> commenti = client.getCommenti(selectedTuple.getId());
                 cleanComments(commenti);
                 Dialog dialogCommenti = new Dialog();
 

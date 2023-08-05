@@ -182,6 +182,9 @@
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <mainClass>emotionalsongs.Application</mainClass>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>start-spring-boot</id>

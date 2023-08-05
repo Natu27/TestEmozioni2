@@ -22,7 +22,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility.Margin;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Playlist;
 import emotionalsongs.backend.entities.Utente;
@@ -64,8 +63,7 @@ public class MyPlaylistView extends VerticalLayout {
     Button addCanzone;
     String nomePlaylist;
     Grid<Playlist> gridPlaylist = new Grid<>(Playlist.class);
-    ClientES client = ClientES.getInstance();
-    Servizi stub = client.getStub();
+    ClientES client = new ClientES();
     Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
 
     public MyPlaylistView() throws Exception {
@@ -165,9 +163,9 @@ public class MyPlaylistView extends VerticalLayout {
             Notification.show("Impossibile creare playlist - Necessario inserire titolo", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         else {
-            result = stub.myPlaylist(utente.getId());
+            result = client.myPlaylist(utente.getId());
             if(nomePlaylistPresente(titolo)) throw new NomePlaylistGiaPresente();
-            if (stub.addPlaylist(titolo, utente.getId()) == 1) {
+            if (client.addPlaylist(titolo, utente.getId()) == 1) {
                 Notification.show("Playlist creata", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 this.configureGrid();
@@ -191,7 +189,7 @@ public class MyPlaylistView extends VerticalLayout {
 
     private void configureGrid() throws RemoteException {
         result = new ArrayList<>();
-        result = stub.myPlaylist(utente.getId());
+        result = client.myPlaylist(utente.getId());
         gridPlaylist.getColumnByKey("id").setVisible(false);
         gridPlaylist.getColumnByKey("username").setVisible(false);
         gridPlaylist.getColumnByKey("titolo").setVisible(true);
@@ -228,7 +226,7 @@ public class MyPlaylistView extends VerticalLayout {
                         delete = new ConfirmDialog("⚠️ Conferma eliminazione",
                                 "Sei sicuro di voler eliminare la playlist?", "Sì", event1 -> {
                         try {
-                            if (stub.removePlaylist(utente.getId(), titolo.getTitolo()) == 1) {
+                            if (client.removePlaylist(utente.getId(), titolo.getTitolo()) == 1) {
                                 Notification.show("Playlist cancellata", 3000, Notification.Position.MIDDLE)
                                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                                 this.configureGrid();
@@ -309,7 +307,7 @@ public class MyPlaylistView extends VerticalLayout {
                         delete = new ConfirmDialog("⚠️ Conferma eliminazione",
                                 "Sei sicuro di voler eliminare la playlist?", "Sì", event1 -> {
                             try {
-                                if (stub.removePlaylist(utente.getId(), titolo.getTitolo()) == 1) { //modificare query con eliminare canzone
+                                if (client.removePlaylist(utente.getId(), titolo.getTitolo()) == 1) { //modificare query con eliminare canzone
                                     Notification.show("Playlist cancellata", 3000, Notification.Position.MIDDLE)
                                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                                     this.configureGrid();
@@ -330,7 +328,7 @@ public class MyPlaylistView extends VerticalLayout {
 
 
         try {
-            resultSongPlaylist = stub.showCanzoniPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"));
+            resultSongPlaylist = client.showCanzoniPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"));
             gridCanzoni.setItems(resultSongPlaylist);
 
             gridCanzoni.setVisible(!resultSongPlaylist.isEmpty());
@@ -366,13 +364,13 @@ public class MyPlaylistView extends VerticalLayout {
         renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);
         confirmNewTitle.addClickListener(e->{
             try {
-                result = stub.myPlaylist(utente.getId());
+                result = client.myPlaylist(utente.getId());
                 if(nomePlaylistPresente(newTitle.getValue())) throw new NomePlaylistGiaPresente();
                 if(newTitle.getValue().trim().equals("")) {
                     Notification.show("Impossibile rinominare playlist - Necessario inserire titolo", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } else {
-                    if (stub.renamePlaylist(utente.getId(), newTitle.getValue(), (Integer) VaadinSession.getCurrent().getAttribute("playlistId")) == 1) {
+                    if (client.renamePlaylist(utente.getId(), newTitle.getValue(), (Integer) VaadinSession.getCurrent().getAttribute("playlistId")) == 1) {
                         Notification.show("Playlist modificata", 3000, Notification.Position.MIDDLE)
                                 .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                         this.configureGrid();
