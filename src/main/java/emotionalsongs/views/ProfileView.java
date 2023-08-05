@@ -8,11 +8,11 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -20,6 +20,7 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
@@ -61,6 +62,7 @@ public class ProfileView extends VerticalLayout {
     EmailField email;
     PasswordField password;
     ConfirmDialog dialogoConferma;
+    byte[] imageData;
 
 
 
@@ -132,10 +134,35 @@ public class ProfileView extends VerticalLayout {
         datiPersonali = new VerticalLayout();
 
             avatar = new Avatar();
-            //avatar.setImage("images/EmSongs.png"); // sostituire con immagine caricata
+            //avatar.setImage(client.downloadProfilePic(utente.getId()));
             avatar.addThemeVariants(AvatarVariant.LUMO_XLARGE);
 
-            profilePic = new Upload();
+            MemoryBuffer buffer = new MemoryBuffer();
+            profilePic = new Upload(buffer);
+            profilePic.setAcceptedFileTypes("image/jpeg", "image/png");
+            profilePic.addSucceededListener(e -> {
+                String imageName = e.getFileName();
+                try {
+                    imageData = buffer.getInputStream().readAllBytes();
+                /*if(client.uploloadProfilePic(utente.getId(),imageData) == 1) {
+                    Notification.show("Immagine caricata", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                    //this.configureDatiLayout();
+                }else {
+                    Notification.show("Impossibile Impossibile caricare l'immagine", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }*/
+
+            } catch (Exception ex) {
+                    Notification.show("Impossibile caricare l'immagine", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
+
+            });
+            profilePic.addFailedListener(e->{
+                Notification.show("Formato immagine non accettato", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            });
 
             HorizontalLayout persona = new HorizontalLayout();
             datiForm = new FormLayout();
@@ -170,8 +197,11 @@ public class ProfileView extends VerticalLayout {
             sesso.setValue("");// valore restituito da query
             sesso.setReadOnly(true);
 
-            datiForm.add(nome,cognome,dataNascita,luogoNascita,sesso, codFisc, profilePic);
+            H5 picLabel = new H5("Carica immagine profilo");
+
+            datiForm.add(nome,cognome,dataNascita,luogoNascita,sesso, codFisc,picLabel, profilePic);
             datiForm.setColspan(profilePic,2);
+            datiForm.setColspan(picLabel,2);
             persona.add(avatar, datiForm);
 
             datiForm.setWidthFull();
@@ -211,9 +241,10 @@ public class ProfileView extends VerticalLayout {
         email.setValue(client.myAccount(utente.getId()).get(5));
         email.getElement().getStyle().set("background", "none");
 
-        password = new PasswordField("Password");
+        password = new PasswordField("Nuova password");
         password.setRevealButtonVisible(false);
-        H3 intestazione = new H3("Dati per l'accesso");
+
+        H3 intestazione = new H3("Credenziali di accesso");
         accessoForm.add(username,email,password);
         accessoForm.setColspan(email,2);
         accessoForm.setColspan(password,2);
