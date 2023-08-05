@@ -21,9 +21,11 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import emotionalsongs.backend.ClientES;
+import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -37,8 +39,9 @@ public class InsEmozioniView extends Dialog {
     Canzone songSelected;
     Grid<Emozione> grid;
     ClientES clientES = new ClientES();
+    Servizi stub = clientES.getStub();
 
-    public InsEmozioniView(Canzone songSelected) {
+    public InsEmozioniView(Canzone songSelected) throws NotBoundException, RemoteException {
         this.songSelected = songSelected;
 
         setWidth("800px");
@@ -63,7 +66,7 @@ public class InsEmozioniView extends Dialog {
         confirmButton.addClickListener(e -> {
             List<Emozione> emozioniVotate = getAllScores();
             try {
-                clientES.insEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
+                stub.insEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
                 Notification.show("Votazione eseguita!", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 this.close();
@@ -71,7 +74,7 @@ public class InsEmozioniView extends Dialog {
             catch (SQLException ex) {
                 //TODO: da gestire con update
                 try {
-                    clientES.updateEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
+                    stub.updateEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
                     Notification.show("Votazione aggiornata!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();

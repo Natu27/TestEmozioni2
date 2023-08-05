@@ -24,6 +24,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
+import emotionalsongs.backend.Servizi;
 import emotionalsongs.backend.entities.Utente;
 
 @PageTitle("Profilo")
@@ -31,6 +32,7 @@ import emotionalsongs.backend.entities.Utente;
 public class ProfileView extends VerticalLayout {
 
     ClientES clientES = new ClientES();
+    Servizi stub = clientES.getStub();
     Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
     HorizontalLayout layoutTitolo;
     Icon iconTitolo;
