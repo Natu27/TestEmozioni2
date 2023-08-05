@@ -5,6 +5,7 @@ import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.H2;
@@ -41,7 +42,6 @@ public class ProfileView extends VerticalLayout {
     VerticalLayout noLogged;
     HorizontalLayout horizontalLayout;
     VerticalLayout datiPersonali;
-
     Avatar avatar;
     Upload profilePic;
     FormLayout datiForm;
@@ -60,6 +60,7 @@ public class ProfileView extends VerticalLayout {
     TextField username;
     EmailField email;
     PasswordField password;
+    ConfirmDialog dialogoConferma;
 
 
 
@@ -98,6 +99,13 @@ public class ProfileView extends VerticalLayout {
             confermaModifiche = new Button("Conferma modifiche");
             confermaModifiche.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
             confermaModifiche.setIcon(VaadinIcon.CHECK_CIRCLE.create());
+            confermaModifiche.addClickListener(e->{
+                dialogoConferma = new ConfirmDialog("⚠️ Confermare le modifiche","Sei sicuro di voler confermare le modifiche?", "Sì", event1 -> {
+                    //TODO: Query per le modifiche
+                }, "No", event2 -> dialogoConferma.close());
+                dialogoConferma.open();
+            });
+
             confirmLayout.add(confermaModifiche);
             confirmLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
             confirmLayout.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -120,7 +128,7 @@ public class ProfileView extends VerticalLayout {
         titoloPagina = new H3("I tuoi dati");
         layoutTitolo.add(iconTitolo, titoloPagina);
     }
-        private void configureDatiLayout() {
+        private void configureDatiLayout() throws Exception {
         datiPersonali = new VerticalLayout();
 
             avatar = new Avatar();
@@ -134,12 +142,12 @@ public class ProfileView extends VerticalLayout {
 
             nome = new TextField();
             nome.setLabel("Nome");
-            nome.setValue("Ciao");// valore restituito da query
+            nome.setValue(client.myAccount(utente.getId()).get(0));
             nome.setReadOnly(true);
 
             cognome = new TextField();
             cognome.setLabel("Cognome");
-            cognome.setValue("Ciao");// valore restituito da query
+            cognome.setValue(client.myAccount(utente.getId()).get(1));
             cognome.setReadOnly(true);
 
             dataNascita = new DatePicker();
@@ -149,17 +157,17 @@ public class ProfileView extends VerticalLayout {
 
             codFisc = new TextField();
             codFisc.setLabel("Codice fiscale");
-            codFisc.setValue("CodFisc");// valore restituito da query
+            codFisc.setValue(client.myAccount(utente.getId()).get(4));
             codFisc.setReadOnly(true);
 
             luogoNascita = new TextField();
             luogoNascita.setLabel("Luogo di nascita");
-            luogoNascita.setValue("LuogoNascita");// valore restituito da query
+            luogoNascita.setValue("");// valore restituito da query
             luogoNascita.setReadOnly(true);
 
             sesso = new TextField();
             sesso.setLabel("Sesso");
-            sesso.setValue("M");// valore restituito da query
+            sesso.setValue("");// valore restituito da query
             sesso.setReadOnly(true);
 
             datiForm.add(nome,cognome,dataNascita,luogoNascita,sesso, codFisc, profilePic);
@@ -174,12 +182,12 @@ public class ProfileView extends VerticalLayout {
 
         }
 
-        private void configureResidenzaLayout(){
+        private void configureResidenzaLayout() throws Exception{
             residenza = new VerticalLayout();
             residenzaForm = new FormLayout();
 
             via_piazza = new TextField("Residenza");
-            via_piazza.setValue("Via .........");// valore restituito da query
+            via_piazza.setValue(client.myAccount(utente.getId()).get(3));
 
             H3 intestazione = new H3("Residenza");
 
@@ -190,22 +198,21 @@ public class ProfileView extends VerticalLayout {
 
         }
 
-        private void datiAccessoLayout() {
+        private void datiAccessoLayout() throws Exception {
         accesso = new VerticalLayout();
         accessoForm = new FormLayout();
 
         username = new TextField("Username");
         username.setReadOnly(true);
-        username.setValue("User");//Sostituire con valore query
+        username.setValue(client.myAccount(utente.getId()).get(2));
         accessoForm.setColspan(username,2);
 
         email = new EmailField("Email");
-        email.setValue("Email@gmail.com");//Query
+        email.setValue(client.myAccount(utente.getId()).get(5));
         email.getElement().getStyle().set("background", "none");
 
         password = new PasswordField("Password");
-        password.setValue("Psw");//query
-
+        password.setRevealButtonVisible(false);
         H3 intestazione = new H3("Dati per l'accesso");
         accessoForm.add(username,email,password);
         accessoForm.setColspan(email,2);

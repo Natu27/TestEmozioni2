@@ -120,10 +120,12 @@ public class MainLayout extends AppLayout {
         avatar.addThemeVariants(AvatarVariant.LUMO_LARGE);
         menuBar = new MenuBar();
         menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
+        Anchor userManual = new Anchor("","Aiuto");
+        userManual.setTarget("_blank");
         MenuItem menuItem = menuBar.addItem(avatar);
         SubMenu subMenu = menuItem.getSubMenu();
         subMenu.addItem("Profilo", e -> UI.getCurrent().navigate(ProfileView.class));
-        subMenu.addItem("Aiuto");
+        subMenu.addItem(userManual);
         subMenu.addItem("Logout", e-> logout()).addClassNames("logout");
         menuBar.setVisible(false);
         top = new HorizontalLayout(login,welcome/*,logout*/, menuBar);

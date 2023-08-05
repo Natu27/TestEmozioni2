@@ -43,4 +43,6 @@ public interface Servizi extends Remote {
     List<Emozione> getVotazioniMedie(int songId) throws NoVotazioni, RemoteException;
 
     List<Emozione> getCommenti(int songId) throws NoCommenti, RemoteException;
+    List<String> myAccount(int userId) throws RemoteException;
+    int removePlaylistSong(int playlistId, int canzoneId) throws RemoteException;
 }

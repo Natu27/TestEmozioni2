@@ -304,15 +304,15 @@ public class MyPlaylistView extends VerticalLayout {
                             ButtonVariant.LUMO_ERROR,
                             ButtonVariant.LUMO_PRIMARY);
                     button.addClickListener(e -> {
-                        delete = new ConfirmDialog("⚠️ Conferma eliminazione",
-                                "Sei sicuro di voler eliminare la playlist?", "Sì", event1 -> {
+                        delete = new ConfirmDialog("⚠️ Conferma rimozione",
+                                "Sei sicuro di voler rimuovere " + titolo.getTitolo() + " dalla playlist?", "Sì", event1 -> {
                             try {
-                                if (client.removePlaylist(utente.getId(), titolo.getTitolo()) == 1) { //modificare query con eliminare canzone
-                                    Notification.show("Playlist cancellata", 3000, Notification.Position.MIDDLE)
+                                if (client.removePlaylistSong((Integer) VaadinSession.getCurrent().getAttribute("playlistId"),  titolo.getId()) == 1) {
+                                    Notification.show("Canzone rimossa!", 3000, Notification.Position.MIDDLE)
                                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                                    this.configureGrid();
+                                    this.configureGridCanzoni();
                                 } else {
-                                    Notification.show("Impossibile cancellare la playlist", 3000, Notification.Position.MIDDLE)
+                                    Notification.show("Impossibile rimuovere la canzone", 3000, Notification.Position.MIDDLE)
                                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                                 }
                             } catch (RemoteException ex) {

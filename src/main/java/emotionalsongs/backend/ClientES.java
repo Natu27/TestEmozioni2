@@ -542,4 +542,50 @@ public class ClientES implements Servizi {
         return result;
     }
 
+    @Override
+    public List<String> myAccount(int userId) throws RemoteException {
+        List<String> result = new ArrayList<>();
+        String query = "SELECT * FROM public.\"User\" WHERE user_id = ?;";
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String nome = rs.getString("nome");
+                result.add(nome);
+                String cognome = rs.getString("cognome");
+                result.add(cognome);
+                String username = rs.getString("username");
+                result.add(username);
+                String indirizzo = rs.getString("indirizzo");
+                result.add(indirizzo);
+                String cf = rs.getString("cf");
+                result.add(cf);
+                String email = rs.getString("email");
+                result.add(email);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    @Override
+    public int removePlaylistSong(int playlistId, int canzoneId) throws RemoteException {
+        int canzoneRimossa = -1;
+        String query = "DELETE FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ? AND canzone_id = ?";
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, playlistId);
+            stmt.setInt(2, canzoneId);
+            canzoneRimossa = stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return canzoneRimossa;
+    }
+
 }
