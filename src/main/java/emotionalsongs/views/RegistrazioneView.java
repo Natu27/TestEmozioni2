@@ -22,15 +22,15 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import emotionalsongs.backend.ClientES;
-import me.matteomerola.codicefiscale.FiscalCodeCalculator;
-import me.matteomerola.codicefiscale.exceptions.NotSuchCityException;
+import it.kamaladafrica.codicefiscale.city.CityByName;
+import it.kamaladafrica.codicefiscale.city.CityProvider;
+import it.kamaladafrica.codicefiscale.*;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.*;
 
 @PageTitle("Registrazione")
@@ -123,10 +123,10 @@ public class RegistrazioneView extends VerticalLayout {
             ex.printStackTrace();
         }
 
-            registrazione.add(nome, cognome, dataNascita, sesso,
-                          luogoNascita, via_piazza, codFiscale,
-                          calcolaCf, email, username,
-                          password,confirmPassword);
+        registrazione.add(nome, cognome, dataNascita, sesso,
+                luogoNascita, via_piazza, codFiscale,
+                calcolaCf, email, username,
+                password, confirmPassword);
     }
 
     private void configureButton() {
@@ -146,7 +146,7 @@ public class RegistrazioneView extends VerticalLayout {
         pageLayout.add(registrazione, registerButton);
     }
 
-    private void setComponent(){
+    private void setComponent() {
         nome.setSuffixComponent(VaadinIcon.USER.create());
         cognome.setSuffixComponent(VaadinIcon.USER.create());
         codFiscale.setSuffixComponent(VaadinIcon.BARCODE.create());
@@ -180,22 +180,27 @@ public class RegistrazioneView extends VerticalLayout {
     }
 
     private void calcolaCodFiscale() {
-        if(!nome.getValue().equals("") && !cognome.getValue().equals("") && luogoNascita.getValue() != null && dataNascita.getValue() != null && sesso.getValue() != null) {
+        if (!nome.getValue().equals("") && !cognome.getValue().equals("") && luogoNascita.getValue() != null && dataNascita.getValue() != null && sesso.getValue() != null) {
             String nomeCf = nome.getValue();
             String cognomeCf = cognome.getValue();
             String luogoNascitaCf = luogoNascita.getValue();
             LocalDate selectedDate = dataNascita.getValue();
-            Date date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
             Character sessoCf = sesso.getValue();
 
-            FiscalCodeCalculator fiscalCodeCalculator = new FiscalCodeCalculator();
-            try {
-                codFiscale.setValue(fiscalCodeCalculator.calculateFC(nomeCf, cognomeCf, sessoCf, date, luogoNascitaCf));
+            CityByName cities = CityProvider.ofDefault();
+            City citta = cities.findByName(luogoNascitaCf);
 
-            } catch (NotSuchCityException e) {
-                Notification.show("Città Inesistente", 3000, Notification.Position.MIDDLE)
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            }
+            Person person =	Person.builder()
+                    .firstname(nomeCf)
+                    .lastname(cognomeCf)
+                    .birthDate(LocalDate.of(selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDayOfMonth()))
+                    .isFemale(isFemale(sessoCf))
+                    .city(citta)
+                    .build();
+            CodiceFiscale cf = CodiceFiscale.of(person);
+
+            codFiscale.setValue(cf.getValue());
+
         } else {
             Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -211,14 +216,14 @@ public class RegistrazioneView extends VerticalLayout {
         String indirizzo = this.via_piazza.getValue();
         String codFiscale = this.codFiscale.getValue();
         String email = this.email.getValue();
-        if(nome.isEmpty() || cognome.isEmpty() || dataNascita.isEmpty() || sesso.isEmpty() || luogoNascita.isEmpty() || via_piazza.isEmpty() ||codFiscale.isEmpty() || username.isEmpty() || email.isEmpty()
-                || password.isEmpty() || confirmPassword.isEmpty()){
+        if (nome.isEmpty() || cognome.isEmpty() || dataNascita.isEmpty() || sesso.isEmpty() || luogoNascita.isEmpty() || via_piazza.isEmpty() || codFiscale.isEmpty() || username.isEmpty() || email.isEmpty()
+                || password.isEmpty() || confirmPassword.isEmpty()) {
             Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
-        }else {
+        } else {
             if (password.equals(confPassword)) {
                 List<String> usernames = client.getUsernames();
-                if(usernameUnivoco(usernames, user)) {
+                if (usernameUnivoco(usernames, user)) {
                     client.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
                     Notification.show("Registrazione effettuata", 4000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -235,10 +240,17 @@ public class RegistrazioneView extends VerticalLayout {
     }
 
     private boolean usernameUnivoco(List<String> usernames, String username) {
-        for(String u : usernames) {
-            if(u.equals(username))
+        for (String u : usernames) {
+            if (u.equals(username))
                 return false;
         }
         return true;
     }
+
+    private boolean isFemale(Character sesso){
+        if(sesso == 'F')
+            return true;
+        return false;
+    }
+
 }

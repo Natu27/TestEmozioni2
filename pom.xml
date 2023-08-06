@@ -35,6 +35,10 @@
             <name>Maven Repository</name>
             <url>https://mvnrepository.com/artifact/org.jfree/jfreechart</url>
         </repository>
+        <repository>
+            <id>codice-fiscale</id>
+            <url>https://mvnrepository.com/artifact/it.kamaladafrica/codice-fiscale</url>
+        </repository>
     </repositories>
 
     <dependencyManagement>
@@ -111,11 +115,11 @@
             <artifactId>jfreechart</artifactId>
             <version>1.5.4</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/me.matteomerola/codicefiscale -->
+        <!-- https://mvnrepository.com/artifact/it.kamaladafrica/codice-fiscale -->
         <dependency>
-            <groupId>me.matteomerola</groupId>
-            <artifactId>codicefiscale</artifactId>
-            <version>0.1.0</version>
+            <groupId>it.kamaladafrica</groupId>
+            <artifactId>codice-fiscale</artifactId>
+            <version>1.5.0</version>
         </dependency>
     </dependencies>
 
