@@ -1,5 +1,6 @@
 package emotionalsongs.backend;
 
+
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
 import emotionalsongs.backend.entities.Playlist;
@@ -587,5 +588,43 @@ public class ClientES implements Servizi {
         }
         return canzoneRimossa;
     }
+
+   /* @Override
+    public int uploloadProfilePic(int userId, byte[] picture) throws RemoteException {
+        int immagineCaricata = -1;
+        String query = "INSERT INTO public.\"User\" (profilePic) VALUES (?) WHERE user_id = ?;";
+        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setBinaryStream(1, new ByteArrayInputStream(picture));
+            stmt.setInt(2, userId);
+
+            immagineCaricata = stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return immagineCaricata;
+    }
+
+    @Override
+    public String downloadProfilePic(int userId) throws RemoteException {
+        Image profilePic = new Image();
+        String src = null;
+        String query = "SELECT profilePic FROM public.\"User\" WHERE user_id = ?;";
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, userId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                byte[] imageDB = rs.getBytes("profilePic");
+                StreamResource resource = new StreamResource("profilePic", () -> new ByteArrayInputStream(imageDB));
+                profilePic.setSrc(resource);
+                src = profilePic.getSrc();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return src;
+    }*/
 
 }

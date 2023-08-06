@@ -9,7 +9,6 @@ import emotionalsongs.backend.exceptions.emozioni.NoCommenti;
 import emotionalsongs.backend.exceptions.emozioni.NoVotazioni;
 import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
@@ -45,4 +44,6 @@ public interface Servizi extends Remote {
     List<Emozione> getCommenti(int songId) throws NoCommenti, RemoteException;
     List<String> myAccount(int userId) throws RemoteException;
     int removePlaylistSong(int playlistId, int canzoneId) throws RemoteException;
+    //int uploloadProfilePic(int userId, byte[] picture) throws RemoteException;
+    //String downloadProfilePic(int userId) throws RemoteException;
 }
