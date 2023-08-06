@@ -31,10 +31,7 @@ import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @PageTitle("Registrazione")
 @Route(value = "registrazione", layout = MainLayout.class)
@@ -169,10 +166,15 @@ public class RegistrazioneView extends VerticalLayout {
         dataNascita.setRequired(true);
         codFiscale.setMaxLength(16);
         codFiscale.setRequired(true);
+        //codFiscale.setPattern("[A-Z][AEIOU][AEIOUX]|[AEIOU]X{2}|[B-DF-HJ-NP-TV-Z]{2}[A-Z]");
         via_piazza.setRequired(true);
         email.setRequired(true);
         username.setRequired(true);
+        username.setMinLength(5);
+        username.setErrorMessage("Almeno 5 caratteri");
         password.setRequired(true);
+        password.setMinLength(8);
+        password.setErrorMessage("Almeno 8 caratteri");
         confirmPassword.setRequired(true);
 
     }

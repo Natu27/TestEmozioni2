@@ -6,7 +6,6 @@ import com.vaadin.flow.component.avatar.AvatarVariant;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
-import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.icon.Icon;
@@ -48,10 +47,7 @@ public class ProfileView extends VerticalLayout {
     FormLayout datiForm;
     TextField nome;
     TextField cognome;
-    DatePicker dataNascita;
     TextField codFisc;
-    TextField luogoNascita;
-    TextField sesso;
     FormLayout residenzaForm;
     VerticalLayout residenza;
     TextField via_piazza;
@@ -177,29 +173,14 @@ public class ProfileView extends VerticalLayout {
             cognome.setValue(client.myAccount(utente.getId()).get(1));
             cognome.setReadOnly(true);
 
-            dataNascita = new DatePicker();
-            dataNascita.setLabel("Data di nascita");
-            //dataNascita.setValue();//data da query
-            dataNascita.setReadOnly(true);
-
             codFisc = new TextField();
             codFisc.setLabel("Codice fiscale");
             codFisc.setValue(client.myAccount(utente.getId()).get(4));
             codFisc.setReadOnly(true);
 
-            luogoNascita = new TextField();
-            luogoNascita.setLabel("Luogo di nascita");
-            luogoNascita.setValue("");// valore restituito da query
-            luogoNascita.setReadOnly(true);
-
-            sesso = new TextField();
-            sesso.setLabel("Sesso");
-            sesso.setValue("");// valore restituito da query
-            sesso.setReadOnly(true);
-
             H5 picLabel = new H5("Carica immagine profilo");
 
-            datiForm.add(nome,cognome,dataNascita,luogoNascita,sesso, codFisc,picLabel, profilePic);
+            datiForm.add(nome,cognome, codFisc,picLabel, profilePic);
             datiForm.setColspan(profilePic,2);
             datiForm.setColspan(picLabel,2);
             persona.add(avatar, datiForm);
