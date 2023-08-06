@@ -126,6 +126,23 @@ public class ClientES implements Servizi {
     }
 
     @Override
+    public List<String> getUsernames() throws RemoteException {
+        List<String> usernames = new ArrayList<>();
+        String query = "SELECT username FROM public.\"User\"";
+        try {
+            Connection conn = this.dbConn.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(query);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                usernames.add(rs.getString("username"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usernames;
+    }
+
+    @Override
     public List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException {
 
         List<Integer> result = new ArrayList<>();

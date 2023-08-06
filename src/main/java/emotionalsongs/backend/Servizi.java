@@ -20,7 +20,8 @@ public interface Servizi extends Remote {
     List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer anno) throws NessunaCanzoneTrovata, RemoteException;
     List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer anno, ArrayList<Canzone> braniDaEscludere) throws NessunaCanzoneTrovata, RemoteException;
     void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws RemoteException;
-    // restituisce gli anni per cui ci sono canzoni con il titolo e l'autore selezionato (utilizzata per popolare la tendina di ricerca)
+    List<String> getUsernames() throws RemoteException;
+
     List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException;
 
     int addPlaylist(String titolo, int userId) throws RemoteException;

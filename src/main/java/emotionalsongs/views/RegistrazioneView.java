@@ -189,6 +189,7 @@ public class RegistrazioneView extends VerticalLayout {
             FiscalCodeCalculator fiscalCodeCalculator = new FiscalCodeCalculator();
             try {
                 codFiscale.setValue(fiscalCodeCalculator.calculateFC(nomeCf, cognomeCf, sessoCf, date, luogoNascitaCf));
+
             } catch (NotSuchCityException e) {
                 Notification.show("Città Inesistente", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -214,14 +215,28 @@ public class RegistrazioneView extends VerticalLayout {
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }else {
             if (password.equals(confPassword)) {
-                client.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
-                Notification.show("Registrazione effettuata", 4000, Notification.Position.MIDDLE)
-                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                UI.getCurrent().navigate(RicercaView.class);
+                List<String> usernames = client.getUsernames();
+                if(usernameUnivoco(usernames, user)) {
+                    client.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
+                    Notification.show("Registrazione effettuata", 4000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                    UI.getCurrent().navigate(RicercaView.class);
+                } else {
+                    Notification.show("Username già presente", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
             } else {
                 Notification.show("Le password non coincidono", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         }
+    }
+
+    private boolean usernameUnivoco(List<String> usernames, String username) {
+        for(String u : usernames) {
+            if(u.equals(username))
+                return false;
+        }
+        return true;
     }
 }
