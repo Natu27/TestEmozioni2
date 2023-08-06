@@ -164,9 +164,10 @@ public class RegistrazioneView extends VerticalLayout {
         sesso.setRequired(true);
         luogoNascita.setRequired(true);
         dataNascita.setRequired(true);
+        dataNascita.setMax(LocalDate.now());
         codFiscale.setMaxLength(16);
         codFiscale.setRequired(true);
-        //codFiscale.setPattern("[A-Z][AEIOU][AEIOUX]|[AEIOU]X{2}|[B-DF-HJ-NP-TV-Z]{2}[A-Z]");
+        codFiscale.setPattern("^[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]$");
         via_piazza.setRequired(true);
         email.setRequired(true);
         username.setRequired(true);
@@ -222,15 +223,20 @@ public class RegistrazioneView extends VerticalLayout {
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         } else {
             if (password.equals(confPassword)) {
-                List<String> usernames = client.getUsernames();
-                if (usernameUnivoco(usernames, user)) {
-                    client.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
-                    Notification.show("Registrazione effettuata", 4000, Notification.Position.MIDDLE)
-                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                    UI.getCurrent().navigate(RicercaView.class);
-                } else {
-                    Notification.show("Username già presente", 3000, Notification.Position.MIDDLE)
+                if(user.length() < 5 || password.length() < 8 || !codFiscale.matches("^[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]$")){
+                    Notification.show("Dati non validi!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }else {
+                    List<String> usernames = client.getUsernames();
+                    if (usernameUnivoco(usernames, user)) {
+                        client.registrazione(nome, cognome, indirizzo, codFiscale, email, user, password);
+                        Notification.show("Registrazione effettuata", 4000, Notification.Position.MIDDLE)
+                                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                        UI.getCurrent().navigate(RicercaView.class);
+                    } else {
+                        Notification.show("Username già presente", 3000, Notification.Position.MIDDLE)
+                                .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                    }
                 }
             } else {
                 Notification.show("Le password non coincidono", 3000, Notification.Position.MIDDLE)
