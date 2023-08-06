@@ -34,6 +34,30 @@ public class ClientES implements Servizi {
         return instance;
     }
 
+    private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
+        if (rs != null) {
+            try {
+                rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     @Override
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata {
         List<Canzone> result = new ArrayList<>();
@@ -44,15 +68,17 @@ public class ClientES implements Servizi {
         }
         //if (titoloDaCercare == "" && autoreDaCercare == "" && year == null)
         query = query + " LIMIT 300";
-        Connection conn;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(query);
             stmt.setString(1, titoloDaCercare);
             stmt.setString(2, autoreDaCercare);
             if (year != null)
                 stmt.setInt(3, year);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"),
                         rs.getString("autore"), rs.getString("titolo"),
@@ -62,9 +88,9 @@ public class ClientES implements Servizi {
             if (result.isEmpty()) throw new NessunaCanzoneTrovata();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
-
-
         return result;
     }
 
@@ -91,8 +117,11 @@ public class ClientES implements Servizi {
         }
         if (titoloDaCercare.equals("") && autoreDaCercare.equals(""))
             query.append(" LIMIT 300;");
-        //System.out.println(query);
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query.toString()); ResultSet rs = stmt.executeQuery()) {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {conn = this.dbConn.getConnection(); stmt = conn.prepareStatement(query.toString()); rs = stmt.executeQuery();
             while (rs.next()) {
                 Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
                 //System.out.println(canzone.getId());
@@ -101,6 +130,8 @@ public class ClientES implements Servizi {
             if (result.isEmpty()) throw new NessunaCanzoneTrovata();
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         return result;
     }
@@ -109,7 +140,11 @@ public class ClientES implements Servizi {
     public void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws RemoteException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         String query = "INSERT INTO public.\"User\" (nome, cognome, username, hashed_password, indirizzo, cf, email) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {conn = this.dbConn.getConnection(); stmt = conn.prepareStatement(query);
             stmt.setString(1, nome);
             stmt.setString(2, cognome);
             stmt.setString(3, username);
@@ -122,6 +157,8 @@ public class ClientES implements Servizi {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
     }
 
@@ -129,15 +166,21 @@ public class ClientES implements Servizi {
     public List<String> getUsernames() throws RemoteException {
         List<String> usernames = new ArrayList<>();
         String query = "SELECT username FROM public.\"User\"";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
-            ResultSet rs = stmt.executeQuery();
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 usernames.add(rs.getString("username"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         return usernames;
     }
@@ -148,17 +191,22 @@ public class ClientES implements Servizi {
         List<Integer> result = new ArrayList<>();
         String query = "SELECT distinct anno FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER(CONCAT( '%',?,'%')) AND LOWER(autore) LIKE LOWER(CONCAT( '%',?,'%')) order by anno asc;";
 
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
             stmt.setString(1, titoloDaCercare);
             stmt.setString(2, autoreDaCercare);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 result.add(rs.getInt("anno"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
 
         return result;
@@ -168,14 +216,16 @@ public class ClientES implements Servizi {
     public Utente login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException {
         String query = "SELECT * FROM public.\"User\" WHERE username = ?;";
         Utente result = null;
-        //System.out.println(userid);
         int userId;
         String username = "", hashed_pass = "", nome;
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
             stmt.setString(1, userid);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 userId = rs.getInt("user_id");
                 username = rs.getString("username");
@@ -185,6 +235,8 @@ public class ClientES implements Servizi {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         if (userid.equals(username) && BCrypt.checkpw(password, hashed_pass)) {
             return result;
@@ -201,9 +253,12 @@ public class ClientES implements Servizi {
     @Override
     public int addPlaylist(String titolo, int userId) throws RemoteException {
         int playlistCreate = -1;
-        //int userId = userId(username);
         String query = "INSERT INTO public.\"Playlist\" (titolo, user_id) VALUES (?, ?)";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {conn = this.dbConn.getConnection(); stmt = conn.prepareStatement(query);
             stmt.setString(1, titolo);
             stmt.setInt(2, userId);
 
@@ -211,26 +266,33 @@ public class ClientES implements Servizi {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         return playlistCreate;
     }
 
     @Override
     public List<Playlist> myPlaylist(int userId) throws RemoteException {
-        //int userId = userId(username);
         List<Playlist> result = new ArrayList<>();
         String query = "SELECT * FROM public.\"Playlist\" WHERE user_id = ?;";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
             stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 Playlist playlist = new Playlist(rs.getInt("playlist_id"), rs.getString("titolo"), rs.getInt("user_id"));
                 result.add(playlist);
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         return result;
     }
@@ -238,17 +300,22 @@ public class ClientES implements Servizi {
     @Override
     public int removePlaylist(int userId, String titolo) throws RemoteException {
         int playlistEliminata = -1;
-        //int userId = userId(username);
         String query = "DELETE FROM public.\"Playlist\" WHERE user_id = ? AND titolo = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
             stmt.setInt(1, userId);
             stmt.setString(2, titolo);
             playlistEliminata = stmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         return playlistEliminata;
     }
@@ -257,7 +324,11 @@ public class ClientES implements Servizi {
     public int renamePlaylist(int userId, String nuovoTitolo, int playlistId) throws RemoteException {
         int playlistModificata = -1;
         String query = "UPDATE public.\"Playlist\" SET titolo = ? WHERE user_id = ? AND playlist_id = ?";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        try {conn = this.dbConn.getConnection(); stmt = conn.prepareStatement(query);
 
             stmt.setString(1, nuovoTitolo);
             stmt.setInt(2, userId);
@@ -267,6 +338,8 @@ public class ClientES implements Servizi {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         return playlistModificata;
     }
@@ -275,7 +348,8 @@ public class ClientES implements Servizi {
     public void addBraniPlaylist(int playlistId, ArrayList<Canzone> braniSelezionati) throws RemoteException, NessunaCanzoneTrovata {
         Connection conn = null;
         PreparedStatement stmt = null;
-        //int playlistId = playlistId(username, nomePlaylist);
+        ResultSet rs = null;
+
         StringBuilder query = new StringBuilder("INSERT INTO public.\"CanzoniPlaylist\" VALUES");
         for (Canzone c : braniSelezionati) {
             int canzoneId = c.getId();
@@ -296,17 +370,7 @@ public class ClientES implements Servizi {
             if(query.toString().equals("INSERT INTO public.\"CanzoniPlaylist\" VALUES")) throw new NessunaCanzoneTrovata();
             throw new RemoteException();
         } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            closeResources(conn, stmt, rs);
         }
     }
 
@@ -323,33 +387,43 @@ public class ClientES implements Servizi {
                 else
                     query.append("\"Canzoni\".\"Canzoni_id\" =").append(id).append(" OR ");
             }
-            try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query.toString()); ResultSet rs = stmt.executeQuery()) {
+
+            Connection conn = null;
+            PreparedStatement stmt = null;
+            ResultSet rs = null;
+            try {conn = this.dbConn.getConnection(); stmt = conn.prepareStatement(query.toString()); rs = stmt.executeQuery();
                 while (rs.next()) {
                     Canzone canzone = new Canzone(rs.getInt("Canzoni_id"), rs.getInt("anno"), rs.getString("autore"), rs.getString("titolo"), rs.getString("codice"));
                     result.add(canzone);
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+            } finally {
+                closeResources(conn, stmt, rs);
             }
         }
-        //System.out.println(query);
         return result;
     }
 
     private ArrayList<Integer> getIdSongPlaylist(int playlistId) {
         ArrayList<Integer> result = new ArrayList<>();
-        //int playlistId = playlistId(username, nomePlaylist);
         String query = "SELECT * FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ?;";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
             stmt.setInt(1, playlistId);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 result.add(rs.getInt("canzone_id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         return result;
     }
@@ -383,6 +457,7 @@ public class ClientES implements Servizi {
         }
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
             stmt = conn.prepareStatement(query.toString());
@@ -393,17 +468,7 @@ public class ClientES implements Servizi {
         } catch (SQLException e) {
             throw new SQLException();
         } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            closeResources(conn, stmt, rs);
         }
     }
 
@@ -444,9 +509,10 @@ public class ClientES implements Servizi {
         // Aggiungi la clausola WHERE per specificare le condizioni di aggiornamento
         query.append(" WHERE playlist_id = ").append(playlistId);
         query.append(" AND canzone_id = ").append(songId).append(";");
-        //System.out.println(query);
+
         Connection conn = null;
         PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
             stmt = conn.prepareStatement(query.toString());
@@ -457,17 +523,7 @@ public class ClientES implements Servizi {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-                if (stmt != null) {
-                    stmt.close();
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            closeResources(conn, stmt, rs);
         }
     }
 
@@ -476,11 +532,14 @@ public class ClientES implements Servizi {
         List<Emozione> result = new ArrayList<>();
         String query = "SELECT avg(amazement),avg(solemnity),avg(tenderness),avg(nostalgia),avg(calmness),avg(ppower),avg(joy),avg(tension),avg(sadness) FROM public.\"Emozioni\" WHERE canzone_id =?;";
 
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
             stmt.setInt(1, songId);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
             while (rs.next()) {
                 Emozione amazement = new Emozione("Amazement", rs.getDouble(1));
@@ -504,6 +563,8 @@ public class ClientES implements Servizi {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         boolean votazioni = false;
         for(Emozione e: result) {
@@ -521,11 +582,14 @@ public class ClientES implements Servizi {
         List<Emozione> result = new ArrayList<>();
         String query = "SELECT amazement,solemnity,tenderness,nostalgia,calmness,ppower,joy,tension,sadness,commamazement,commsolemnity,commtenderness,commnostalgia,commcalmness,commpower,commjoy,commtension,commsadness FROM public.\"Emozioni\" WHERE canzone_id =?;";
 
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
             stmt.setInt(1, songId);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 Emozione amazement = new Emozione("Amazement", rs.getDouble(1), rs.getString(10));
                 result.add(amazement);
@@ -548,6 +612,8 @@ public class ClientES implements Servizi {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         boolean commenti = false;
         for(Emozione e: result) {
@@ -564,11 +630,15 @@ public class ClientES implements Servizi {
     public List<String> myAccount(int userId) throws RemoteException {
         List<String> result = new ArrayList<>();
         String query = "SELECT * FROM public.\"User\" WHERE user_id = ?;";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
             stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
             while (rs.next()) {
                 String nome = rs.getString("nome");
                 result.add(nome);
@@ -586,22 +656,31 @@ public class ClientES implements Servizi {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         return result;
     }
+
     @Override
     public int removePlaylistSong(int playlistId, int canzoneId) throws RemoteException {
         int canzoneRimossa = -1;
         String query = "DELETE FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ? AND canzone_id = ?";
+
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
             stmt.setInt(1, playlistId);
             stmt.setInt(2, canzoneId);
             canzoneRimossa = stmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            closeResources(conn, stmt, rs);
         }
         return canzoneRimossa;
     }
