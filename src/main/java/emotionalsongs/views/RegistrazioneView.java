@@ -22,14 +22,18 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import emotionalsongs.backend.ClientES;
-import emotionalsongs.backend.codicefiscale.CodiceFiscale;
+import me.matteomerola.codicefiscale.FiscalCodeCalculator;
+import me.matteomerola.codicefiscale.exceptions.NotSuchCityException;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @PageTitle("Registrazione")
@@ -43,8 +47,8 @@ public class RegistrazioneView extends VerticalLayout {
     TextField nome;
     TextField cognome;
     DatePicker dataNascita;
-    List<String> scelteSesso;
-    ComboBox<String> sesso;
+    List<Character> scelteSesso;
+    ComboBox<Character> sesso;
     ComboBox<String> luogoNascita;
     TextField codFiscale;
     Button calcolaCf;
@@ -96,7 +100,7 @@ public class RegistrazioneView extends VerticalLayout {
         cognome = new TextField("Cognome");
         dataNascita = new DatePicker("Data di nascita");
         luogoNascita = new ComboBox<>("Luogo di nascita");
-        scelteSesso = Arrays.asList("M", "F");
+        scelteSesso = Arrays.asList('M', 'F');
         sesso = new ComboBox<>("Sesso", scelteSesso);
         codFiscale = new TextField("Codice Fiscale");
         //calcolaCf = new Button("Calcola codice fiscale");
@@ -155,11 +159,11 @@ public class RegistrazioneView extends VerticalLayout {
         calcolaCf.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         nome.setRequired(true);
-        nome.setPattern("^[a-zA-Z]*$");
-        nome.setErrorMessage("Non sono ammessi numeri e/o caratteri speciali");
+        nome.setPattern("^[a-zA-Z\\s]*$");
+        nome.setErrorMessage("Non sono ammessi numeri e/o caratteri speciali, solo lettere e spazi");
         cognome.setRequired(true);
-        cognome.setErrorMessage("Non sono ammessi numeri e/o caratteri speciali");
-        cognome.setPattern("^[a-zA-Z]*$");
+        cognome.setPattern("^[a-zA-Z\\s]*$");
+        cognome.setErrorMessage("Non sono ammessi numeri e/o caratteri speciali, solo lettere e spazi");
         sesso.setRequired(true);
         luogoNascita.setRequired(true);
         dataNascita.setRequired(true);
@@ -178,12 +182,17 @@ public class RegistrazioneView extends VerticalLayout {
             String nomeCf = nome.getValue();
             String cognomeCf = cognome.getValue();
             String luogoNascitaCf = luogoNascita.getValue();
-            int meseCf = dataNascita.getValue().getMonthValue();
-            int annoCf = dataNascita.getValue().getYear();
-            int giornoCf = dataNascita.getValue().getDayOfMonth();
-            String sessoCf = sesso.getValue();
-            codFiscale.setValue(CodiceFiscale.codiceFiscale(cognomeCf, nomeCf, giornoCf,
-                                                            meseCf, annoCf, sessoCf, luogoNascitaCf));
+            LocalDate selectedDate = dataNascita.getValue();
+            Date date = Date.from(selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+            Character sessoCf = sesso.getValue();
+
+            FiscalCodeCalculator fiscalCodeCalculator = new FiscalCodeCalculator();
+            try {
+                codFiscale.setValue(fiscalCodeCalculator.calculateFC(nomeCf, cognomeCf, sessoCf, date, luogoNascitaCf));
+            } catch (NotSuchCityException e) {
+                Notification.show("Città Inesistente", 3000, Notification.Position.MIDDLE)
+                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            }
         } else {
             Notification.show("Dati Mancanti", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);

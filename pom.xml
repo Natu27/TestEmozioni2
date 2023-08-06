@@ -111,6 +111,12 @@
             <artifactId>jfreechart</artifactId>
             <version>1.5.4</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/me.matteomerola/codicefiscale -->
+        <dependency>
+            <groupId>me.matteomerola</groupId>
+            <artifactId>codicefiscale</artifactId>
+            <version>0.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
