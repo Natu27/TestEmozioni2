@@ -43,6 +43,6 @@ public interface Servizi {
     List<Emozione> getCommenti(int songId) throws NoCommenti, SQLException;
     List<String> myAccount(int userId) throws SQLException;
     int removePlaylistSong(int playlistId, int canzoneId) throws SQLException;
-    //int uploloadProfilePic(int userId, byte[] picture) throws RemoteException;
-    //String downloadProfilePic(int userId) throws RemoteException;
+    // int uploadProfilePic(int userId, byte[] picture) throws SQLException;
+    // String downloadProfilePic(int userId) throws SQLException;
 }

@@ -12,7 +12,6 @@ import emotionalsongs.backend.exceptions.utente.PasswordErrata;
 import emotionalsongs.backend.exceptions.utente.UsernameErrato;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -143,7 +142,6 @@ public class ClientES implements Servizi {
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {conn = this.dbConn.getConnection(); stmt = conn.prepareStatement(query);
             stmt.setString(1, nome);
             stmt.setString(2, cognome);
@@ -158,7 +156,7 @@ public class ClientES implements Servizi {
         } catch (SQLException e) {
             throw new SQLException();
         } finally {
-            closeResources(conn, stmt, rs);
+            closeResources(conn, stmt, null);
         }
     }
 
@@ -252,12 +250,11 @@ public class ClientES implements Servizi {
 
     @Override
     public int addPlaylist(String titolo, int userId) throws SQLException {
-        int playlistCreate = -1;
+        int playlistCreate;
         String query = "INSERT INTO public.\"Playlist\" (titolo, user_id) VALUES (?, ?)";
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {conn = this.dbConn.getConnection(); stmt = conn.prepareStatement(query);
             stmt.setString(1, titolo);
             stmt.setInt(2, userId);
@@ -267,7 +264,7 @@ public class ClientES implements Servizi {
         } catch (SQLException e) {
             throw new SQLException();
         } finally {
-            closeResources(conn, stmt, rs);
+            closeResources(conn, stmt, null);
         }
         return playlistCreate;
     }
@@ -299,12 +296,11 @@ public class ClientES implements Servizi {
 
     @Override
     public int removePlaylist(int userId, String titolo) throws SQLException {
-        int playlistEliminata = -1;
+        int playlistEliminata;
         String query = "DELETE FROM public.\"Playlist\" WHERE user_id = ? AND titolo = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
             stmt = conn.prepareStatement(query);
@@ -315,19 +311,18 @@ public class ClientES implements Servizi {
         } catch (SQLException e) {
             throw new SQLException();
         } finally {
-            closeResources(conn, stmt, rs);
+            closeResources(conn, stmt, null);
         }
         return playlistEliminata;
     }
 
     @Override
     public int renamePlaylist(int userId, String nuovoTitolo, int playlistId) throws SQLException {
-        int playlistModificata = -1;
+        int playlistModificata;
         String query = "UPDATE public.\"Playlist\" SET titolo = ? WHERE user_id = ? AND playlist_id = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {conn = this.dbConn.getConnection(); stmt = conn.prepareStatement(query);
 
             stmt.setString(1, nuovoTitolo);
@@ -339,7 +334,7 @@ public class ClientES implements Servizi {
         } catch (SQLException e) {
             throw new SQLException();
         } finally {
-            closeResources(conn, stmt, rs);
+            closeResources(conn, stmt, null);
         }
         return playlistModificata;
     }
@@ -348,7 +343,6 @@ public class ClientES implements Servizi {
     public void addBraniPlaylist(int playlistId, ArrayList<Canzone> braniSelezionati) throws SQLException, NessunaCanzoneTrovata {
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
 
         StringBuilder query = new StringBuilder("INSERT INTO public.\"CanzoniPlaylist\" VALUES");
         for (Canzone c : braniSelezionati) {
@@ -370,7 +364,7 @@ public class ClientES implements Servizi {
             if(query.toString().equals("INSERT INTO public.\"CanzoniPlaylist\" VALUES")) throw new NessunaCanzoneTrovata();
             throw new SQLException();
         } finally {
-            closeResources(conn, stmt, rs);
+            closeResources(conn, stmt, null);
         }
     }
 
@@ -457,7 +451,6 @@ public class ClientES implements Servizi {
         }
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
             stmt = conn.prepareStatement(query.toString());
@@ -468,7 +461,7 @@ public class ClientES implements Servizi {
         } catch (SQLException e) {
             throw new SQLException();
         } finally {
-            closeResources(conn, stmt, rs);
+            closeResources(conn, stmt, null);
         }
     }
 
@@ -512,7 +505,6 @@ public class ClientES implements Servizi {
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
             stmt = conn.prepareStatement(query.toString());
@@ -523,7 +515,7 @@ public class ClientES implements Servizi {
         } catch (SQLException e) {
             throw new SQLException();
         } finally {
-            closeResources(conn, stmt, rs);
+            closeResources(conn, stmt, null);
         }
     }
 
@@ -664,12 +656,11 @@ public class ClientES implements Servizi {
 
     @Override
     public int removePlaylistSong(int playlistId, int canzoneId) throws SQLException {
-        int canzoneRimossa = -1;
+        int canzoneRimossa;
         String query = "DELETE FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ? AND canzone_id = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
-        ResultSet rs = null;
         try {
             conn = this.dbConn.getConnection();
             stmt = conn.prepareStatement(query);
@@ -680,7 +671,7 @@ public class ClientES implements Servizi {
         } catch (SQLException e) {
             throw new SQLException();
         } finally {
-            closeResources(conn, stmt, rs);
+            closeResources(conn, stmt, null);
         }
         return canzoneRimossa;
     }
