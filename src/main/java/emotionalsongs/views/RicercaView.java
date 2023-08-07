@@ -50,7 +50,7 @@ public class RicercaView extends VerticalLayout {
     Button emoButton;
     Grid<Canzone> grid = new Grid<>(Canzone.class);
     List<Canzone> result;
-    ClientES clientES = new ClientES();
+    ClientES clientES = ClientES.getInstance();
     Servizi stub = clientES.getStub();
     List<Integer> anni = stub.getAnni("", "");
 

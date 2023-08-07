@@ -37,7 +37,7 @@ public class InsEmozioniView extends Dialog {
     String playlistTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
     Canzone songSelected;
     Grid<Emozione> grid;
-    ClientES clientES = new ClientES();
+    ClientES clientES = ClientES.getInstance();
     Servizi stub = clientES.getStub();
 
     public InsEmozioniView(Canzone songSelected) throws Exception {

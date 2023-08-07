@@ -216,12 +216,6 @@
                             <enableAssertions>true</enableAssertions>
                         </configuration>
                     </plugin>
-                    <!-- JAM -->
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                    </plugin>
-                    <!-- JAM -->
                     <plugin>
                         <groupId>org.springframework.boot</groupId>
                         <artifactId>spring-boot-maven-plugin</artifactId>

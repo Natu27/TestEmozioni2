@@ -28,7 +28,7 @@ import java.util.List;
 
 public class HistogramView extends VerticalLayout {
 
-    ClientES clientES = new ClientES();
+    ClientES clientES = ClientES.getInstance();
     Servizi stub = clientES.getStub();
 
     public HistogramView(int idSong) throws Exception {

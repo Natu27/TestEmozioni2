@@ -35,7 +35,7 @@ public class DatabaseConnection {
         connection.setDatabaseName("emotionalsongs");
         connection.setUser(USER);
         connection.setPassword(PASSWORD);
-        connection.setMaxConnections(10);
+        //connection.setMaxConnections(10);
     }
 
     private void setConnection() throws IOException {

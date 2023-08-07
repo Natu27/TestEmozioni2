@@ -64,7 +64,7 @@ public class MyPlaylistView extends VerticalLayout {
     Button addCanzone;
     String nomePlaylist;
     Grid<Playlist> gridPlaylist = new Grid<>(Playlist.class);
-    ClientES clientES = new ClientES();
+    ClientES clientES = ClientES.getInstance();
     Servizi stub = clientES.getStub();
     Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
 
