@@ -43,6 +43,7 @@ public interface Servizi {
     List<Emozione> getCommenti(int songId) throws NoCommenti, SQLException;
     List<String> myAccount(int userId) throws SQLException;
     int removePlaylistSong(int playlistId, int canzoneId) throws SQLException;
-    // int uploadProfilePic(int userId, byte[] picture) throws SQLException;
-    // String downloadProfilePic(int userId) throws SQLException;
+    int eliminaAccount(int userId) throws SQLException;
+    int modifcaDati(int userId, String residenza, String email, String password) throws SQLException;
+
 }

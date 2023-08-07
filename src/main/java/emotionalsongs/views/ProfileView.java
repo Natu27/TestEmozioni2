@@ -18,14 +18,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.component.upload.receivers.MemoryBuffer;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.VaadinSession;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.entities.Utente;
+
+import java.sql.SQLException;
 
 @PageTitle("Profilo")
 @Route(value = "profile", layout = MainLayout.class)
@@ -43,7 +43,6 @@ public class ProfileView extends VerticalLayout {
     HorizontalLayout horizontalLayout;
     VerticalLayout datiPersonali;
     Avatar avatar;
-    Upload profilePic;
     FormLayout datiForm;
     TextField nome;
     TextField cognome;
@@ -58,7 +57,7 @@ public class ProfileView extends VerticalLayout {
     EmailField email;
     PasswordField password;
     ConfirmDialog dialogoConferma;
-    byte[] imageData;
+    Button eliminaAccount;
 
 
 
@@ -99,12 +98,46 @@ public class ProfileView extends VerticalLayout {
             confermaModifiche.setIcon(VaadinIcon.CHECK_CIRCLE.create());
             confermaModifiche.addClickListener(e->{
                 dialogoConferma = new ConfirmDialog("⚠️ Confermare le modifiche","Sei sicuro di voler confermare le modifiche?", "Sì", event1 -> {
-                    //TODO: Query per le modifiche
+                    try {
+                        if(client.modifcaDati(utente.getId(),via_piazza.getValue(), email.getValue(), password.getValue())>=1){
+                            Notification.show("Modifiche effettuate", 3000, Notification.Position.MIDDLE)
+                                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                        } else {
+                            Notification.show("Impossibile effettuare le modifiche", 3000, Notification.Position.MIDDLE)
+                                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                        }
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }, "No", event2 -> dialogoConferma.close());
                 dialogoConferma.open();
             });
 
-            confirmLayout.add(confermaModifiche);
+            eliminaAccount = new Button("Elimina account");
+            eliminaAccount.addThemeVariants(ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_PRIMARY);
+            eliminaAccount.setIcon(VaadinIcon.TRASH.create());
+            eliminaAccount.addClickListener(e->{
+                dialogoConferma = new ConfirmDialog("❗️ Elimina account","Sei sicuro di voler eliminare il tuo account?", "Sì", event1 -> {
+                    try {
+                        if(client.eliminaAccount(utente.getId())==1){
+                            VaadinSession.getCurrent().getSession().invalidate();
+                            UI.getCurrent().navigate("ricerca");
+                            Notification.show("Account Eliminato", 3000, Notification.Position.MIDDLE)
+                                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                        } else {
+                            Notification.show("Impossibile elimiare l'account", 3000, Notification.Position.MIDDLE)
+                                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                        }
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }, "No", event2 -> dialogoConferma.close());
+                dialogoConferma.open();
+
+            });
+
+
+            confirmLayout.add(confermaModifiche, eliminaAccount);
             confirmLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
             confirmLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
@@ -130,33 +163,7 @@ public class ProfileView extends VerticalLayout {
         datiPersonali = new VerticalLayout();
 
             avatar = new Avatar();
-            //avatar.setImage(client.downloadProfilePic(utente.getId()));
             avatar.addThemeVariants(AvatarVariant.LUMO_XLARGE);
-
-            MemoryBuffer buffer = new MemoryBuffer();
-            profilePic = new Upload(buffer);
-            profilePic.setAcceptedFileTypes("image/jpeg", "image/png");
-            profilePic.addSucceededListener(e -> {
-                String imageName = e.getFileName();
-                try {
-                    imageData = buffer.getInputStream().readAllBytes();
-                /*if(client.uploloadProfilePic(utente.getId(),imageData) == 1) {
-                    Notification.show("Immagine caricata", 3000, Notification.Position.MIDDLE)
-                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                    //this.configureDatiLayout();
-                }else {
-                    Notification.show("Impossibile Impossibile caricare l'immagine", 3000, Notification.Position.MIDDLE)
-                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                }*/
-
-            } catch (Exception ex) {
-                    Notification.show("Impossibile caricare l'immagine", 3000, Notification.Position.MIDDLE)
-                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                }
-
-            });
-            profilePic.addFailedListener(e-> Notification.show("Formato immagine non accettato", 3000, Notification.Position.MIDDLE)
-                    .addThemeVariants(NotificationVariant.LUMO_ERROR));
 
             HorizontalLayout persona = new HorizontalLayout();
             datiForm = new FormLayout();
@@ -176,12 +183,8 @@ public class ProfileView extends VerticalLayout {
             codFisc.setValue(client.myAccount(utente.getId()).get(4));
             codFisc.setReadOnly(true);
 
-            H5 picLabel = new H5("Carica immagine profilo");
-
-            datiForm.add(nome,cognome, codFisc,picLabel, profilePic);
-            datiForm.setColspan(profilePic,2);
-            datiForm.setColspan(picLabel,2);
-            persona.add(avatar, datiForm);
+            datiForm.add(nome,cognome, codFisc);
+            persona.add(avatar,datiForm);
 
             datiForm.setWidthFull();
 
@@ -221,7 +224,6 @@ public class ProfileView extends VerticalLayout {
         email.getElement().getStyle().set("background", "none");
 
         password = new PasswordField("Nuova password");
-        password.setRevealButtonVisible(false);
 
         H3 intestazione = new H3("Credenziali di accesso");
         accessoForm.add(username,email,password);

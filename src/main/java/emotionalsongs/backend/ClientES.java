@@ -676,42 +676,59 @@ public class ClientES implements Servizi {
         return canzoneRimossa;
     }
 
-   /* @Override
-    public int uploloadProfilePic(int userId, byte[] picture) throws RemoteException {
-        int immagineCaricata = -1;
-        String query = "INSERT INTO public.\"User\" (profilePic) VALUES (?) WHERE user_id = ?;";
-        try (Connection conn = this.dbConn.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
-            stmt.setBinaryStream(1, new ByteArrayInputStream(picture));
-            stmt.setInt(2, userId);
+    @Override
+    public int eliminaAccount(int userId) throws SQLException {
+        int accountEliminato;
+        String query = "DELETE FROM public.\"User\" WHERE user_id = ?";
 
-            immagineCaricata = stmt.executeUpdate();
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        try {
+            conn = this.dbConn.getConnection();
+            stmt = conn.prepareStatement(query);
+            stmt.setInt(1, userId);
+            accountEliminato = stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
+        } finally {
+            closeResources(conn, stmt, null);
         }
-        return immagineCaricata;
+        return accountEliminato;
     }
 
     @Override
-    public String downloadProfilePic(int userId) throws RemoteException {
-        Image profilePic = new Image();
-        String src = null;
-        String query = "SELECT profilePic FROM public.\"User\" WHERE user_id = ?;";
+    public int modifcaDati(int userId, String residenza, String email, String password) throws SQLException {
+        int modifiche;
+        String query = "";
+        Connection conn = null;
+        PreparedStatement stmt = null;
         try {
-            Connection conn = this.dbConn.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setInt(1, userId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                byte[] imageDB = rs.getBytes("profilePic");
-                StreamResource resource = new StreamResource("profilePic", () -> new ByteArrayInputStream(imageDB));
-                profilePic.setSrc(resource);
-                src = profilePic.getSrc();
+            if (password.length() == 0) {
+                query = "UPDATE public.\"User\" SET indirizzo = ? , email = ? WHERE user_id = ?";
+                conn = this.dbConn.getConnection();
+                stmt = conn.prepareStatement(query);
+                stmt.setString(1, residenza);
+                stmt.setString(2,email);
+                stmt.setInt(3,userId);
+                modifiche = stmt.executeUpdate();
+            } else {
+                String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());;
+                query = "UPDATE public.\"User\" SET indirizzo = ?, email = ?, hashed_password = ? WHERE user_id = ?";
+                conn = this.dbConn.getConnection();
+                stmt = conn.prepareStatement(query);
+                stmt.setString(1, residenza);
+                stmt.setString(2,email);
+                stmt.setString(3,hashedPassword);
+                stmt.setInt(4,userId);
+                modifiche = stmt.executeUpdate();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        }catch (SQLException e) {
+            throw new SQLException();
+        } finally {
+            closeResources(conn, stmt, null);
         }
-        return src;
-    }*/
-
+        return modifiche;
+    }
 }
+

@@ -119,7 +119,7 @@ public class MainLayout extends AppLayout {
         avatar.addThemeVariants(AvatarVariant.LUMO_LARGE);
         menuBar = new MenuBar();
         menuBar.addThemeVariants(MenuBarVariant.LUMO_TERTIARY_INLINE);
-        Anchor userManual = new Anchor("","Aiuto");
+        Anchor userManual = new Anchor("https://sites.google.com/view/es-user-manual?usp=sharing","Aiuto");
         userManual.setTarget("_blank");
         MenuItem menuItem = menuBar.addItem(avatar);
         SubMenu subMenu = menuItem.getSubMenu();

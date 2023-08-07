@@ -55,15 +55,12 @@ public class DatabaseConnection {
             if (line.startsWith("spring.datasource.url")) {
                 DB_URL = line.split("=")[1].trim();
                 // Utilizza il valore di dbUrl per la connessione al database
-                // ...
             } else if (line.startsWith("spring.datasource.username")) {
                 USER = line.split("=")[1].trim();
                 // Utilizza il valore di username per la connessione al database
-                // ...
             } else if (line.startsWith("spring.datasource.password")) {
                 PASSWORD = line.split("=")[1].trim();
                 // Utilizza il valore di password per la connessione al database
-                // ...
             }
         }
 
