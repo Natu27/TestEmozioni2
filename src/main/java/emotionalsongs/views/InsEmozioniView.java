@@ -62,10 +62,17 @@ public class InsEmozioniView extends Dialog {
         confirmButton.addClickListener(e -> {
             List<Emozione> emozioniVotate = getAllScores();
             try {
-                client.insEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
-                Notification.show("Votazione eseguita!", 3000, Notification.Position.MIDDLE)
-                        .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-                this.close();
+                List<Canzone> playlistSong = client.showCanzoniPlaylist((Integer)VaadinSession.getCurrent().getAttribute("playlistId"));
+                if (branoPresente(playlistSong, songSelected)) {
+                    client.insEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
+                    Notification.show("Votazione eseguita!", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+                    this.close();
+                }
+                else{
+                    Notification.show("Impossibile votare il brano selezionato", 3000, Notification.Position.MIDDLE)
+                            .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                }
             }
             catch (SQLException ex) {
                 //TODO: da gestire con update
@@ -103,7 +110,13 @@ public class InsEmozioniView extends Dialog {
         return scores;
     }
 
-
+    private boolean branoPresente (List<Canzone> listaCanzoni, Canzone song) {
+        for (Canzone c:listaCanzoni) {
+            if (c.getId()== song.getId())
+                return true;
+        }
+        return false;
+    }
     private void getGridVotazione() {
         grid = new Grid<>(Emozione.class);
         grid.setItems(getEmotions()); // Metodo per ottenere le emozioni da visualizzare
