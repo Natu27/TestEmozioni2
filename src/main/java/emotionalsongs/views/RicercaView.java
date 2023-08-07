@@ -29,7 +29,7 @@ import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 import emotionalsongs.backend.exceptions.emozioni.NoCommenti;
 import emotionalsongs.backend.exceptions.emozioni.NoVotazioni;
 
-import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,7 +139,7 @@ public class RicercaView extends VerticalLayout {
             grid.setVisible(true);
             emoButton.setVisible(true);
 
-        } catch (RemoteException e) {
+        } catch (SQLException e) {
             Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         } catch (NessunaCanzoneTrovata e) {
@@ -154,7 +154,7 @@ public class RicercaView extends VerticalLayout {
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             try {
                 anni = client.getAnni("", "");
-            } catch (RemoteException ex) {
+            } catch (SQLException ex) {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -248,7 +248,7 @@ public class RicercaView extends VerticalLayout {
                 Notification.show("Nessun commento presente per il brano selezionato", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
-            catch (RemoteException e) {
+            catch (SQLException e) {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }

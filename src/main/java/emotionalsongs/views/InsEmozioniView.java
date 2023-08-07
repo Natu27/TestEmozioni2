@@ -24,8 +24,6 @@ import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.entities.Emozione;
 
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +37,7 @@ public class InsEmozioniView extends Dialog {
     Grid<Emozione> grid;
     ClientES client = ClientES.getInstance();
 
-    public InsEmozioniView(Canzone songSelected) throws NotBoundException, RemoteException {
+    public InsEmozioniView(Canzone songSelected) {
         this.songSelected = songSelected;
 
         setWidth("800px");
@@ -76,14 +74,10 @@ public class InsEmozioniView extends Dialog {
                     Notification.show("Votazione aggiornata!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();
-                } catch (RemoteException exception) {
-                    Notification.show("Impossibile effettuare l'operazione di aggiornamento", 3000, Notification.Position.MIDDLE)
+                } catch (SQLException exception) {
+                    Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
-            }
-            catch (RemoteException ex) {
-                Notification.show("Impossibile effettuare l'operazione di inserimento", 3000, Notification.Position.MIDDLE)
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
 

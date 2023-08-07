@@ -27,7 +27,7 @@ public class ClientES implements Servizi {
 
     private ClientES() {}
 
-    public static synchronized ClientES getInstance() throws RemoteException {
+    public static synchronized ClientES getInstance() {
         if (instance == null) {
             instance = new ClientES();
         }
@@ -59,7 +59,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata {
+    public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata, SQLException {
         List<Canzone> result = new ArrayList<>();
         //if (titoloDaCercare.equals("") && autoreDaCercare.equals("") && year == null) throw new NessunaCanzoneTrovata();
         String query = "SELECT * FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER(CONCAT( '%',?,'%')) AND LOWER(autore) LIKE LOWER(CONCAT( '%',?,'%'))";
@@ -87,7 +87,7 @@ public class ClientES implements Servizi {
             }
             if (result.isEmpty()) throw new NessunaCanzoneTrovata();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -95,7 +95,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year, ArrayList<Canzone> braniDaEscludere) throws NessunaCanzoneTrovata, RemoteException {
+    public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year, ArrayList<Canzone> braniDaEscludere) throws NessunaCanzoneTrovata, SQLException {
         List<Canzone> result = new ArrayList<>();
         ArrayList<Integer> idNotToFind = new ArrayList<>();
         for (Canzone c : braniDaEscludere) {
@@ -129,7 +129,7 @@ public class ClientES implements Servizi {
             }
             if (result.isEmpty()) throw new NessunaCanzoneTrovata();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -137,7 +137,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws RemoteException {
+    public void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws SQLException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
         String query = "INSERT INTO public.\"User\" (nome, cognome, username, hashed_password, indirizzo, cf, email) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -156,14 +156,14 @@ public class ClientES implements Servizi {
             stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
     }
 
     @Override
-    public List<String> getUsernames() throws RemoteException {
+    public List<String> getUsernames() throws SQLException {
         List<String> usernames = new ArrayList<>();
         String query = "SELECT username FROM public.\"User\"";
 
@@ -178,7 +178,7 @@ public class ClientES implements Servizi {
                 usernames.add(rs.getString("username"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -186,7 +186,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws RemoteException {
+    public List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws SQLException {
 
         List<Integer> result = new ArrayList<>();
         String query = "SELECT distinct anno FROM public.\"Canzoni\" WHERE LOWER(titolo) LIKE LOWER(CONCAT( '%',?,'%')) AND LOWER(autore) LIKE LOWER(CONCAT( '%',?,'%')) order by anno asc;";
@@ -204,7 +204,7 @@ public class ClientES implements Servizi {
                 result.add(rs.getInt("anno"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -213,7 +213,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public Utente login(String userid, String password) throws PasswordErrata, UsernameErrato, RemoteException {
+    public Utente login(String userid, String password) throws PasswordErrata, UsernameErrato, SQLException {
         String query = "SELECT * FROM public.\"User\" WHERE username = ?;";
         Utente result = null;
         int userId;
@@ -234,7 +234,7 @@ public class ClientES implements Servizi {
                 result = new Utente(userId, username, hashed_pass, nome);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -251,7 +251,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public int addPlaylist(String titolo, int userId) throws RemoteException {
+    public int addPlaylist(String titolo, int userId) throws SQLException {
         int playlistCreate = -1;
         String query = "INSERT INTO public.\"Playlist\" (titolo, user_id) VALUES (?, ?)";
 
@@ -265,7 +265,7 @@ public class ClientES implements Servizi {
             playlistCreate = stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -273,7 +273,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public List<Playlist> myPlaylist(int userId) throws RemoteException {
+    public List<Playlist> myPlaylist(int userId) throws SQLException {
         List<Playlist> result = new ArrayList<>();
         String query = "SELECT * FROM public.\"Playlist\" WHERE user_id = ?;";
 
@@ -290,7 +290,7 @@ public class ClientES implements Servizi {
                 result.add(playlist);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -298,7 +298,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public int removePlaylist(int userId, String titolo) throws RemoteException {
+    public int removePlaylist(int userId, String titolo) throws SQLException {
         int playlistEliminata = -1;
         String query = "DELETE FROM public.\"Playlist\" WHERE user_id = ? AND titolo = ?";
 
@@ -313,7 +313,7 @@ public class ClientES implements Servizi {
             playlistEliminata = stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -321,7 +321,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public int renamePlaylist(int userId, String nuovoTitolo, int playlistId) throws RemoteException {
+    public int renamePlaylist(int userId, String nuovoTitolo, int playlistId) throws SQLException {
         int playlistModificata = -1;
         String query = "UPDATE public.\"Playlist\" SET titolo = ? WHERE user_id = ? AND playlist_id = ?";
 
@@ -337,7 +337,7 @@ public class ClientES implements Servizi {
             playlistModificata = stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -345,7 +345,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public void addBraniPlaylist(int playlistId, ArrayList<Canzone> braniSelezionati) throws RemoteException, NessunaCanzoneTrovata {
+    public void addBraniPlaylist(int playlistId, ArrayList<Canzone> braniSelezionati) throws SQLException, NessunaCanzoneTrovata {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
@@ -368,14 +368,14 @@ public class ClientES implements Servizi {
 
         } catch (SQLException e) {
             if(query.toString().equals("INSERT INTO public.\"CanzoniPlaylist\" VALUES")) throw new NessunaCanzoneTrovata();
-            throw new RemoteException();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
     }
 
     @Override
-    public ArrayList<Canzone> showCanzoniPlaylist(int playlistId) throws RemoteException {
+    public ArrayList<Canzone> showCanzoniPlaylist(int playlistId) throws SQLException {
         ArrayList<Integer> idSong = getIdSongPlaylist(playlistId);
         ArrayList<Canzone> result = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT * FROM public.\"Canzoni\" ");
@@ -397,7 +397,7 @@ public class ClientES implements Servizi {
                     result.add(canzone);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                throw new SQLException();
             } finally {
                 closeResources(conn, stmt, rs);
             }
@@ -405,7 +405,7 @@ public class ClientES implements Servizi {
         return result;
     }
 
-    private ArrayList<Integer> getIdSongPlaylist(int playlistId) {
+    private ArrayList<Integer> getIdSongPlaylist(int playlistId) throws SQLException {
         ArrayList<Integer> result = new ArrayList<>();
         String query = "SELECT * FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ?;";
 
@@ -421,7 +421,7 @@ public class ClientES implements Servizi {
                 result.add(rs.getInt("canzone_id"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -430,7 +430,7 @@ public class ClientES implements Servizi {
 
 
     @Override
-    public void insEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException, RemoteException {
+    public void insEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException {
         StringBuilder query = new StringBuilder("INSERT INTO public.\"Emozioni\" VALUES(" + playlistId + "," + songId + ",");
         for(Emozione e : emozioni) {
             double score = e.getScore();
@@ -473,7 +473,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public void updateEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws RemoteException {
+    public void updateEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException {
         StringBuilder query = new StringBuilder("UPDATE public.\"Emozioni\" SET ");
         for (Emozione e : emozioni) {
             double score = e.getScore();
@@ -521,14 +521,14 @@ public class ClientES implements Servizi {
             stmt.close();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
     }
 
     @Override
-    public List<Emozione> getVotazioniMedie(int songId) throws NoVotazioni, RemoteException {
+    public List<Emozione> getVotazioniMedie(int songId) throws NoVotazioni, SQLException {
         List<Emozione> result = new ArrayList<>();
         String query = "SELECT avg(amazement),avg(solemnity),avg(tenderness),avg(nostalgia),avg(calmness),avg(ppower),avg(joy),avg(tension),avg(sadness) FROM public.\"Emozioni\" WHERE canzone_id =?;";
 
@@ -562,7 +562,7 @@ public class ClientES implements Servizi {
                 result.add(sadness);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -578,7 +578,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public List<Emozione> getCommenti(int songId) throws NoCommenti, RemoteException {
+    public List<Emozione> getCommenti(int songId) throws NoCommenti, SQLException {
         List<Emozione> result = new ArrayList<>();
         String query = "SELECT amazement,solemnity,tenderness,nostalgia,calmness,ppower,joy,tension,sadness,commamazement,commsolemnity,commtenderness,commnostalgia,commcalmness,commpower,commjoy,commtension,commsadness FROM public.\"Emozioni\" WHERE canzone_id =?;";
 
@@ -611,7 +611,7 @@ public class ClientES implements Servizi {
                 result.add(sadness);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -627,7 +627,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public List<String> myAccount(int userId) throws RemoteException {
+    public List<String> myAccount(int userId) throws SQLException {
         List<String> result = new ArrayList<>();
         String query = "SELECT * FROM public.\"User\" WHERE user_id = ?;";
 
@@ -655,7 +655,7 @@ public class ClientES implements Servizi {
 
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }
@@ -663,7 +663,7 @@ public class ClientES implements Servizi {
     }
 
     @Override
-    public int removePlaylistSong(int playlistId, int canzoneId) throws RemoteException {
+    public int removePlaylistSong(int playlistId, int canzoneId) throws SQLException {
         int canzoneRimossa = -1;
         String query = "DELETE FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ? AND canzone_id = ?";
 
@@ -678,7 +678,7 @@ public class ClientES implements Servizi {
             canzoneRimossa = stmt.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException();
         } finally {
             closeResources(conn, stmt, rs);
         }

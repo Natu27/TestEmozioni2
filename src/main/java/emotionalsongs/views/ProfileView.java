@@ -155,10 +155,8 @@ public class ProfileView extends VerticalLayout {
                 }
 
             });
-            profilePic.addFailedListener(e->{
-                Notification.show("Formato immagine non accettato", 3000, Notification.Position.MIDDLE)
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
-            });
+            profilePic.addFailedListener(e-> Notification.show("Formato immagine non accettato", 3000, Notification.Position.MIDDLE)
+                    .addThemeVariants(NotificationVariant.LUMO_ERROR));
 
             HorizontalLayout persona = new HorizontalLayout();
             datiForm = new FormLayout();

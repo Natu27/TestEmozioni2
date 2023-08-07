@@ -21,7 +21,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -82,7 +82,7 @@ public class HistogramView extends VerticalLayout {
         add(chartContainer);
     }
 
-    private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset, int idSong) throws RemoteException, NoVotazioni {
+    private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset, int idSong) throws SQLException, NoVotazioni {
         List<Emozione> emozioni = client.getVotazioniMedie(idSong);
         for(Emozione e : emozioni) {
             dataset.addValue(e.getScore(), e.getName(), " ");

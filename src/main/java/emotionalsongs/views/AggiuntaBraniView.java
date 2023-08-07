@@ -22,7 +22,7 @@ import emotionalsongs.backend.ClientES;
 import emotionalsongs.backend.entities.Canzone;
 import emotionalsongs.backend.exceptions.NessunaCanzoneTrovata;
 
-import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -70,7 +70,7 @@ public class AggiuntaBraniView extends Dialog {
                     Notification.show("Non hai selezionato alcun brano", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
-            } catch (RemoteException e) {
+            } catch (SQLException e) {
                 Notification.show("Impossibile effettuare l'operazione: uno o più brani già presenti", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 //e.printStackTrace();
@@ -156,7 +156,7 @@ public class AggiuntaBraniView extends Dialog {
                     (ArrayList<Canzone>) Stream.concat(braniPrecedentementeSelezionati.stream(), braniSelezionati.stream()).collect(Collectors.toList()));
             grid.setItems(result);
             anni = client.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
-        } catch (RemoteException e) {
+        } catch (SQLException e) {
             Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         } catch (NessunaCanzoneTrovata e) {
@@ -166,7 +166,7 @@ public class AggiuntaBraniView extends Dialog {
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
             try {
                 anni = client.getAnni("", "");
-            } catch (RemoteException ex) {
+            } catch (SQLException ex) {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }

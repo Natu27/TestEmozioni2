@@ -29,7 +29,7 @@ import it.kamaladafrica.codicefiscale.*;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -59,14 +59,14 @@ public class RegistrazioneView extends VerticalLayout {
     VerticalLayout pageLayout;
     ClientES client = ClientES.getInstance();
 
-    public RegistrazioneView() throws Exception {
+    public RegistrazioneView() {
         setSpacing(false);
         setSizeFull();
 
         registerButton = new Button("Registrati", buttonClickEvent -> {
             try {
                 registration();
-            } catch (RemoteException e) {
+            } catch (SQLException e) {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -189,14 +189,14 @@ public class RegistrazioneView extends VerticalLayout {
             Character sessoCf = sesso.getValue();
 
             CityByName cities = CityProvider.ofDefault();
-            City citta = cities.findByName(luogoNascitaCf);
+            City city = cities.findByName(luogoNascitaCf);
 
             Person person =	Person.builder()
                     .firstname(nomeCf)
                     .lastname(cognomeCf)
                     .birthDate(LocalDate.of(selectedDate.getYear(), selectedDate.getMonth(), selectedDate.getDayOfMonth()))
                     .isFemale(isFemale(sessoCf))
-                    .city(citta)
+                    .city(city)
                     .build();
             CodiceFiscale cf = CodiceFiscale.of(person);
 
@@ -208,7 +208,7 @@ public class RegistrazioneView extends VerticalLayout {
         }
     }
 
-    private void registration() throws RemoteException {
+    private void registration() throws SQLException {
         String nome = this.nome.getValue();
         String cognome = this.cognome.getValue();
         String user = username.getValue();
@@ -254,9 +254,7 @@ public class RegistrazioneView extends VerticalLayout {
     }
 
     private boolean isFemale(Character sesso){
-        if(sesso == 'F')
-            return true;
-        return false;
+        return sesso == 'F';
     }
 
 }
