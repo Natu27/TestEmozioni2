@@ -657,16 +657,22 @@ public class ClientES implements Servizi {
     @Override
     public int removePlaylistSong(int playlistId, int canzoneId) throws SQLException {
         int canzoneRimossa;
-        String query = "DELETE FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ? AND canzone_id = ?";
+        String query1 = "DELETE FROM public.\"Emozioni\" WHERE playlist_id = ? AND canzone_id = ?";
+        String query2 = "DELETE FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ? AND canzone_id = ?";
 
         Connection conn = null;
         PreparedStatement stmt = null;
         try {
             conn = this.dbConn.getConnection();
-            stmt = conn.prepareStatement(query);
+            stmt = conn.prepareStatement(query1);
             stmt.setInt(1, playlistId);
             stmt.setInt(2, canzoneId);
             canzoneRimossa = stmt.executeUpdate();
+
+            stmt = conn.prepareStatement(query2);
+            stmt.setInt(1, playlistId);
+            stmt.setInt(2, canzoneId);
+            stmt.executeUpdate();
 
         } catch (SQLException e) {
             throw new SQLException();
