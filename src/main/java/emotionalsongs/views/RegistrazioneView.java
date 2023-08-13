@@ -107,7 +107,7 @@ public class RegistrazioneView extends VerticalLayout {
         password = new PasswordField("Password");
         confirmPassword = new PasswordField("Conferma Password");
         try {
-            String fileName = "META-INF/resources/data/ComuniECodici.csv";
+            String fileName = "META-INF/resources/data/Comuni.csv";
             InputStream is = this.getClass().getClassLoader().getResourceAsStream(fileName);
             assert is != null;
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
