@@ -7,16 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * The entry point of the Spring Boot application.
- *
- * Use the @PWA annotation make the application installable on phones, tablets
- * and some desktop browsers.
- *
- */
-
-/**
  * Punto di avvio dell'applicazione Spring Boot.
- *
  * Questa classe è annotata con {@link SpringBootApplication}, indicando che è la classe principale per avviare l'applicazione Spring Boot.
  * L'annotazione {@link Theme} specifica il tema dell'applicazione, con il valore "emotional-songs".
  * La classe implementa {@link AppShellConfigurator} per fornire la configurazione per la shell dell'applicazione.
