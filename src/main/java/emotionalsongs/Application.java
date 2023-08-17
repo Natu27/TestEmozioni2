@@ -13,10 +13,23 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * and some desktop browsers.
  *
  */
+
+/**
+ * Punto di avvio dell'applicazione Spring Boot.
+ *
+ * Questa classe è annotata con {@link SpringBootApplication}, indicando che è la classe principale per avviare l'applicazione Spring Boot.
+ * L'annotazione {@link Theme} specifica il tema dell'applicazione, con il valore "emotional-songs".
+ * La classe implementa {@link AppShellConfigurator} per fornire la configurazione per la shell dell'applicazione.
+ */
 @SpringBootApplication
 @Theme(value = "emotional-songs", variant = Lumo.DARK)
 public class Application implements AppShellConfigurator {
 
+    /**
+     * Il metodo principale per avviare l'applicazione Spring Boot.
+     *
+     * @param args Gli argomenti della riga di comando.
+     */
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }

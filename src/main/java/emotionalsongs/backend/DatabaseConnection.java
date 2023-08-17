@@ -9,20 +9,32 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * Classe che viene utilizzata per gestire la connessione al database.
+ * Utilizza i valori di connessione letti dal file 'application.properties'.
+ * @see emotionalsongs.backend
+ */
 public class DatabaseConnection {
     private static String DB_URL;
     private static String USER;
     private static String PASSWORD;
-
     private Jdbc3PoolingDataSource connection = null;
 
 
+    /**
+     * Restituisce una connessione al database.
+     * @return Oggetto Connection rappresentante la connessione al database.
+     * @throws SQLException In caso di errore durante la connessione.
+     */
     public Connection getConnection() throws SQLException {
         if (connection == null)
             initConnection();
         return connection.getConnection();
     }
 
+    /**
+     * Inizializza la connessione al database utilizzando i valori di connessione letti dal file di configurazione.
+     */
     private void initConnection() {
         try {
             setConnection();
@@ -38,16 +50,15 @@ public class DatabaseConnection {
         // connection.setMaxConnections(10);
     }
 
+    /**
+     * Legge i valori di connessione dal file 'application.properties'.
+     * @throws IOException In caso di errore durante la lettura del file di configurazione.
+     */
     private void setConnection() throws IOException {
         String fname = "application.properties";
-
-    // Ottenere l'InputStream per il file di risorse
         InputStream is = this.getClass().getClassLoader().getResourceAsStream(fname);
-
-    // Creare un BufferedReader per leggere il contenuto
         assert is != null;
         BufferedReader buf = new BufferedReader(new InputStreamReader(is));
-
     // Leggere il file riga per riga e cercare gli attributi di connessione
         String line;
         while ((line = buf.readLine()) != null) {
