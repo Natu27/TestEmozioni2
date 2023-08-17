@@ -29,6 +29,7 @@ import emotionalsongs.backend.entities.Utente;
 import emotionalsongs.backend.exceptions.playlist.NomePlaylistGiaPresente;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +104,7 @@ public class MyPlaylistView extends VerticalLayout {
                 try {
                     addPlaylist(playlistName.getValue());
                     //dialog.close();
-                } catch (RemoteException e) {
+                } catch (RemoteException | SQLException e) {
                     Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 } catch (NomePlaylistGiaPresente e) {
@@ -159,7 +160,7 @@ public class MyPlaylistView extends VerticalLayout {
 
     }
 
-    private void addPlaylist(String titolo) throws RemoteException, NomePlaylistGiaPresente {
+    private void addPlaylist(String titolo) throws RemoteException, NomePlaylistGiaPresente, SQLException {
         titolo = titolo.trim();
         if(titolo.equals(""))
             Notification.show("Impossibile creare playlist - Necessario inserire titolo", 3000, Notification.Position.MIDDLE)
@@ -189,7 +190,7 @@ public class MyPlaylistView extends VerticalLayout {
         return false;
     }
 
-    private void configureGrid() throws RemoteException {
+    private void configureGrid() throws RemoteException, SQLException {
         result = new ArrayList<>();
         result = stub.myPlaylist(utente.getId());
         gridPlaylist.getColumnByKey("id").setVisible(false);
@@ -236,7 +237,7 @@ public class MyPlaylistView extends VerticalLayout {
                                 Notification.show("Impossibile cancellare la playlist", 3000, Notification.Position.MIDDLE)
                                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                             }
-                        } catch (RemoteException ex) {
+                        } catch (RemoteException | SQLException ex) {
                             Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
                         }
@@ -309,7 +310,7 @@ public class MyPlaylistView extends VerticalLayout {
                 view.setWidthFull();
             }
 
-        } catch (RemoteException e) {
+        } catch (RemoteException | SQLException e) {
             Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         }
@@ -354,7 +355,7 @@ public class MyPlaylistView extends VerticalLayout {
                                 .addThemeVariants(NotificationVariant.LUMO_ERROR);
                     }
                 }
-            } catch (RemoteException ex) {
+            } catch (RemoteException | SQLException ex) {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             } catch (NomePlaylistGiaPresente ex) {

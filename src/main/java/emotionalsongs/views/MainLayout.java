@@ -30,6 +30,7 @@ import emotionalsongs.components.appnav.AppNavItem;
 import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 
 
 /**
@@ -79,7 +80,7 @@ public class MainLayout extends AppLayout {
                 } catch (PasswordErrata e) {
                     Notification.show("Password Errata", 3000, Notification.Position.MIDDLE)
                                 .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                } catch (RemoteException e) {
+                } catch (RemoteException | SQLException e) {
                     Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
@@ -140,7 +141,7 @@ public class MainLayout extends AppLayout {
         //exitButton.getStyle().set("color", "red");
     }
 
-    private void login() throws PasswordErrata, UsernameErrato, RemoteException {
+    private void login() throws PasswordErrata, UsernameErrato, RemoteException, SQLException {
         utente = stub.login(user.getValue(), password.getValue());
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
             stub.login(user.getValue(), password.getValue());

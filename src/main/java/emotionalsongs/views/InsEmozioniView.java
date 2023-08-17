@@ -70,21 +70,17 @@ public class InsEmozioniView extends Dialog {
                         .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                 this.close();
             }
-            catch (SQLException ex) {
+            catch (RemoteException | SQLException ex) {
                 //TODO: da gestire con update
                 try {
                     stub.updateEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
                     Notification.show("Votazione aggiornata!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                     this.close();
-                } catch (RemoteException exception) {
-                    Notification.show("Impossibile effettuare l'operazione di aggiornamento", 3000, Notification.Position.MIDDLE)
+                } catch (RemoteException | SQLException exception) {
+                    Notification.show("Impossibile effettuare l'operazione!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
-            }
-            catch (RemoteException ex) {
-                Notification.show("Impossibile effettuare l'operazione di inserimento", 3000, Notification.Position.MIDDLE)
-                        .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
         });
 

@@ -29,6 +29,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -67,7 +68,7 @@ public class RegistrazioneView extends VerticalLayout {
         registerButton = new Button("Registrati", buttonClickEvent -> {
             try {
                 registration();
-            } catch (RemoteException e) {
+            } catch (RemoteException | SQLException e) {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
@@ -192,7 +193,7 @@ public class RegistrazioneView extends VerticalLayout {
         }
     }
 
-    private void registration() throws RemoteException {
+    private void registration() throws RemoteException, SQLException {
         String nome = this.nome.getValue();
         String cognome = this.cognome.getValue();
         String user = username.getValue();
