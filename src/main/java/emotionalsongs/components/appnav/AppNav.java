@@ -10,37 +10,36 @@ import com.vaadin.flow.dom.Element;
 import java.util.Optional;
 
 /**
- * A navigation menu with support for hierarchical and flat menus.
- * <p>
- * Items can be added using addItem(AppNavItem) and hierarchy can be
- * created by adding {@link AppNavItem} instances to other {@link AppNavItem}
- * instances.
+ * Questa classe rappresenta il componente di navigazione AppNav.
+ * È un componente Vaadin che offre funzionalità di navigazione avanzate.
+ * Utilizza il modulo JavaScript "@vaadin-component-factory/vcf-nav".
+ *
+ * @see <a href="https://www.npmjs.com/package/@vaadin-component-factory/vcf-nav">Documentazione del modulo JavaScript</a>
  */
+
 @JsModule("@vaadin-component-factory/vcf-nav")
 @Tag("vcf-nav")
 @NpmPackage(value = "@vaadin-component-factory/vcf-nav", version = "1.0.6")
 public class AppNav extends Component implements HasSize, HasStyle {
 
     /**
-     * Creates a new menu without any label.
+     * Crea un nuovo menù senza nessuna etichetta.
      */
     public AppNav() {
     }
 
     /**
-     * Creates a new menu with the given label.
-     *
-     * @param label
-     *            the label to use
+     * Crea un nuovo menù con un'etichetta.
+     * @param label L'etichetta da utilizzare.
      */
     public AppNav(String label) {
         setLabel(label);
     }
 
     /**
-     * Adds menu item(s) to the menu.
+     * Permette di aggiungere elementi al menù.
      *
-     * @param appNavItems the menu item(s) to add
+     * @param appNavItems Gli elementi da aggiungere al menù.
      */
     public void addItem(AppNavItem... appNavItems) {
         for (AppNavItem appNavItem : appNavItems) {
@@ -50,13 +49,9 @@ public class AppNav extends Component implements HasSize, HasStyle {
     }
 
     /**
-     * Removes the menu item from the menu.
-     * <p>
-     * If the given menu item is not a child of this menu, does nothing.
-     *
-     * @param appNavItem
-     *            the menu item to remove
-     * @return the menu for chaining
+     * Permette di rimuovere gli elementi dal menù.
+     * @param appNavItem Gli elementi del menù da rimuovere.
+     * @return Il menù senza gli elementi rimossi.
      */
     public AppNav removeItem(AppNavItem appNavItem) {
         Optional<Component> parent = appNavItem.getParent();
@@ -68,23 +63,18 @@ public class AppNav extends Component implements HasSize, HasStyle {
     }
 
     /**
-     * Gets the textual label for the navigation.
+     * Ottiene l'etichetta testuale per la navigazione.
      *
-     * @return the label or null if no label has been set
+     * @return L'etichetta oppure {@code null} se l'etichetta non è ancora stata impostata.
      */
     public String getLabel() {
         return getExistingLabelElement().map(Element::getText).orElse(null);
     }
 
     /**
-     * Set a textual label for the navigation.
-     * <p>
-     * This can help the end user to distinguish groups of navigation items. The
-     * label is also available for screen reader users.
-     *
-     * @param label
-     *            the label to set
-     * @return this instance for chaining
+     * Imposta l'etichetta testuale per la navigazione.
+     * @param label L'eticehtta da impostare.
+     * @return l'etichetta in formato testuale.
      */
     public AppNav setLabel(String label) {
         getLabelElement().setText(label);

@@ -20,12 +20,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
+/**
+ * Questa classe rappresenta un client per l'accesso ai servizi offerti dal sistema.
+ * È implementata l'interfaccia Servizi per fornire metodi di accesso ai dati e alle funzionalità.
+ * Utilizza una connessione al database gestita dalla classe DatabaseConnection.
+ * @see emotionalsongs.backend.Servizi
+ */
 public class ClientES implements Servizi {
     private final DatabaseConnection dbConn= new DatabaseConnection();
     private static ClientES instance;
 
+    // Costruttore privato per garantire il pattern Singleton
     private ClientES() {}
 
+    /**
+     * Ottiene un'istanza unica del client per l'accesso ai servizi.
+     * @return Un'istanza di ClientES.
+     */
     public static synchronized ClientES getInstance() {
         if (instance == null) {
             instance = new ClientES();
@@ -33,6 +45,13 @@ public class ClientES implements Servizi {
         return instance;
     }
 
+    /**
+     * Chiude le risorse della connessione al database in modo sicuro.
+     *
+     * @param conn La connessione al database da chiudere.
+     * @param stmt Lo statement SQL da chiudere.
+     * @param rs   Il result set da chiudere.
+     */
     private void closeResources(Connection conn, PreparedStatement stmt, ResultSet rs) {
         if (rs != null) {
             try {
@@ -57,6 +76,19 @@ public class ClientES implements Servizi {
         }
     }
 
+    /**
+     * Permette di cercare le canzoni all'interno del database.
+     *
+     * @param titoloDaCercare Il titolo della canzone da cercare.
+     * @param autoreDaCercare L'autore della canzone da cercare.
+     * @param year L'anno di pubblicazione della canzone da cercare.
+     * @return Una lista di oggetti Canzone corrispondenti ai criteri di ricerca.
+     * @throws NessunaCanzoneTrovata Se nessuna canzone corrisponde ai criteri di ricerca.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     * @see emotionalsongs.backend.entities.Canzone
+     * @see emotionalsongs.backend.exceptions.NessunaCanzoneTrovata
+     */
     @Override
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year) throws NessunaCanzoneTrovata, SQLException {
         List<Canzone> result = new ArrayList<>();
@@ -92,6 +124,7 @@ public class ClientES implements Servizi {
         }
         return result;
     }
+
 
     @Override
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year, ArrayList<Canzone> braniDaEscludere) throws NessunaCanzoneTrovata, SQLException {
@@ -135,6 +168,19 @@ public class ClientES implements Servizi {
         return result;
     }
 
+    /**
+     * Permette la registrazione di un nuovo utente all'applicazione.
+     *
+     * @param nome Il nome dell'utente.
+     * @param cognome Il cognome dell'utente.
+     * @param indirizzo L'indirizzo dell'utente.
+     * @param codiceFiscale Il codice fiscale dell'utente.
+     * @param email L'indirizzo email dell'utente.
+     * @param username L'username scelto dall'utente per l'accesso.
+     * @param password La password scelta dall'utente per l'accesso.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws SQLException {
         String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
@@ -160,6 +206,13 @@ public class ClientES implements Servizi {
         }
     }
 
+    /**
+     * Ottiene una lista di nomi utente registrati nel sistema.
+     *
+     * @return Una lista di nomi utente registrati nel sistema.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public List<String> getUsernames() throws SQLException {
         List<String> usernames = new ArrayList<>();
@@ -183,6 +236,15 @@ public class ClientES implements Servizi {
         return usernames;
     }
 
+    /**
+     * Ottiene la lista degli anni di pubblicazione delle canzoni corrispondenti ai parametri di ricerca.
+     *
+     * @param titoloDaCercare Il titolo della canzone da cercare.
+     * @param autoreDaCercare L'autore della canzone da cercare.
+     * @return Una lista di anni di pubblicazione delle canzoni.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public List<Integer> getAnni(String titoloDaCercare, String autoreDaCercare) throws SQLException {
 
@@ -210,6 +272,20 @@ public class ClientES implements Servizi {
         return result;
     }
 
+    /**
+     * Permette di effettuare il login all'applicazione.
+     *
+     * @param userid L'username dell'utente.
+     * @param password La password dell'utente.
+     * @return L'oggetto Utente che rappresenta l'utente autenticato.
+     * @throws PasswordErrata Se la password fornita non è corretta.
+     * @throws UsernameErrato Se lo username fornito non è corretto.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     * @see emotionalsongs.backend.entities.Utente
+     * @see emotionalsongs.backend.exceptions.utente.PasswordErrata
+     * @see emotionalsongs.backend.exceptions.utente.UsernameErrato
+     */
     @Override
     public Utente login(String userid, String password) throws PasswordErrata, UsernameErrato, SQLException {
         String query = "SELECT * FROM public.\"User\" WHERE username = ?;";
@@ -248,6 +324,15 @@ public class ClientES implements Servizi {
         return result;
     }
 
+    /**
+     * Permette all'utente di aggiunge una nuova playlist.
+     *
+     * @param titolo Il titolo della playlist da aggiungere.
+     * @param userId L'ID dell'utente a cui associare la playlist.
+     * @return L'ID della playlist appena aggiunta.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public int addPlaylist(String titolo, int userId) throws SQLException {
         int playlistCreate;
@@ -269,6 +354,15 @@ public class ClientES implements Servizi {
         return playlistCreate;
     }
 
+    /**
+     * Restituisce la lista delle playlist associate all'utente specificato.
+     *
+     * @param userId L'ID dell'utente di cui ottenere le playlist.
+     * @return Una lista di oggetti Playlist associate all'utente.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see emotionalsongs.backend.entities.Playlist
+     * @see Servizi
+     */
     @Override
     public List<Playlist> myPlaylist(int userId) throws SQLException {
         List<Playlist> result = new ArrayList<>();
@@ -294,6 +388,15 @@ public class ClientES implements Servizi {
         return result;
     }
 
+    /**
+     * Permette di rimuove una playlist dell'utente specificato.
+     *
+     * @param userId L'ID dell'utente a cui appartiene la playlist da rimuovere.
+     * @param titolo Il titolo della playlist da rimuovere.
+     * @return Il numero di playlist rimosse.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public int removePlaylist(int userId, String titolo) throws SQLException {
         int playlistEliminata;
@@ -316,6 +419,16 @@ public class ClientES implements Servizi {
         return playlistEliminata;
     }
 
+    /**
+     * Permette di rinominare una playlist dell'utente specificato.
+     *
+     * @param userId L'ID dell'utente a cui appartiene la playlist da rimuovere.
+     * @param nuovoTitolo Il nuovo titolo da assegnare alla playlist.
+     * @param playlistId L'ID della playlist da modificare.
+     * @return Il numero di playlist modificate.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public int renamePlaylist(int userId, String nuovoTitolo, int playlistId) throws SQLException {
         int playlistModificata;
@@ -339,6 +452,17 @@ public class ClientES implements Servizi {
         return playlistModificata;
     }
 
+    /**
+     * Permette di aggiungere brani alla playliste dell'utente.
+     *
+     * @param playlistId L'ID della playlist a cui aggiungere i brani.
+     * @param braniSelezionati I brani da aggiungere alla playlist.
+     * @throws NessunaCanzoneTrovata Se nessuna canzone corrisponde ai criteri di ricerca.
+     * @throws SQLException In caso di errore durante l'interazione con il database
+     * @see Servizi
+     * @see emotionalsongs.backend.entities.Canzone
+     * @see emotionalsongs.backend.exceptions.NessunaCanzoneTrovata
+     */
     @Override
     public void addBraniPlaylist(int playlistId, ArrayList<Canzone> braniSelezionati) throws SQLException, NessunaCanzoneTrovata {
         Connection conn = null;
@@ -368,6 +492,15 @@ public class ClientES implements Servizi {
         }
     }
 
+    /**
+     * Permette di visualizzare le canzoni pressenti nella playlist selezionata.
+     *
+     * @param playlistId L'ID della playlist a cui aggiungere i brani.
+     * @throws SQLException In caso di errore durante l'interazione con il database
+     * @return Una lista contenente le canzoni presenti nella playlist.
+     * @see Servizi
+     * @see emotionalsongs.backend.entities.Canzone
+     */
     @Override
     public ArrayList<Canzone> showCanzoniPlaylist(int playlistId) throws SQLException {
         ArrayList<Integer> idSong = getIdSongPlaylist(playlistId);
@@ -399,6 +532,7 @@ public class ClientES implements Servizi {
         return result;
     }
 
+
     private ArrayList<Integer> getIdSongPlaylist(int playlistId) throws SQLException {
         ArrayList<Integer> result = new ArrayList<>();
         String query = "SELECT * FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ?;";
@@ -423,6 +557,15 @@ public class ClientES implements Servizi {
     }
 
 
+    /**
+     * Permette di inserire le emozioni per il brano selezionato.
+     *
+     * @param playlistId L'ID della playlist in cui è presente il brano da valutare.
+     * @param songId L'ID della canzone da valutare.
+     * @param emozioni La lista delle emozioni valutate.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public void insEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException {
         StringBuilder query = new StringBuilder("INSERT INTO public.\"Emozioni\" VALUES(" + playlistId + "," + songId + ",");
@@ -465,6 +608,15 @@ public class ClientES implements Servizi {
         }
     }
 
+    /**
+     * Permette di modificare le emozioni per il brano selezionato.
+     *
+     * @param playlistId L'ID della playlist in cui è presente il brano da valutare.
+     * @param songId L'ID della canzone da valutare.
+     * @param emozioni La lista delle emozioni con le nuove valutazioni.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public void updateEmoBranoPlaylist(int playlistId, int songId, List<Emozione> emozioni) throws SQLException {
         StringBuilder query = new StringBuilder("UPDATE public.\"Emozioni\" SET ");
@@ -519,6 +671,16 @@ public class ClientES implements Servizi {
         }
     }
 
+    /**
+     * Permette di visualizzare la media delle emozioni associate alla canzone.
+     *
+     * @param songId L'ID della canzone di cui si vogliono visualizzare i commenti.
+     * @throws NoVotazioni In caso non siano presenti votazioni per la canzone selezionata.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @return Una lista contente le votazioni medie per ciascuna emozione.
+     * @see Servizi
+     * @see emotionalsongs.backend.exceptions.emozioni.NoVotazioni
+     */
     @Override
     public List<Emozione> getVotazioniMedie(int songId) throws NoVotazioni, SQLException {
         List<Emozione> result = new ArrayList<>();
@@ -569,6 +731,16 @@ public class ClientES implements Servizi {
         return result;
     }
 
+    /**
+     * Permette di visualizzare i commenti associati alla canzone.
+     *
+     * @param songId L'ID della canzone di cui si vogliono visualizzare i commenti.
+     * @throws NoCommenti In caso non siano presenti commenti per la canzone selezionata.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @return Una lista contenente i commenti per tutte le emozioni.
+     * @see Servizi
+     * @see emotionalsongs.backend.exceptions.emozioni.NoCommenti
+     */
     @Override
     public List<Emozione> getCommenti(int songId) throws NoCommenti, SQLException {
         List<Emozione> result = new ArrayList<>();
@@ -618,6 +790,14 @@ public class ClientES implements Servizi {
         return result;
     }
 
+    /**
+     * Permette di visualizzare i dati del proprio account.
+     *
+     * @param userId L'ID dell'utente collegato all'account.
+     * @return Una lista contente tutti i dati dell'account.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public List<String> myAccount(int userId) throws SQLException {
         List<String> result = new ArrayList<>();
@@ -654,6 +834,15 @@ public class ClientES implements Servizi {
         return result;
     }
 
+    /**
+     * Permette di rimuovere un brano presente nella playlist.
+     *
+     * @param playlistId L'ID della playlist in cui è presente il brano.
+     * @param canzoneId L'ID della canzone da rimuovere.
+     * @return il numero delle canzoni romosse (0 o 1)
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public int removePlaylistSong(int playlistId, int canzoneId) throws SQLException {
         int canzoneRimossa;
@@ -682,6 +871,14 @@ public class ClientES implements Servizi {
         return canzoneRimossa;
     }
 
+    /**
+     * Permette di eliminare il proprio account.
+     *
+     * @param userId L'ID dell'utente collegato all'account da eliminare.
+     * @return Il numero di account eliminati (0 o 1)
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public int eliminaAccount(int userId) throws SQLException {
         int accountEliminato;
@@ -703,6 +900,17 @@ public class ClientES implements Servizi {
         return accountEliminato;
     }
 
+    /**
+     * Permette di modificare alcuni dati del proprio account.
+     *
+     * @param userId L'ID dell'utente collegato all'account da eliminare.
+     * @param  residenza La nuova residenza dell'utente.
+     * @param email La nuova email dell'utente.
+     * @param password La nuova password dell'utente.
+     * @return Il nomero di dati modificati.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see Servizi
+     */
     @Override
     public int modifcaDati(int userId, String residenza, String email, String password) throws SQLException {
         int modifiche;
@@ -719,7 +927,7 @@ public class ClientES implements Servizi {
                 stmt.setInt(3,userId);
                 modifiche = stmt.executeUpdate();
             } else {
-                String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());;
+                String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
                 query = "UPDATE public.\"User\" SET indirizzo = ?, email = ?, hashed_password = ? WHERE user_id = ?";
                 conn = this.dbConn.getConnection();
                 stmt = conn.prepareStatement(query);
