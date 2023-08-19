@@ -33,6 +33,12 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
 @PageTitle("Registrazione")
 @Route(value = "registrazione", layout = MainLayout.class)
 public class RegistrazioneView extends VerticalLayout {
@@ -58,6 +64,7 @@ public class RegistrazioneView extends VerticalLayout {
     Button registerButton;
     VerticalLayout pageLayout;
     ClientES client = ClientES.getInstance();
+
 
     public RegistrazioneView() {
         setSpacing(false);

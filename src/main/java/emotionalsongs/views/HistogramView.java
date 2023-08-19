@@ -24,6 +24,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+/**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
 
 public class HistogramView extends VerticalLayout {
     ClientES client = ClientES.getInstance();

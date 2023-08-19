@@ -10,11 +10,19 @@ import com.vaadin.flow.dom.Element;
 import java.util.Optional;
 
 /**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
+
+/**
  * Questa classe rappresenta il componente di navigazione AppNav.
  * È un componente Vaadin che offre funzionalità di navigazione avanzate.
  * Utilizza il modulo JavaScript "@vaadin-component-factory/vcf-nav".
  *
  * @see <a href="https://www.npmjs.com/package/@vaadin-component-factory/vcf-nav">Documentazione del modulo JavaScript</a>
+ * @version 1.0
  */
 
 @JsModule("@vaadin-component-factory/vcf-nav")

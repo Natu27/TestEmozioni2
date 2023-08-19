@@ -27,6 +27,13 @@ import emotionalsongs.backend.entities.Utente;
 
 import java.sql.SQLException;
 
+/**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
+
 @PageTitle("Profilo")
 @Route(value = "profile", layout = MainLayout.class)
 public class ProfileView extends VerticalLayout {

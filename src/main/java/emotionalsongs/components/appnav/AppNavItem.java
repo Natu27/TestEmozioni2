@@ -11,6 +11,13 @@ import com.vaadin.flow.server.VaadinService;
 import java.util.Optional;
 
 /**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
+
+/**
  * A menu item for the {@link AppNav} component.
  * <p>
  * Can contain a label and/or an icon and links to a given {@code path}.

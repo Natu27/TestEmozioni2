@@ -31,6 +31,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
+
 @PageTitle("Playlist")
 @Route(value = "my-playlist", layout = MainLayout.class)
 public class MyPlaylistView extends VerticalLayout {

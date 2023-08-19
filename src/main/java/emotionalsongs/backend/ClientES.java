@@ -20,12 +20,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
 
 /**
  * Questa classe rappresenta un client per l'accesso ai servizi offerti dal sistema.
  * È implementata l'interfaccia Servizi per fornire metodi di accesso ai dati e alle funzionalità.
  * Utilizza una connessione al database gestita dalla classe DatabaseConnection.
  * @see emotionalsongs.backend.Servizi
+ * @version 1.0
  */
 public class ClientES implements Servizi {
     private final DatabaseConnection dbConn= new DatabaseConnection();
@@ -495,7 +502,7 @@ public class ClientES implements Servizi {
     /**
      * Permette di visualizzare le canzoni pressenti nella playlist selezionata.
      *
-     * @param playlistId L'ID della playlist a cui aggiungere i brani.
+     * @param playlistId L'ID della playlist di cui si vogliono visualizzare i brani..
      * @throws SQLException In caso di errore durante l'interazione con il database
      * @return Una lista contenente le canzoni presenti nella playlist.
      * @see Servizi
@@ -532,7 +539,13 @@ public class ClientES implements Servizi {
         return result;
     }
 
-
+    /**
+     * Mentodo privato che permette di ottenere l'ID delle canzoni presenti nella playlist.
+     * @param playlistId L'ID della playlist di cui si vogliono visualizzare i brani.
+     * @return Una lista contenente l'ID delle canzoni presenti nella playlist.
+     * @throws SQLException In caso di errore durante l'interazione con il database
+     * @implNote Questo metodo privato viene utilizzato nel metodo {@code showCanzoniPlaylist} per ottenere l'ID delle canzoni presenti nella playlist
+     */
     private ArrayList<Integer> getIdSongPlaylist(int playlistId) throws SQLException {
         ArrayList<Integer> result = new ArrayList<>();
         String query = "SELECT * FROM public.\"CanzoniPlaylist\" WHERE playlist_id = ?;";

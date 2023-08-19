@@ -29,6 +29,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
+
 @PageTitle("AggiuntaBrani")
 @Route(value = "aggiunta-brani", layout = MainLayout.class)
 public class AggiuntaBraniView extends Dialog {

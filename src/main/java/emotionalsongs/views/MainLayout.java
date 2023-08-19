@@ -36,6 +36,12 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import java.sql.SQLException;
 
+/**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
 
 /**
  * The main view is a top-level placeholder for other views.

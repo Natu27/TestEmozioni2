@@ -3,8 +3,16 @@ package emotionalsongs.backend.entities;
 import java.io.Serializable;
 
 /**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
+
+/**
  * Classe che rappresenta un'emozione'.
  * @see emotionalsongs.backend.entities
+ * @version 1.0
  */
 public class Emozione implements Serializable {
     private String name;

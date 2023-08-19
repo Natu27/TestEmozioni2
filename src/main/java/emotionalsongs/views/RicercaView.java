@@ -33,6 +33,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
+
 @PageTitle("Ricerca")
 @Route(value = "ricerca", layout = MainLayout.class)
 @RouteAlias(value = "", layout = MainLayout.class)

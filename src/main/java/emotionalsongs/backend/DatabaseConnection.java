@@ -10,9 +10,17 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
+
+/**
  * Classe che viene utilizzata per gestire la connessione al database.
  * Utilizza i valori di connessione letti dal file 'application.properties'.
  * @see emotionalsongs.backend
+ * @version 1.0
  */
 public class DatabaseConnection {
     private static String DB_URL;

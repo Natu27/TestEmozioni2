@@ -5,8 +5,16 @@ import javax.persistence.Id;
 import java.io.Serializable;
 
 /**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ */
+
+/**
  * Classe che rappresenta una canzone.
  * @see emotionalsongs.backend.entities
+ * @version 1.0
  */
 @Entity
 public class Canzone implements Serializable {
