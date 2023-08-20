@@ -106,7 +106,10 @@ public class ProfileView extends VerticalLayout {
             confermaModifiche.addClickListener(e->{
                 dialogoConferma = new ConfirmDialog("⚠️ Confermare le modifiche","Sei sicuro di voler confermare le modifiche?", "Sì", event1 -> {
                     try {
-                        if(client.modifcaDati(utente.getId(),via_piazza.getValue(), email.getValue(), password.getValue())>=1){
+                        if(!email.getValue().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") || (!password.isEmpty() && password.getValue().length() < 8)){
+                            Notification.show("Dati non validi", 3000, Notification.Position.MIDDLE)
+                                    .addThemeVariants(NotificationVariant.LUMO_ERROR);
+                        } else if (client.modifcaDati(utente.getId(),via_piazza.getValue(), email.getValue(), password.getValue()) >= 1) {
                             Notification.show("Modifiche effettuate", 3000, Notification.Position.MIDDLE)
                                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                         } else {
@@ -231,9 +234,12 @@ public class ProfileView extends VerticalLayout {
         email.getElement().getStyle().set("background", "none");
 
         password = new PasswordField("Nuova password");
+        password.setMinLength(8);
+        password.setErrorMessage("Almeno 8 caratteri");
 
         H3 intestazione = new H3("Credenziali di accesso");
-        accessoForm.add(username,email,password);
+        Label avviso = new Label("Lasciare il campo vuoto per non modificare la password ⬆️");
+        accessoForm.add(username,email,password, avviso);
         accessoForm.setColspan(email,2);
         accessoForm.setColspan(password,2);
 
