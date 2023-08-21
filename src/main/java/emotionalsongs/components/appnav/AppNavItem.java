@@ -11,39 +11,31 @@ import com.vaadin.flow.server.VaadinService;
 import java.util.Optional;
 
 /**
- * @author Acquati Luca
+ * * @author Acquati Luca
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
+ * <p>
+ * Classe che rappresenta un'elemento per il menù di navigazione {@link AppNav}.
+ * Può contenere un'etichetta con un'icona e un link alla vista desiderata.
  */
 
-/**
- * A menu item for the {@link AppNav} component.
- * <p>
- * Can contain a label and/or an icon and links to a given {@code path}.
- */
 @JsModule("@vaadin-component-factory/vcf-nav")
 @Tag("vcf-nav-item")
 public class AppNavItem extends Component {
 
     /**
-     * Creates a menu item which does not link to any view but only shows the given
-     * label.
-     * 
-     * @param label
-     *            the label for the item
+     * Crea un elemento del menù che mostra solo l'etichetta senza collegare a nessuna vista
+     * @param label l'etichetta per l'elemento
      */
     public AppNavItem(String label) {
         setLabel(label);
     }
 
     /**
-     * Creates a new menu item using the given label that links to the given path.
-     * 
-     * @param label
-     *            the label for the item
-     * @param path
-     *            the path to link to
+     * Crea un nuovo elemento del menù con l'etichetta data collegandolo ad un link.
+     * @param label l'etichetta per l'elemento.
+     * @param path il percorso collegato all'etichetta.
      */
     public AppNavItem(String label, String path) {
         setPath(path);
@@ -51,12 +43,10 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Creates a new menu item using the given label that links to the given view.
-     * 
-     * @param label
-     *            the label for the item
-     * @param view
-     *            the view to link to
+     * Crea un nuovo elemento del menù con l'etichetta data collegandolo ad una vista.
+     *
+     * @param label L'etichetta per l'elemento.
+     * @param view  La vista a cui collegarsi.
      */
     public AppNavItem(String label, Class<? extends Component> view) {
         setPath(view);
@@ -64,15 +54,11 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Creates a new menu item using the given label and icon that links to the
-     * given path.
+     * Crea un nuovo elemento del menù con l'etichetta data e l'icona che collega alla path data.
      * 
-     * @param label
-     *            the label for the item
-     * @param path
-     *            the path to link to
-     * @param icon
-     *            the icon for the item
+     * @param label L'etichetta per l'elemento.
+     * @param path  La path a cui collegarsi.
+     * @param icon  L'icona per l'elemento.
      */
     public AppNavItem(String label, String path, Component icon) {
         setPath(path);
@@ -81,14 +67,11 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Creates a new menu item using the given label that links to the given view.
+     * Crea un nuovo elemento del menù utilizzando l'etichetta data che collega alla vista data.
      * 
-     * @param label
-     *            the label for the item
-     * @param view
-     *            the view to link to
-     * @param icon
-     *            the icon for the item
+     * @param label L'etichetta per l'elemento.
+     * @param view La vista a cui collegarsi.
+     * @param icon L'icona per l'elemento.
      */
     public AppNavItem(String label, Class<? extends Component> view, Component icon) {
         setPath(view);
@@ -103,7 +86,7 @@ public class AppNavItem extends Component {
      * 
      * @param appNavItem
      *            the menu item to remove
-     * @return this item for chaining
+     * @return L'oggetto AppNavItem per supportare la concatenazione dei metodi.
      */
     public AppNavItem removeItem(AppNavItem appNavItem) {
         Optional<Component> parent = appNavItem.getParent();
@@ -115,32 +98,36 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Gets the label for the item.
+     * Ottine l'etichetta per l'elemento.
      * 
-     * @return the label or null if no label has been set
+     * @return L'etichetta oppure {@code null} se l'etichetta non è ancora satta impostata.
      */
     public String getLabel() {
         return getExistingLabelElement().map(Element::getText).orElse(null);
     }
 
     /**
-     * Set a textual label for the item.
-     * <p>
-     * The label is also available for screen rader users.
-     * 
-     * @param label
-     *            the label to set
-     * @return this instance for chaining
+     * Imposta un'etichetta testuale per l'elemento del menù.
+     * @param label L'etichetta da impostare.
+     * @return L'oggetto AppNavItem per supportare la concatenazione dei metodi.
      */
     public AppNavItem setLabel(String label) {
         getLabelElement().setText(label);
         return this;
     }
 
+    /**
+     * Metodo privato che ottiene un elemento di tipo label esistente all'interno dell'elemento corrente.
+     * @return Un oggetto Optional contenente l'elemento label, se presente.
+     */
     private Optional<Element> getExistingLabelElement() {
         return getElement().getChildren().filter(child -> !child.hasAttribute("slot")).findFirst();
     }
 
+    /**
+     * Metodo privato che permette di ottenere un'elemento di tipo label
+     * @return Un oggetto Optional contenente l'elemento label, se presente.
+     */
     private Element getLabelElement() {
         return getExistingLabelElement().orElseGet(() -> {
             Element element = Element.createText("");
@@ -150,11 +137,10 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Sets the path this item links to.
+     * Imposta la path collegata da collegare all'elemento.
      * 
-     * @param path
-     *            the path to link to
-     * @return this instance for chaining
+     * @param path La path a cui collegarsi.
+     * @return L'oggetto AppNavItem per supportare la concatenazione dei metodi.
      */
     public AppNavItem setPath(String path) {
         getElement().setAttribute("path", path);
@@ -162,11 +148,10 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Sets the view this item links to.
+     * Imposta la vista a cui l'elemento deve rimandare.
      * 
-     * @param view
-     *            the view to link to
-     * @return this instance for chaining
+     * @param view La vista a cui collegarsi.
+     * @return L'oggetto AppNavItem per supportare la concatenazione dei metodi.
      */
     public AppNavItem setPath(Class<? extends Component> view) {
         String url = RouteConfiguration.forRegistry(getRouter().getRegistry()).getUrl(view);
@@ -174,6 +159,12 @@ public class AppNavItem extends Component {
         return this;
     }
 
+    /**
+     * Ottiene un'istanza del Router per la navigazione.
+     *
+     * @return L'istanza del Router per la navigazione.
+     * @throws IllegalStateException se nessuna istanza del Router è disponibile.
+     */
     private Router getRouter() {
         Router router = null;
         if (getElement().getNode().isAttached()) {
@@ -190,10 +181,19 @@ public class AppNavItem extends Component {
         return router;
     }
 
+    /**
+     * Ottiene la path collegata all'elemento
+     * @return La path collegata all'elemento come stringa.
+     */
     public String getPath() {
         return getElement().getAttribute("path");
     }
 
+    /**
+     * Ottiene l'indice dell'elemento dell'icona all'interno del componente.
+     *
+     * @return L'indice dell'elemento dell'icona, o -1 se non è presente.
+     */
     private int getIconElementIndex() {
         for (int i = 0; i < getElement().getChildCount(); i++) {
             if ("prefix".equals(getElement().getChild(i).getAttribute("slot"))) {
@@ -204,12 +204,8 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Sets the icon for the item.
-     * <p>
-     * Can also be used to set a custom component to be shown in front of the label.
-     * 
-     * @param icon
-     *            the icon to show
+     * Imposta l'icona per l'elemento del menù.
+     * @param icon L'icona da mostrare.
      * @return this instance for chaining
      */
     public AppNavItem setIcon(Component icon) {
@@ -224,10 +220,10 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Sets the expanded status of the item.
+     * Imposta lo stato di espansione dell'elemento.
      *
-     * @param value
-     *            true to expand the item, false to collapse it
+     * @param value True per espandere l'elemento, false per chiuderlo.
+     * @return L'oggetto AppNavItem per supportare la concatenazione dei metodi.
      */
     public AppNavItem setExpanded(boolean value) {
         if (value) {

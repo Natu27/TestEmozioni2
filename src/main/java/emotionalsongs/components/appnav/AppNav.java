@@ -14,9 +14,7 @@ import java.util.Optional;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
- */
-
-/**
+ * <p>
  * Questa classe rappresenta il componente di navigazione AppNav.
  * È un componente Vaadin che offre funzionalità di navigazione avanzate.
  * Utilizza il modulo JavaScript "@vaadin-component-factory/vcf-nav".
@@ -89,10 +87,18 @@ public class AppNav extends Component implements HasSize, HasStyle {
         return this;
     }
 
+    /**
+     * Metodo privato che ottiene un elemento di tipo label esistente all'interno dell'elemento corrente.
+     * @return Un oggetto Optional contenente l'elemento label, se presente.
+     */
     private Optional<Element> getExistingLabelElement() {
         return getElement().getChildren().filter(child -> "label".equals(child.getAttribute("slot"))).findFirst();
     }
 
+    /**
+     * Metodo privato che permette di ottenere un'elemento di tipo label
+     * @return Un oggetto Optional contenente l'elemento label, se presente.
+     */
     private Element getLabelElement() {
         return getExistingLabelElement().orElseGet(() -> {
             Element element = new Element("span");
@@ -103,26 +109,17 @@ public class AppNav extends Component implements HasSize, HasStyle {
     }
 
     /**
-     * Check if the end user is allowed to collapse/hide and expand/show the
-     * navigation items.
-     * <p>
-     * NOTE: The navigation has to have a label for it to be collapsible.
-     *
-     * @return true if the menu is collapsible, false otherwise
+     * Controlla se l'utente è autorizzato a  nascondere e espandere il menù.
+     * @return true se il menù si puù nascondere, false altrimenti.
      */
     public boolean isCollapsible() {
         return getElement().hasAttribute("collapsible");
     }
 
     /**
-     * Allow the end user to collapse/hide and expand/show the navigation items.
-     * <p>
-     * NOTE: The navigation has to have a label for it to be collapsible.
-     *
-     * @param ignoredCollapsible
-     *            true to make the whole navigation component collapsible, false
-     *            otherwise
-     * @return this instance for chaining
+     * Permette all'utente è autorizzato a  nascondere e espandere il menù.
+     * @param ignoredCollapsible true per permettere di nascondere il menù, false altrimenti
+     * @return l'istanza.
      */
     public AppNav setCollapsible(boolean ignoredCollapsible) {
         getElement().setAttribute("collapsible", "");
