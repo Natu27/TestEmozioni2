@@ -28,6 +28,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Acquati Luca
+ * @author Jamil Muhammad Qasim
+ * @author Naturale Lorenzo
+ * @author Volonterio Luca
+ * <p></p>
+ * Classe che rappresenta la vista per la valutazione delle emozioni.
+ */
 @PageTitle("InsEmozioni")
 @Route(value = "ins-emozioni", layout = MainLayout.class)
 public class InsEmozioniView extends Dialog {
@@ -37,6 +45,11 @@ public class InsEmozioniView extends Dialog {
     Grid<Emozione> grid;
     ClientES client = ClientES.getInstance();
 
+    /**
+     * Costruttore per la vista per la valutazione delle amozioni associate ad una canzone.
+     *
+     * @param songSelected La canzone selezionata per la valutazione delle emozioni.
+     */
     public InsEmozioniView(Canzone songSelected) {
         this.songSelected = songSelected;
 
@@ -75,7 +88,6 @@ public class InsEmozioniView extends Dialog {
                 }
             }
             catch (SQLException ex) {
-                //TODO: da gestire con update
                 try {
                     client.updateEmoBranoPlaylist((Integer) VaadinSession.getCurrent().getAttribute("playlistId"), songSelected.getId(), emozioniVotate);
                     Notification.show("Votazione aggiornata!", 3000, Notification.Position.MIDDLE)
@@ -102,6 +114,10 @@ public class InsEmozioniView extends Dialog {
         add(layoutInfo);
     }
 
+    /**
+     * Metodo privato che permette di ottenere tutti i punteggi di tutte le emozioni.
+     * @return Una {@code List} contente tutti i punteggi.
+     */
     private List<Emozione> getAllScores() {
         List<Emozione> scores = new ArrayList<>();
 
@@ -110,6 +126,12 @@ public class InsEmozioniView extends Dialog {
         return scores;
     }
 
+    /**
+     * Metodo privato che consente di controllare se il brano è già presente nella lista delle canzoni votate.
+     * @param listaCanzoni La lista delle canzoni votate.
+     * @param song La canzone da controlare.
+     * @return true se la canzone è presente, false altrimenti
+     */
     private boolean branoPresente (List<Canzone> listaCanzoni, Canzone song) {
         for (Canzone c:listaCanzoni) {
             if (c.getId()== song.getId())
@@ -117,6 +139,10 @@ public class InsEmozioniView extends Dialog {
         }
         return false;
     }
+
+    /**
+     * Metodo privato che permette la creazione della griglai contente le emozioni da valutare.
+     */
     private void getGridVotazione() {
         grid = new Grid<>(Emozione.class);
         grid.setItems(getEmotions()); // Metodo per ottenere le emozioni da visualizzare
@@ -180,12 +206,21 @@ public class InsEmozioniView extends Dialog {
         }).setHeader("Commento");
     }
 
+    /**
+     * Metodo privato che crea uno spacer
+     * @return spacer Il divisore che viene creato.
+     */
     private Component createSpacer() {
         Div spacer = new Div();
-        spacer.setWidth("20px");  // larghezza dello spazio vuoto
-        spacer.setHeight("20px"); // altezza dello spazio vuoto
+        spacer.setWidth("20px");
+        spacer.setHeight("20px");
         return spacer;
     }
+
+    /**
+     * Metodo privato che permette di ottenere le emozioni.
+     * @return Ritoran un'{@code ArrayList} contente le emozioni.
+     */
     private ArrayList<Emozione> getEmotions() {
         ArrayList<Emozione> emotions = new ArrayList<>();
         emotions.add(new Emozione("Amazement"));

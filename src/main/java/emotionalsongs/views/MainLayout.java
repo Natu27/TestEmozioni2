@@ -36,22 +36,19 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 
 import java.sql.SQLException;
 
+
 /**
  * @author Acquati Luca
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
- */
-
-/**
- * The main view is a top-level placeholder for other views.
+ * Layout principale dell'applicazione.
  */
 public class MainLayout extends AppLayout {
     private H2 viewTitle;
     HorizontalLayout top;
     VerticalLayout loginForm;
     Button login;
-    //Button logout;
     Button registerButton;
     Button loginButton;
     Button exitButton;
@@ -72,7 +69,6 @@ public class MainLayout extends AppLayout {
 
         if (utente!=null) {
             login.setVisible(false);
-            //logout.setVisible(true);
             avatar.setVisible(true);
             welcome.setVisible(true);
             menuBar.setVisible(true);
@@ -104,7 +100,6 @@ public class MainLayout extends AppLayout {
             dialog.setWidth("500px");
             dialog.setHeight("475x");
 
-            //logout.addClickListener(click -> logout());
 
         setPrimarySection(Section.DRAWER);
         addDrawerContent();
@@ -116,9 +111,6 @@ public class MainLayout extends AppLayout {
     private void configureTopLayout() {
         login = new Button("Login", VaadinIcon.USER.create());
         login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        //logout = new Button("Logout", VaadinIcon.ARROW_FORWARD.create());
-        //logout.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        //logout.setVisible(false);
         avatar = new Avatar();
         welcome.setVisible(false);
         avatar.setVisible(false);
@@ -133,15 +125,14 @@ public class MainLayout extends AppLayout {
         subMenu.addItem(userManual);
         subMenu.addItem("Logout", e-> logout()).addClassNames("logout");
         menuBar.setVisible(false);
-        top = new HorizontalLayout(login,welcome/*,logout*/, menuBar);
+        top = new HorizontalLayout(login,welcome, menuBar);
         top.setWidthFull();
         top.setMargin(true);
         top.setJustifyContentMode(FlexComponent.JustifyContentMode.END);
         top.setAlignSelf(FlexComponent.Alignment.END, welcome);
         top.setAlignSelf(FlexComponent.Alignment.END, login);
-        //top.setAlignSelf(FlexComponent.Alignment.END, logout);
         top.setAlignSelf(FlexComponent.Alignment.END, menuBar);
-        top.add(login ,welcome /*,logout*/, menuBar);
+        top.add(login ,welcome, menuBar);
     }
 
     private void configureLoginForm() {
@@ -165,7 +156,6 @@ public class MainLayout extends AppLayout {
         loginForm = new VerticalLayout(titleLogin, user, password, loginButton, registerButton, exitButton);
         loginForm.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         loginForm.setAlignItems(FlexComponent.Alignment.CENTER);
-        //exitButton.getStyle().set("color", "red");
     }
 
     private void login() throws PasswordErrata, UsernameErrato, SQLException {
@@ -177,7 +167,6 @@ public class MainLayout extends AppLayout {
             VaadinSession.getCurrent().setAttribute("username", user.getValue());
             VaadinSession.getCurrent().setAttribute("utente", utente);
             login.setVisible(false);
-            //logout.setVisible(true);
             welcome.setVisible(true);
             avatar.setVisible(true);
             avatar.addThemeVariants(AvatarVariant.LUMO_LARGE);
@@ -230,8 +219,6 @@ public class MainLayout extends AppLayout {
     }
 
     private AppNav createNavigation() {
-        // AppNav is not yet an official component.
-        // For documentation, visit https://github.com/vaadin/vcf-nav#readme
         AppNav nav = new AppNav();
 
             nav.addItem(new AppNavItem("Ricerca", RicercaView.class, LineAwesomeIcon.SEARCH_SOLID.create()));
