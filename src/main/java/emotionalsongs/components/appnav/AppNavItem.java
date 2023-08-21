@@ -11,7 +11,7 @@ import com.vaadin.flow.server.VaadinService;
 import java.util.Optional;
 
 /**
- * * @author Acquati Luca
+ * @author Acquati Luca
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
