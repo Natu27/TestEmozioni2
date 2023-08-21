@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @version 1.0
  */
 @Entity
-public class Playlist implements Serializable {
+public class Playlist {
     @Id
     private int id;
     private String titolo;

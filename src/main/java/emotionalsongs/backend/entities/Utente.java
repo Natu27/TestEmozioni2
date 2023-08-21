@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @version 1.0
  */
 @Entity
-public class Utente implements Serializable {
+public class Utente {
     @Id
     private int id;
     private String username;

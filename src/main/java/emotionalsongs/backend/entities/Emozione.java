@@ -14,7 +14,7 @@ import java.io.Serializable;
  * @see emotionalsongs.backend.entities
  * @version 1.0
  */
-public class Emozione implements Serializable {
+public class Emozione {
     private String name;
     private String commento;
     private double score;
