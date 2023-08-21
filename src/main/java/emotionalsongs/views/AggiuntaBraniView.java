@@ -34,6 +34,8 @@ import java.util.stream.Stream;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
+ * <p></p>
+ * Classe che rappresenta la vista per l'aggiunta di brani ad una palylist.
  */
 
 @PageTitle("AggiuntaBrani")
@@ -60,6 +62,10 @@ public class AggiuntaBraniView extends Dialog {
 
     ArrayList<Canzone> braniPrecedentementeSelezionati = client.showCanzoniPlaylist(playlistId);
 
+    /**
+     * Costruttore della vista {@code AggiuntaBraniView}.
+     * @throws Exception Possibili eccezioni durante la costruzione della vista.
+     */
     public AggiuntaBraniView() throws Exception {
         setWidthFull();
         setCloseOnEsc(true);
@@ -106,6 +112,9 @@ public class AggiuntaBraniView extends Dialog {
         add(layoutTitolo, spacer1, toolbar, spacer2, grid, spacer3, playlist);
     }
 
+    /**
+     * Metodo privato che configura il layout per il titolo e l'icona della pagina.
+     */
     private void configureLayout() {
         layoutTitolo = new HorizontalLayout();
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -115,6 +124,9 @@ public class AggiuntaBraniView extends Dialog {
         layoutTitolo.add(iconTitolo, titoloPagina);
     }
 
+    /**
+     * Metodo privato che configura il layout la ricerca dei brani.
+     */
     private void configureSearchBar() {
         titoloDaCercare = new TextField();
         autoreDaCercare = new TextField();
@@ -132,15 +144,20 @@ public class AggiuntaBraniView extends Dialog {
         toolbar.setWidthFull();
     }
 
+    /**
+     * Metodo privato che configura la griglia in cui sono presenti tutti i brani.
+     */
     private void configureGrid() {
         //grid.setSizeFull();
         grid.setColumns("id","titolo", "artista", "anno");
-        //TODO id invisibile ora valorizzato e funzionante --> per V
         grid.getColumnByKey("id").setVisible(false);
         grid.getColumns().get(3).setSortable(false); // sort disattivato perché non funziona su questa colonna
         grid.setSelectionMode(Grid.SelectionMode.MULTI);
     }
 
+    /**
+     * Metodo privato che configura il layout per l'aggiunta dei brani alla playlist.
+     */
     private void configureCreazionePlaylist() {
         addButton.setAutofocus(true);
         addButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -157,12 +174,15 @@ public class AggiuntaBraniView extends Dialog {
         playlist.setWidthFull();
     }
 
+    /**
+     * Metodo privato che permette di ricercare i brani.
+     */
     private void search() {
         try {
             result = client.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue(),
                     (ArrayList<Canzone>) Stream.concat(braniPrecedentementeSelezionati.stream(), braniSelezionati.stream()).collect(Collectors.toList()));
             grid.setItems(result);
-            anni = client.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue()); // retrieve anni per cui ci sono canzoni con titolo e autore desiderato
+            anni = client.getAnni(titoloDaCercare.getValue(), autoreDaCercare.getValue());
         } catch (SQLException e) {
             Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -187,16 +207,23 @@ public class AggiuntaBraniView extends Dialog {
             annoDaCercare.setValue(cachedValue);
     }
 
+    /**
+     * Metodo privato che permette di agggiungere i brani selezionati dalla griglia a un Set.
+     */
     private void aggiungiBrani() {
         Set<Canzone> brani = grid.getSelectedItems();
         braniSelezionati.addAll(brani);
         grid.asMultiSelect().clear();
     }
 
+    /**
+     * Metodo privato che crea uno spacer
+     * @return spacer Il divisore che viene creato.
+     */
     private Component createSpacer() {
         Div spacer = new Div();
-        spacer.setWidth("20px");  // larghezza dello spazio vuoto
-        spacer.setHeight("20px"); // altezza dello spazio vuoto
+        spacer.setWidth("20px");
+        spacer.setHeight("20px");
         return spacer;
     }
 }

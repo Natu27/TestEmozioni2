@@ -230,7 +230,7 @@ public class RegistrazioneView extends VerticalLayout {
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
         } else {
             if (password.equals(confPassword)) {
-                if(user.length() < 5 || password.length() < 8 || !codFiscale.matches("^[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]$")){
+                if(user.length() < 5 || password.length() < 8 || !codFiscale.matches("^[A-Z]{6}\\d{2}[A-Z]\\d{2}[A-Z]\\d{3}[A-Z]$") || !email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")){
                     Notification.show("Dati non validi!", 3000, Notification.Position.MIDDLE)
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }else {

@@ -29,11 +29,17 @@ import java.util.List;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
+ * <p></p>
+ * Classe che rappresenta la vista per la creazione dell'istogramma della media delle emozioni.
  */
-
 public class HistogramView extends VerticalLayout {
     ClientES client = ClientES.getInstance();
 
+    /**
+     * Costruttore della vista {@code HistogramView}
+     * @param idSong L'ID della canzone di cui si vogliono visualizzare le emozioni.
+     * @throws Exception Possibili eccezioni durante la costruzione della vista.
+     */
     public HistogramView(int idSong) throws Exception {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
@@ -70,6 +76,8 @@ public class HistogramView extends VerticalLayout {
         title.setFont(titleFont.deriveFont(18f));
 
         byte[] chartImageBytes;
+        /*Converte il grafico creato con la libreris JFreeChart in immagine
+        per visualizzarlo utilizzando un componente Vaadin*/
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             ChartUtils.writeChartAsPNG(outputStream, chart, 800, 450);
             chartImageBytes = outputStream.toByteArray();
@@ -88,6 +96,14 @@ public class HistogramView extends VerticalLayout {
         add(chartContainer);
     }
 
+    /**
+     * Riempie il dataset per la creazione del grafico con le medie delle emozioni per la canzone specificata.
+     *
+     * @param dataset Il dataset in cui inserire le medie delle emozioni.
+     * @param idSong  L'ID della canzone per cui ottenere le medie delle emozioni.
+     * @throws SQLException Eccezione sollevata in caso di errore nell'accesso al database.
+     * @throws NoVotazioni Eccezione sollevata se non sono disponibili votazioni per la canzone.
+     */
     private void fillDatasetWithAverageEmotions(DefaultCategoryDataset dataset, int idSong) throws SQLException, NoVotazioni {
         List<Emozione> emozioni = client.getVotazioniMedie(idSong);
         for(Emozione e : emozioni) {

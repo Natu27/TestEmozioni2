@@ -1,26 +1,12 @@
-# emotional-songs
+# EmotionalSongs
 
-This project can be used as a starting point to create your own Vaadin application with Spring Boot.
-It contains all the necessary configuration and some placeholder files to get you started.
+Emotional Songs è un progetto sviluppato nell’ambito del progetto di Laboratorio Interdisciplinare B per il corso di laurea in Informatica dell’Università degli Studi dell’Insubria.
+EmotionalSongs è un’applicazione che, a partire da un repository di canzoni, permette di creare una o più playlist di brani musicali e annotarli singolarmente con le emozioni che vengono suscitate durante l’ascolto, secondo una scala standard di 9 stati emozionali (Geneva Emotional Music Scales – GEMS). L’applicazione permette inoltre di mostrare un prospetto riassuntivo delle emozioni segnalate dagli utenti ed esprimere commenti ed opinioni sui brani ascoltati.
 
-## Running the application
+## Avviare l'applicazione
 
-The project is a standard Maven project. To run it from the command line,
-type `mvnw` (Windows), or `./mvnw` (Mac & Linux), then open
-http://localhost:8080 in your browser.
-
-You can also import the project to your IDE of choice as you would with any
-Maven project. Read more on [how to import Vaadin projects to different IDEs](https://vaadin.com/docs/latest/guide/step-by-step/importing) (Eclipse, IntelliJ IDEA, NetBeans, and VS Code).
-
-## Deploying to Production
-
-To create a production build, call `mvnw clean package -Pproduction` (Windows),
-or `./mvnw clean package -Pproduction` (Mac & Linux).
-This will build a JAR file with all the dependencies and front-end resources,
-ready to be deployed. The file can be found in the `target` folder after the build completes.
-
-Once the JAR file is built, you can run it using
-`java -jar target/emotional-songs-1.0-SNAPSHOT.jar`
+Per avviare l’applicazione è sufficiente cliccare sul seguente link:
+[EmotionalSongs](http://emotionalsongs-dev.us-west-2.elasticbeanstalk.com)
 
 ## Project structure
 
