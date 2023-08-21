@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @version 1.0
  */
 @Entity
-public class Canzone {
+public class Canzone  {
     @Id
     private int id;
     private int anno;
