@@ -336,7 +336,7 @@ public class ClientES implements Servizi {
      *
      * @param titolo Il titolo della playlist da aggiungere.
      * @param userId L'ID dell'utente a cui associare la playlist.
-     * @return L'ID della playlist appena aggiunta.
+     * @return variabile intera che indica se la playlist è stata aggiunta con successo.
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see Servizi
      */
