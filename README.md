@@ -10,12 +10,11 @@ Per avviare l’applicazione è sufficiente cliccare sul seguente link:
 
 ## Project structure
 
-- `MainLayout.java` in `src/main/java` contains the navigation setup (i.e., the
-  side/top bar and the main menu). This setup uses
+- `MainLayout.java` in `src/main/java` contiene le impostazioni per la navigazione (il menù principale, la barra superiore e laterale). Utilizza
   [App Layout](https://vaadin.com/docs/components/app-layout).
-- `views` package in `src/main/java` contains the server-side Java views of your application.
-- `views` folder in `frontend/` contains the client-side JavaScript views of your application.
-- `themes` folder in `frontend/` contains the custom CSS styles.
+- package `views` in `src/main/java` contiene il lato server dell'applicazione.
+- la cartella `views` in `frontend/` contiene il lato client dell'applicazione.
+- la cartella `themes` in `frontend/` contiene i file CSS personalizzati.
 
 ## Useful links
 
