@@ -5,9 +5,7 @@ package emotionalsongs.backend.exceptions.emozioni;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
- */
-
-/**
+ * <p></p>
  * Eccezione che viene lanciata quando non sono disponibili votazioni per la canzone selezionata.
  * @see emotionalsongs.backend.exceptions
  * @version 1.0

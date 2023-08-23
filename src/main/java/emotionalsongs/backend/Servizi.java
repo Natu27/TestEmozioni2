@@ -13,14 +13,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * @author Acquati Luca
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
- */
-
-/**
+ * <p></p>
  * Interfaccia che definisce i servizi disponibili per l'interazione con l'applicazione.
  * @see emotionalsongs.backend
  * @see ClientES Per l'implementazione dei metodi.

@@ -38,6 +38,9 @@ import java.util.*;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
+ * <p></p>
+ * Classe che rappresenta la vista per la registrazione di un nuovo utente.
+ * @version 1.0
  */
 @PageTitle("Registrazione")
 @Route(value = "registrazione", layout = MainLayout.class)
@@ -66,6 +69,9 @@ public class RegistrazioneView extends VerticalLayout {
     ClientES client = ClientES.getInstance();
 
 
+    /**
+     * Costruttore per la vista per la registrazione di un nuovo utente.
+     */
     public RegistrazioneView() {
         setSpacing(false);
         setSizeFull();
@@ -89,6 +95,9 @@ public class RegistrazioneView extends VerticalLayout {
         add(layoutTitolo, pageLayout);
     }
 
+    /**
+     * Metodo privato che permette la creazione del layout dell'intestazione della pagina.
+     */
     private void configureLayoutTitolo() {
         layoutTitolo = new HorizontalLayout();
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -98,6 +107,9 @@ public class RegistrazioneView extends VerticalLayout {
         layoutTitolo.add(iconTitolo, titoloPagina);
     }
 
+    /**
+     * Metodo privato che permette la creazione del layout contenente i campi che l'utente deve compilare per reistrarsi all'applicazione.
+     */
     private void configureLayoutRegistrazione() {
         registrazione = new FormLayout();
         nome = new TextField("Nome");
@@ -107,7 +119,6 @@ public class RegistrazioneView extends VerticalLayout {
         scelteSesso = Arrays.asList('M', 'F');
         sesso = new ComboBox<>("Sesso", scelteSesso);
         codFiscale = new TextField("Codice Fiscale");
-        //calcolaCf = new Button("Calcola codice fiscale");
         via_piazza = new TextField("Via/Piazza");
         email = new EmailField("Email");
         username = new TextField("Username");
@@ -136,6 +147,9 @@ public class RegistrazioneView extends VerticalLayout {
                 password, confirmPassword);
     }
 
+    /**
+     * Metodo privato che permette la creazione del layout per il pulsante per confermare la registrazione.
+     */
     private void configureButton() {
         regButtonLayout = new VerticalLayout();
         regButtonLayout.setAlignItems(Alignment.CENTER);
@@ -146,6 +160,9 @@ public class RegistrazioneView extends VerticalLayout {
         regButtonLayout.add(registerButton);
     }
 
+    /**
+     * Metodo privato che permette la configurazione del layout dell'intera pagina
+     */
     private void configurePageLayout() {
         pageLayout = new VerticalLayout();
         pageLayout.setSizeFull();
@@ -153,6 +170,9 @@ public class RegistrazioneView extends VerticalLayout {
         pageLayout.add(registrazione, registerButton);
     }
 
+    /**
+     * Metodo privato che imposta tutti i campi necessari per la registrazione con le relative condizioni.
+     */
     private void setComponent() {
         nome.setSuffixComponent(VaadinIcon.USER.create());
         cognome.setSuffixComponent(VaadinIcon.USER.create());
@@ -187,6 +207,9 @@ public class RegistrazioneView extends VerticalLayout {
 
     }
 
+    /**
+     * Metodo privato che viene utilizzato per il calcolo del codice fiscale.
+     */
     private void calcolaCodFiscale() {
         if (!nome.getValue().equals("") && !cognome.getValue().equals("") && luogoNascita.getValue() != null && dataNascita.getValue() != null && sesso.getValue() != null) {
             String nomeCf = nome.getValue();
@@ -215,6 +238,9 @@ public class RegistrazioneView extends VerticalLayout {
         }
     }
 
+    /**
+     * Metodo privato che effettua i controlli sui dati inseriti dall'utente ed esegue le query di inserimento.
+     */
     private void registration() throws SQLException {
         String nome = this.nome.getValue();
         String cognome = this.cognome.getValue();
@@ -252,6 +278,12 @@ public class RegistrazioneView extends VerticalLayout {
         }
     }
 
+    /**
+     * Metodo privato che controlla che l'username inserito dall'utente non sia già presente nell'applicazione.
+     * @param usernames Una lista contente gli username registrati all'applicazione.
+     * @param username L'username inserito dall'utente.
+     * @return true se l'username non è già presente, false altriemnti
+     */
     private boolean usernameUnivoco(List<String> usernames, String username) {
         for (String u : usernames) {
             if (u.equals(username))
@@ -260,6 +292,12 @@ public class RegistrazioneView extends VerticalLayout {
         return true;
     }
 
+    /**
+     * Metodo privato utilizzato per controllare se l'utente è maschio o femmina.
+     * Verrà utilizzato per il calcolo del codice fiscale.
+     * @param sesso Il sesso indicato dall'utente
+     * @return true se l'utente è femmina, false altriementi.
+     */
     private boolean isFemale(Character sesso){
         return sesso == 'F';
     }

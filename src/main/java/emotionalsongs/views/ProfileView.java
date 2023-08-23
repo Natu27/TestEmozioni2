@@ -32,6 +32,9 @@ import java.sql.SQLException;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
+ * <p></p>
+ * Classe che rappresenta la vista del profilo dell'utente.
+ * @version 1.0
  */
 
 @PageTitle("Profilo")
@@ -67,7 +70,11 @@ public class ProfileView extends VerticalLayout {
     Button eliminaAccount;
 
 
-
+    /**
+     * Costruttore per la vista del profilo dell'utente.
+     * Se l'utente è loggato vengono visualizzati i dati del suo account, altrimenti viene
+     * mostrato un messaggio,
+     */
     public ProfileView() throws Exception {
 
         if (utente==null) {
@@ -161,6 +168,9 @@ public class ProfileView extends VerticalLayout {
 
     }
 
+    /**
+     * Metodo privato che permette la creazione del layout dell'intestazione della pagina.
+     */
     private void configureLayout() {
         layoutTitolo = new HorizontalLayout();
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -169,6 +179,10 @@ public class ProfileView extends VerticalLayout {
         titoloPagina = new H3("I tuoi dati");
         layoutTitolo.add(iconTitolo, titoloPagina);
     }
+
+    /**
+     * Metodo privato che permette la creazione del layout contenente i dati anagrafici dell'utente.
+     */
         private void configureDatiLayout() throws Exception {
         datiPersonali = new VerticalLayout();
 
@@ -204,6 +218,9 @@ public class ProfileView extends VerticalLayout {
 
         }
 
+    /**
+     * Metodo privato che permette la creazione del layout contenente i dati relativi alla residenza dell'utente.
+     */
         private void configureResidenzaLayout() throws Exception{
             residenza = new VerticalLayout();
             residenzaForm = new FormLayout();
@@ -220,6 +237,9 @@ public class ProfileView extends VerticalLayout {
 
         }
 
+    /**
+     * Metodo privato che permette la creazione del layout contenente i dati relativi alle credenziali dell'utente.
+     */
         private void datiAccessoLayout() throws Exception {
         accesso = new VerticalLayout();
         accessoForm = new FormLayout();

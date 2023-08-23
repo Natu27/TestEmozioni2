@@ -36,6 +36,7 @@ import java.util.stream.Stream;
  * @author Volonterio Luca
  * <p></p>
  * Classe che rappresenta la vista per l'aggiunta di brani ad una palylist.
+ * @version 1.0
  */
 
 @PageTitle("AggiuntaBrani")

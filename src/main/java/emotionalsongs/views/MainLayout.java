@@ -42,7 +42,9 @@ import java.sql.SQLException;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
- * Layout principale dell'applicazione.
+ * <p></p>
+ * Layout principale dell'applicazione. Tutte le viste dell'applicazione si basano su questo layout.
+ * @version 1.0
  */
 public class MainLayout extends AppLayout {
     private H2 viewTitle;

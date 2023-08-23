@@ -1,22 +1,23 @@
 package emotionalsongs.backend.entities;
 
+import org.springframework.stereotype.Component;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.io.Serializable;
 
 /**
  * @author Acquati Luca
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
- */
-
-/**
+ * <p></p>
  * Classe che rappresenta una canzone.
  * @see emotionalsongs.backend.entities
  * @version 1.0
  */
+
 @Entity
+@Component
 public class Canzone  {
     @Id
     private int id;

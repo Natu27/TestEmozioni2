@@ -36,8 +36,10 @@ import java.util.List;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
+ * <p></p>
+ * Classe che rappresenta la vista delle playlist dell'utente.
+ * @version 1.0
  */
-
 @PageTitle("Playlist")
 @Route(value = "my-playlist", layout = MainLayout.class)
 public class MyPlaylistView extends VerticalLayout {
@@ -73,6 +75,11 @@ public class MyPlaylistView extends VerticalLayout {
     ClientES client = ClientES.getInstance();
     Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
 
+    /**
+     * Costruttore per la vista delle playlist associate all'utente.
+     * Se l'utente è loggato vengono visualizzate le palylist collegate al suo account, altrimenti viene
+     * mostrato un messaggio,
+     */
     public MyPlaylistView() throws Exception {
 
         if (utente==null) {
@@ -132,6 +139,9 @@ public class MyPlaylistView extends VerticalLayout {
 
     }
 
+    /**
+     * Metodo privato che permette la creazione del layout dell'intestazione della pagina.
+     */
     private void configureLayout() {
         layoutTitolo = new HorizontalLayout();
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -142,6 +152,9 @@ public class MyPlaylistView extends VerticalLayout {
     }
 
 
+    /**
+     * Metodo privato che permette la creazione del layout della finestra per la creazione delle playlist.
+     */
     private void dialogCreatePlaylist() {
         H1 title = new H1("Playlist \uD83C\uDFB5");
         dialog = new Dialog();
@@ -164,6 +177,10 @@ public class MyPlaylistView extends VerticalLayout {
 
     }
 
+    /**
+     * Metodo privato che permette la all'utente di creare una nuova playlist ed aggiungerla alla griglia.
+     * @param titolo Il titolo della playlist che si vuole creare.
+     */
     private void addPlaylist(String titolo) throws SQLException, NomePlaylistGiaPresente {
         titolo = titolo.trim();
         if(titolo.equals(""))
@@ -185,6 +202,11 @@ public class MyPlaylistView extends VerticalLayout {
         }
     }
 
+    /**
+     * Metodo privato che controlla se il nome inserito per una nuova playlist è già presente.
+     * @param myTitle Titolo della playlist che si vuole creare.
+     * @return true se il titolo esiste già, false altrimenti.
+     */
     private boolean nomePlaylistPresente(String myTitle) {
         for(Playlist p : result) {
             if(p.getTitolo().equals(myTitle)) {
@@ -194,6 +216,9 @@ public class MyPlaylistView extends VerticalLayout {
         return false;
     }
 
+    /**
+     * Metodo privato che permette la creazione del layout della griglia in cui verranno visualizzate le playlist dell'utente.
+     */
     private void configureGrid() throws SQLException {
         result = new ArrayList<>();
         result = client.myPlaylist(utente.getId());
@@ -205,6 +230,9 @@ public class MyPlaylistView extends VerticalLayout {
         gridPlaylist.setItems(result);
     }
 
+    /**
+     * Metodo privato che permette di aggiungere alla griglia delle playlist le colonne per visualizzare e eliminare le palylist.
+     */
     private void playlistGridColumn(){
         gridPlaylist.addColumn(
                 new ComponentRenderer<>(Button::new, (button, titolo) -> {
@@ -252,6 +280,9 @@ public class MyPlaylistView extends VerticalLayout {
                 })).setHeader("Elimina");
     }
 
+    /**
+     * Metodo privato che permette di configurare la finestra per visualizzare i brani di una playlist.
+     */
     private void configureViewDialog(){
         Button closeButton = new Button("Chiudi",VaadinIcon.CLOSE_CIRCLE.create());
         closeButton.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -267,7 +298,6 @@ public class MyPlaylistView extends VerticalLayout {
                 Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
             }
-            //TODO : rendere griglia ricerca utilizzabile per aggiungere brani alla playlist selezionata
         });
         rename = new Button("Rinomina", VaadinIcon.PENCIL.create());
         rename.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -283,8 +313,10 @@ public class MyPlaylistView extends VerticalLayout {
         viewForm.add(gridCanzoni,actionButton,closeButton);
     }
 
+    /**
+     * Metodo privato che permette di configurare la griglia per visualizzare le playlist.
+     */
     private void configureGridCanzoni() {
-        //gridCanzoni.setWidthFull();
         gridCanzoni.setColumns("id","titolo", "artista", "anno");
         gridCanzoni.getColumnByKey("id").setVisible(false);
         gridCanzoni.getColumns().get(3).setSortable(false);
@@ -349,6 +381,9 @@ public class MyPlaylistView extends VerticalLayout {
         }
     }
 
+    /**
+     * Metodo privato che permette di configurare la finestra per modificare una playlist.
+     */
     private void configureEditDialog(){
         H2 titleRename = new H2("Rinomina ✒");
         Button closeButton = new Button("Annulla", VaadinIcon.CLOSE_CIRCLE.create());
@@ -365,7 +400,6 @@ public class MyPlaylistView extends VerticalLayout {
         HorizontalLayout buttonsLayout = new HorizontalLayout(confirmNewTitle, closeButton);
         buttonsLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         buttonsLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-        //newTitle.setErrorMessage("Il campo non può essere vuoto!");
         renamePlaylist.add(titleRename, newTitle, buttonsLayout);
         renamePlaylist.setJustifyContentMode(FlexComponent.JustifyContentMode.CENTER);
         renamePlaylist.setAlignItems(FlexComponent.Alignment.CENTER);

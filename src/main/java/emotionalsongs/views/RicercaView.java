@@ -38,6 +38,9 @@ import java.util.List;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
+ * <p></p>
+ * Classe che rappresenta la vista per la ricerca delle canzoni.
+ * @version 1.0
  */
 
 @PageTitle("Ricerca")
@@ -59,6 +62,10 @@ public class RicercaView extends VerticalLayout {
     ClientES client = ClientES.getInstance();
     List<Integer> anni = client.getAnni("", "");
 
+    /**
+     * Costruttore per la vista per la ricerca delle canzoni.
+     * @throws Exception Per possibili eccezioni durante la costruzione della vista.
+     */
     public RicercaView() throws Exception {
         setSpacing(true);
         setSizeFull();
@@ -76,7 +83,6 @@ public class RicercaView extends VerticalLayout {
         configureGrid();
         configureEmotions();
 
-        // TODO: se si vuole tenere il risultato della ricerca cachato, vanno cachati anche i parametri di ricerca
         result = (List<Canzone>) UI.getCurrent().getSession().getAttribute("result");
         if (result != null) {
             if(result.isEmpty()) {
@@ -91,6 +97,9 @@ public class RicercaView extends VerticalLayout {
         add(layoutTitolo, toolbar, grid, emotions);
     }
 
+    /**
+     * Metodo privato che permette la creazione del layout dell'intestazione della pagina.
+     */
     private void configureLayout() {
         layoutTitolo = new HorizontalLayout();
         layoutTitolo.setAlignItems(FlexComponent.Alignment.CENTER);
@@ -100,6 +109,9 @@ public class RicercaView extends VerticalLayout {
         layoutTitolo.add(iconTitolo, titoloPagina);
     }
 
+    /**
+     * Metodo privato che permette la configurazione del layout contente i campi per effettuare la ricerca.
+     */
     private void configureSearchBar() {
         titoloDaCercare = new TextField();
         autoreDaCercare = new TextField();
@@ -117,14 +129,19 @@ public class RicercaView extends VerticalLayout {
         toolbar.setWidthFull();
     }
 
+    /**
+     * Metodo privato che permette la configurazione della griglia contenente le canzoni.
+     */
     private void configureGrid() {
         grid.setSizeFull();
         grid.setColumns("id","titolo", "artista", "anno");
-        //TODO id invisibile ora valorizzato e funzionante --> per V
         grid.getColumnByKey("id").setVisible(false);
         grid.getColumns().get(3).setSortable(false); // sort disattivato perché non funziona su questa colonna
     }
 
+    /**
+     * Metodo privato che configura il layout per visualizzare il grafico con le medie delle emozioni associate alla canzone.
+     */
     private void configureEmotions() {
         emoButton.setAutofocus(true);
         emoButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -135,6 +152,9 @@ public class RicercaView extends VerticalLayout {
         emotions.setWidthFull();
     }
 
+    /**
+     * Metodo privato che esegue le query di ricerca e restituisce le canzoni trovate.
+     */
     private void search() {
         try {
             result = client.searchSong(titoloDaCercare.getValue(), autoreDaCercare.getValue(), annoDaCercare.getValue());
@@ -175,6 +195,10 @@ public class RicercaView extends VerticalLayout {
             annoDaCercare.setValue(cachedValue);
     }
 
+    /**
+     * Metodo privato che permette la visualizzazione del grafico con le medie delle emozioni associate alla canzone.
+     * @throws Exception Per eventuali eccezioni lanciate durante l'esecuzione del metodo.
+     */
     private void visualizzaEmo() throws Exception {
         Canzone selectedTuple = grid.asSingleSelect().getValue();
         VaadinSession.getCurrent().setAttribute("canzoneselezionata", selectedTuple);
@@ -187,6 +211,11 @@ public class RicercaView extends VerticalLayout {
         }
     }
 
+    /**
+     * Metodo privato che configura il layout della finestra contenente il grafico con le medie delle emozioni.
+     * @param selectedTuple La canzone selezionata di cui visualizzare le medie delle emozioni.
+     * @throws Exception Per eventuali eccezioni lanciate durante l'esecuzione del metodo.
+     */
     private void openDetailsDialog(Canzone selectedTuple) throws Exception {
         Dialog dialog = new Dialog();
         //dialog.setSizeFull();
@@ -273,6 +302,10 @@ public class RicercaView extends VerticalLayout {
         grid.asSingleSelect().clear();
     }
 
+    /**
+     * Metodo privato che permette di rimuovere i commenti relativi alla canzoni selezionata.
+     * @param commenti La lista contenente tutti i commenti collegati alla canzone.
+     */
     private void cleanComments(List<Emozione> commenti) {
         commenti.removeIf(e -> e.getCommento() == null);
     }

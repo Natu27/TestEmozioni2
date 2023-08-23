@@ -35,11 +35,12 @@ import java.util.List;
  * @author Volonterio Luca
  * <p></p>
  * Classe che rappresenta la vista per la valutazione delle emozioni.
+ * @version 1.0
  */
+
 @PageTitle("InsEmozioni")
 @Route(value = "ins-emozioni", layout = MainLayout.class)
 public class InsEmozioniView extends Dialog {
-
     String playlistTitle = (String) VaadinSession.getCurrent().getAttribute("playlistTitle");
     Canzone songSelected;
     Grid<Emozione> grid;

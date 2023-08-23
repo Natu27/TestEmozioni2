@@ -2,16 +2,13 @@ package emotionalsongs.backend.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.io.Serializable;
 
 /**
  * @author Acquati Luca
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
- */
-
-/**
+ * <p></p>
  * Classe che rappresenta un Utente dell'applicazione.
  * @see emotionalsongs.backend.entities
  * @version 1.0

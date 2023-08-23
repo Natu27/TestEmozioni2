@@ -31,6 +31,7 @@ import java.util.List;
  * @author Volonterio Luca
  * <p></p>
  * Classe che rappresenta la vista per la creazione dell'istogramma della media delle emozioni.
+ * @version 1.0
  */
 public class HistogramView extends VerticalLayout {
     ClientES client = ClientES.getInstance();
@@ -38,7 +39,7 @@ public class HistogramView extends VerticalLayout {
     /**
      * Costruttore della vista {@code HistogramView}
      * @param idSong L'ID della canzone di cui si vogliono visualizzare le emozioni.
-     * @throws Exception Possibili eccezioni durante la costruzione della vista.
+     * @throws Exception Per possibili eccezioni durante la costruzione della vista.
      */
     public HistogramView(int idSong) throws Exception {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();

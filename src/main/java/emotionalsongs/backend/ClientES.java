@@ -25,9 +25,7 @@ import java.util.Objects;
  * @author Jamil Muhammad Qasim
  * @author Naturale Lorenzo
  * @author Volonterio Luca
- */
-
-/**
+ * <p></p>
  * Questa classe rappresenta un client per l'accesso ai servizi offerti dal sistema.
  * È implementata l'interfaccia Servizi per fornire metodi di accesso ai dati e alle funzionalità.
  * Utilizza una connessione al database gestita dalla classe DatabaseConnection.
