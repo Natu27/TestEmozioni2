@@ -54,7 +54,20 @@ public interface Servizi {
      */
     List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer anno) throws NessunaCanzoneTrovata, SQLException;
 
-    List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer anno, ArrayList<Canzone> braniDaEscludere) throws NessunaCanzoneTrovata, SQLException; //Da commentare
+    /**
+     * Metodo utilizzato per ricercare le canzoni da aggiungere alla playlist.
+     * Non vengono mostrate le canzoni già aggiunte alla playlist oppure già selezionate per essere aggiunte ad una playlist.
+     * @param titoloDaCercare Il titolo della canzone da cercare.
+     * @param autoreDaCercare L'autore della canzone da cercare.
+     * @param anno L'anno di pubblicazione della canzone da cercare.
+     * @param braniDaEscludere Un' {@code ArrayList} contenente i brani che devoneo essere esclusi dalla ricerca dei brani da aggiungere alla playlist.
+     * @throws NessunaCanzoneTrovata Se nessuna canzone corrisponde ai criteri di ricerca.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see ClientES
+     * @see emotionalsongs.backend.entities.Canzone
+     * @see emotionalsongs.backend.exceptions.NessunaCanzoneTrovata
+     */
+    List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer anno, ArrayList<Canzone> braniDaEscludere) throws NessunaCanzoneTrovata, SQLException;
 
     /**
      * Permette la registrazione di un nuovo utente all'applicazione.

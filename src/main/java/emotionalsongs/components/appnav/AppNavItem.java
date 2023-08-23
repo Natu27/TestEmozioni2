@@ -18,6 +18,7 @@ import java.util.Optional;
  * <p>
  * Classe che rappresenta un'elemento per il menù di navigazione {@link AppNav}.
  * Può contenere un'etichetta con un'icona e un link alla vista desiderata.
+ * @version 1.0
  */
 
 @JsModule("@vaadin-component-factory/vcf-nav")
@@ -80,12 +81,8 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Removes the given menu item from this item.
-     * <p>
-     * If the given menu item is not a child of this menu item, does nothing.
-     * 
-     * @param appNavItem
-     *            the menu item to remove
+     * Rimuove l'{@link AppNavItem} specificato da questo contenitore, se è un figlio diretto altrimenti non fa niente.
+     * @param appNavItem L'elemento del menù da rimuovere.
      * @return L'oggetto AppNavItem per supportare la concatenazione dei metodi.
      */
     public AppNavItem removeItem(AppNavItem appNavItem) {

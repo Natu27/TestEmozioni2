@@ -43,9 +43,11 @@ import java.sql.SQLException;
  * @author Naturale Lorenzo
  * @author Volonterio Luca
  * <p></p>
- * Layout principale dell'applicazione. Tutte le viste dell'applicazione si basano su questo layout.
+ * Questa classe rappresenta il layout principale dell'applicazione, estendendo {@link AppLayout}.
+ * Contiene la disposizione dei componenti UI e la gestione delle interazioni dell'utente.
  * @version 1.0
  */
+
 public class MainLayout extends AppLayout {
     private H2 viewTitle;
     HorizontalLayout top;
@@ -64,7 +66,10 @@ public class MainLayout extends AppLayout {
     Utente utente = (Utente) VaadinSession.getCurrent().getAttribute("utente");
     String currentPage;
 
-    public MainLayout() throws Exception {
+    /**
+     * Costruttore per inizializzare il layout principale dell'applicazione.
+     */
+    public MainLayout() {
 
         configureTopLayout();
         configureLoginForm();
@@ -110,6 +115,10 @@ public class MainLayout extends AppLayout {
 
     }
 
+    /**
+     * Metodo privato utilizzato per configurare il layout superiore dell'applicazione.
+     */
+
     private void configureTopLayout() {
         login = new Button("Login", VaadinIcon.USER.create());
         login.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -137,6 +146,9 @@ public class MainLayout extends AppLayout {
         top.add(login ,welcome, menuBar);
     }
 
+    /**
+     * Metodo privato utilizzato per cofigurare il forma di login per l'accesso all'applicazione.
+     */
     private void configureLoginForm() {
         H1 titleLogin = new H1("Login \uD83D\uDC64");
         user = new TextField();
@@ -160,6 +172,12 @@ public class MainLayout extends AppLayout {
         loginForm.setAlignItems(FlexComponent.Alignment.CENTER);
     }
 
+    /**
+     * Metodo privato per effettuare il login al profilo utente.
+     * @throws PasswordErrata Viene lanciata in caso di password errata.
+     * @throws UsernameErrato Viene lanciata in caso di username errato.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     */
     private void login() throws PasswordErrata, UsernameErrato, SQLException {
         utente = client.login(user.getValue(), password.getValue());
         if(!user.getValue().equals("") && !password.getValue().equals("")) {
@@ -188,15 +206,26 @@ public class MainLayout extends AppLayout {
 
     }
 
+    /**
+     * Metodo privato per effettuare il logout dall'applicazione.
+     * Invaliada la sessione in corso.
+     */
     private void logout(){
         VaadinSession.getCurrent().getSession().invalidate();
     }
 
+    /**
+     * Metodo privato navigare alla vista della registrazione ({@code RegistrazioneView}).
+     */
     private void register() {
         UI.getCurrent().navigate(RegistrazioneView.class);
         dialog.close();
     }
 
+    /**
+     * Aggiunge il contenuto dell'intestazione alla barra di navigazione.
+     * Include un pulsante per aprire/chiudere il drawer e il titolo della vista corrente.
+     */
     private void addHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
         toggle.getElement().setAttribute("aria-label", "Menu toggle");
@@ -207,6 +236,9 @@ public class MainLayout extends AppLayout {
         addToNavbar(true, toggle, viewTitle);
     }
 
+    /**
+     * Metodo privato utilizzato per impostare il titolo e il logo sopra il menù laterale.
+     */
     private void addDrawerContent() {
         H1 appName = new H1("EmotionalSongs");
         Image logo = new Image("images/EmSongs.png", "EmoSong logo");
@@ -220,6 +252,10 @@ public class MainLayout extends AppLayout {
         addToDrawer(header, scroller, new Footer());
     }
 
+    /**
+     * Metodo privato che permette di creare il menù laterale.
+     * @return nav Il menù con gli elementi creati.
+     */
     private AppNav createNavigation() {
         AppNav nav = new AppNav();
 
@@ -230,12 +266,19 @@ public class MainLayout extends AppLayout {
         return nav;
     }
 
+    /**
+     * Invocato dopo che la navigazione è stata completata.
+     * Chiama il metodo di base e imposta il testo del titolo della vista corrente.
+     */
     @Override
     protected void afterNavigation() {
         super.afterNavigation();
         viewTitle.setText(getCurrentPageTitle());
     }
 
+    /**
+     * Metodo privato che permette di ottenere il titolo della pagina corrente.
+     */
     private String getCurrentPageTitle() {
         PageTitle title = getContent().getClass().getAnnotation(PageTitle.class);
         return title == null ? "" : title.value();

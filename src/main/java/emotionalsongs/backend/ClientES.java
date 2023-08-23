@@ -36,7 +36,9 @@ public class ClientES implements Servizi {
     private final DatabaseConnection dbConn= new DatabaseConnection();
     private static ClientES instance;
 
-    // Costruttore privato per garantire il pattern Singleton
+    /**
+     * Costruttore privato per garantire il pattern Singleton.
+     */
     private ClientES() {}
 
     /**
