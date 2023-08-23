@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"emotionalsongs"},{"l":"emotionalsongs.backend"},{"l":"emotionalsongs.backend.codicefiscale"},{"l":"emotionalsongs.backend.entities"},{"l":"emotionalsongs.backend.exceptions"},{"l":"emotionalsongs.components.appnav"},{"l":"emotionalsongs.views"}];updateSearchResults();
