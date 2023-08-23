@@ -85,7 +85,7 @@ public class AggiuntaBraniView extends Dialog {
                             .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 }
             } catch (SQLException e) {
-                Notification.show("Impossibile effettuare l'operazione: uno o più brani già presenti", 3000, Notification.Position.MIDDLE)
+                Notification.show("Impossibile effettuare l'operazione", 3000, Notification.Position.MIDDLE)
                         .addThemeVariants(NotificationVariant.LUMO_ERROR);
                 //e.printStackTrace();
             }
