@@ -116,7 +116,7 @@ public class ProfileView extends VerticalLayout {
                         if(!email.getValue().matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$") || (!password.isEmpty() && password.getValue().length() < 8)){
                             Notification.show("Dati non validi", 3000, Notification.Position.MIDDLE)
                                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
-                        } else if (client.modifcaDati(utente.getId(),via_piazza.getValue(), email.getValue(), password.getValue()) >= 1) {
+                        } else if (client.modificaDati(utente.getId(),via_piazza.getValue(), email.getValue(), password.getValue()) >= 1) {
                             Notification.show("Modifiche effettuate", 3000, Notification.Position.MIDDLE)
                                     .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
                         } else {

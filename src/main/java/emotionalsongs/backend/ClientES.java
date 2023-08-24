@@ -920,12 +920,12 @@ public class ClientES implements Servizi {
      * @param  residenza La nuova residenza dell'utente.
      * @param email La nuova email dell'utente.
      * @param password La nuova password dell'utente.
-     * @return Il nomero di dati modificati.
+     * @return Il numero di dati modificati.
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see Servizi
      */
     @Override
-    public int modifcaDati(int userId, String residenza, String email, String password) throws SQLException {
+    public int modificaDati(int userId, String residenza, String email, String password) throws SQLException {
         int modifiche;
         String query = "";
         Connection conn = null;

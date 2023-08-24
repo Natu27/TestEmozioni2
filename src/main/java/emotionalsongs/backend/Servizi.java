@@ -232,6 +232,6 @@ public interface Servizi {
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see ClientES
      */
-    int modifcaDati(int userId, String residenza, String email, String password) throws SQLException;
+    int modificaDati(int userId, String residenza, String email, String password) throws SQLException;
 
 }
