@@ -6,7 +6,7 @@ EmotionalSongs è un’applicazione che, a partire da un repository di canzoni, 
 ## Avviare l'applicazione
 
 Per avviare l’applicazione è sufficiente cliccare sul seguente link:
-[EmotionalSongs](http://emotionalsongs-dev.us-west-2.elasticbeanstalk.com)
+[EmotionalSongs]([http://emotionalsongs.us-west-2.elasticbeanstalk.com])
 
 ## Project structure
 
