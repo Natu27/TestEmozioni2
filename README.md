@@ -9,8 +9,8 @@ Per avviare l’applicazione è sufficiente cliccare sul seguente link:
 [EmotionalSongs](http://emotionalsongs.us-west-2.elasticbeanstalk.com)
 
 ## Link utili
-- Guida [Manuali](https://sites.google.com/view/es-user-manual/home-page).
-- JavaDoc [ES JavaDoc](https://emotionalsongsdoc.netlify.app/)
+- Guide: [Manuali](https://sites.google.com/view/es-user-manual/home-page).
+- JavaDoc: [ESJavaDoc](https://emotionalsongsdoc.netlify.app/)
 
 ## Struttura del progetto
 
