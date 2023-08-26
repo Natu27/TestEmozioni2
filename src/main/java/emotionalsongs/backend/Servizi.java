@@ -212,7 +212,7 @@ public interface Servizi {
      * Permette di rimuovere un brano presente nella playlist.
      * @param playlistId L'ID della playlist in cui è presente il brano.
      * @param canzoneId L'ID della canzone da rimuovere.
-     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @throws SQLException In caso di errorei durante l'interazione con il database.
      * @see ClientES
      */
     int removePlaylistSong(int playlistId, int canzoneId) throws SQLException;
