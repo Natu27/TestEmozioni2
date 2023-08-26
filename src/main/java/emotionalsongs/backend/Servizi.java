@@ -228,7 +228,7 @@ public interface Servizi {
     /**
      * Permette di modificare alcuni dati del proprio account.
      *
-     * @param userId L'ID dell'utente collegato all'account da eliminare.
+     * @param userId L'ID dell'utente collegato all'account da modificare.
      * @param  residenza La nuova residenza dell'utente.
      * @param email La nuova email dell'utente.
      * @param password La nuova password dell'utente.
