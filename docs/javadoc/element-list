@@ -1,0 +1,9 @@
+emotionalsongs
+emotionalsongs.backend
+emotionalsongs.backend.entities
+emotionalsongs.backend.exceptions
+emotionalsongs.backend.exceptions.emozioni
+emotionalsongs.backend.exceptions.playlist
+emotionalsongs.backend.exceptions.utente
+emotionalsongs.components.appnav
+emotionalsongs.views
