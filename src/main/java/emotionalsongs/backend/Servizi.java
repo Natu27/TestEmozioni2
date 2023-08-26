@@ -84,7 +84,8 @@ public interface Servizi {
     void registrazione(String nome, String cognome, String indirizzo, String codiceFiscale, String email, String username, String password) throws SQLException;
 
     /**
-     * Ottiene una lista di nomi utente registrati nel sistema.
+     * Ottiene una lista di username già registrati all'applicazione.
+     *
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see ClientES
      */
@@ -92,6 +93,8 @@ public interface Servizi {
 
     /**
      * Ottiene la lista degli anni di pubblicazione delle canzoni corrispondenti ai parametri di ricerca.
+     * Nel caso in cui non vengano inseriti valori per la ricerca restituisce tutti gli anni di pubblicazione
+     * delle canzoni presenti nel Database.
      * @param titoloDaCercare Il titolo della canzone da cercare.
      * @param autoreDaCercare L'autore della canzone da cercare.
      * @throws SQLException In caso di errore durante l'interazione con il database.
@@ -130,14 +133,14 @@ public interface Servizi {
      * Permette di rinominare una playlist dell'utente specificato.
      * @param userId L'ID dell'utente a cui appartiene la playlist da rimuovere.
      * @param nuovoTitolo Il nuovo titolo da assegnare alla playlist.
-     * @param playlistId L'ID della playlist da modificare.
+     * @param playlistId L'ID della playlist da rinominare.
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see ClientES
      */
     int renamePlaylist(int userId, String nuovoTitolo, int playlistId) throws SQLException;
 
     /**
-     * Permette di aggiungere brani alla playliste dell'utente.
+     * Permette di aggiungere brani alla playliste scelta dell'utente.
      * @param playlistId L'ID della playlist a cui aggiungere i brani.
      * @param brani I brani da aggiungere alla playlist.
      * @throws NessunaCanzoneTrovata Se nessuna canzone corrisponde ai criteri di ricerca.
@@ -179,7 +182,7 @@ public interface Servizi {
 
     /**
      * Permette di visualizzare la media delle emozioni associate alla canzone.
-     * @param songId L'ID della canzone di cui si vogliono visualizzare i commenti.
+     * @param songId L'ID della canzone di cui si vogliono visualizzare le votazioni medie.
      * @throws NoVotazioni In caso non siano presenti votazioni per la canzone selezionata.
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see ClientES

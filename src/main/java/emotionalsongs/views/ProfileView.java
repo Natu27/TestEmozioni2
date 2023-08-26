@@ -73,7 +73,7 @@ public class ProfileView extends VerticalLayout {
     /**
      * Costruttore per la vista del profilo dell'utente.
      * Se l'utente è loggato vengono visualizzati i dati del suo account, altrimenti viene
-     * mostrato un messaggio,
+     * mostrato un messaggio che chiede di effettuare il login.
      */
     public ProfileView() throws Exception {
 
@@ -91,7 +91,6 @@ public class ProfileView extends VerticalLayout {
             header.addClassNames(LumoUtility.Margin.Top.XLARGE, LumoUtility.Margin.Bottom.MEDIUM);
 
             horizontalLayout = new HorizontalLayout();
-            //horizontalLayout.add(logo, header, loginButton, new Paragraph("o"), registerButton);
             horizontalLayout.add(logo, header, registerButton);
 
 

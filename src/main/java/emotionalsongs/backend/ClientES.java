@@ -84,7 +84,7 @@ public class ClientES implements Servizi {
     }
 
     /**
-     * Permette di cercare le canzoni all'interno del database.
+     * Permette di ricercare le canzoni all'interno del database.
      *
      * @param titoloDaCercare Il titolo della canzone da cercare.
      * @param autoreDaCercare L'autore della canzone da cercare.
@@ -132,7 +132,19 @@ public class ClientES implements Servizi {
         return result;
     }
 
-
+    /**
+     * Metodo utilizzato per ricercare le canzoni da aggiungere alla playlist.
+     * Non vengono mostrate le canzoni già aggiunte alla playlist oppure già selezionate per essere aggiunte alla playlist.
+     * @param titoloDaCercare Il titolo della canzone da cercare.
+     * @param autoreDaCercare L'autore della canzone da cercare.
+     * @param year L'anno di pubblicazione della canzone da cercare.
+     * @param braniDaEscludere Un' {@code ArrayList} contenente i brani che devoneo essere esclusi dalla ricerca dei brani da aggiungere alla playlist.
+     * @throws NessunaCanzoneTrovata Se nessuna canzone corrisponde ai criteri di ricerca.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
+     * @see ClientES
+     * @see emotionalsongs.backend.entities.Canzone
+     * @see emotionalsongs.backend.exceptions.NessunaCanzoneTrovata
+     */
     @Override
     public List<Canzone> searchSong(String titoloDaCercare, String autoreDaCercare, Integer year, ArrayList<Canzone> braniDaEscludere) throws NessunaCanzoneTrovata, SQLException {
         List<Canzone> result = new ArrayList<>();
@@ -214,9 +226,9 @@ public class ClientES implements Servizi {
     }
 
     /**
-     * Ottiene una lista di nomi utente registrati nel sistema.
+     * Ottiene una lista di username già registrati all'applicazione.
      *
-     * @return Una lista di nomi utente registrati nel sistema.
+     * @return Una lista di username già registrati all'applicazione.
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see Servizi
      */
@@ -245,10 +257,12 @@ public class ClientES implements Servizi {
 
     /**
      * Ottiene la lista degli anni di pubblicazione delle canzoni corrispondenti ai parametri di ricerca.
+     * Nel caso in cui non vengano inseriti valori per la ricerca restituisce tutti gli anni di pubblicazione
+     * delle canzoni presenti nel Database.
      *
      * @param titoloDaCercare Il titolo della canzone da cercare.
      * @param autoreDaCercare L'autore della canzone da cercare.
-     * @return Una lista di anni di pubblicazione delle canzoni.
+     * @return Una lista contenente anni di pubblicazione delle canzoni.
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see Servizi
      */
@@ -336,7 +350,7 @@ public class ClientES implements Servizi {
      *
      * @param titolo Il titolo della playlist da aggiungere.
      * @param userId L'ID dell'utente a cui associare la playlist.
-     * @return variabile intera che indica se la playlist è stata aggiunta con successo.
+     * @return Un'intero che indica se la playlist è stata creata con successo.
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see Servizi
      */
@@ -429,10 +443,10 @@ public class ClientES implements Servizi {
     /**
      * Permette di rinominare una playlist dell'utente specificato.
      *
-     * @param userId L'ID dell'utente a cui appartiene la playlist da rimuovere.
+     * @param userId L'ID dell'utente a cui appartiene la playlist da rinominare.
      * @param nuovoTitolo Il nuovo titolo da assegnare alla playlist.
-     * @param playlistId L'ID della playlist da modificare.
-     * @return Il numero di playlist modificate.
+     * @param playlistId L'ID della playlist da rinominare.
+     * @return Il numero di playlist modificate (0 o 1).
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see Servizi
      */
@@ -460,7 +474,7 @@ public class ClientES implements Servizi {
     }
 
     /**
-     * Permette di aggiungere brani alla playliste dell'utente.
+     * Permette di aggiungere brani alla playliste scelta dell'utente.
      *
      * @param playlistId L'ID della playlist a cui aggiungere i brani.
      * @param braniSelezionati I brani da aggiungere alla playlist.
@@ -544,7 +558,8 @@ public class ClientES implements Servizi {
      * @param playlistId L'ID della playlist di cui si vogliono visualizzare i brani.
      * @return Una lista contenente l'ID delle canzoni presenti nella playlist.
      * @throws SQLException In caso di errore durante l'interazione con il database
-     * @implNote Questo metodo privato viene utilizzato nel metodo {@code showCanzoniPlaylist} per ottenere l'ID delle canzoni presenti nella playlist
+     * @implNote Questo metodo privato viene utilizzato nel metodo {@code showCanzoniPlaylist} per ottenere l'ID delle canzoni presenti nella playlist.
+     * {@see #showCanzoniPlaylist() showCanzoniPlaylist}
      */
     private ArrayList<Integer> getIdSongPlaylist(int playlistId) throws SQLException {
         ArrayList<Integer> result = new ArrayList<>();
@@ -687,7 +702,7 @@ public class ClientES implements Servizi {
     /**
      * Permette di visualizzare la media delle emozioni associate alla canzone.
      *
-     * @param songId L'ID della canzone di cui si vogliono visualizzare i commenti.
+     * @param songId L'ID della canzone di cui si vogliono visualizzare le votazioni medie.
      * @throws NoVotazioni In caso non siano presenti votazioni per la canzone selezionata.
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @return Una lista contente le votazioni medie per ciascuna emozione.
