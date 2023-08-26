@@ -8,7 +8,11 @@ EmotionalSongs è un’applicazione che, a partire da un repository di canzoni, 
 Per avviare l’applicazione è sufficiente cliccare sul seguente link:
 [EmotionalSongs](http://emotionalsongs.us-west-2.elasticbeanstalk.com)
 
-## Project structure
+## Link utili
+- Guida [Manuali](https://sites.google.com/view/es-user-manual/home-page).
+- JavaDoc [ES JavaDoc](https://emotionalsongsdoc.netlify.app/)
+
+## Struttura del progetto
 
 - `MainLayout.java` in `src/main/java` contiene le impostazioni per la navigazione (il menù principale, la barra superiore e laterale). Utilizza
   [App Layout](https://vaadin.com/docs/components/app-layout).
@@ -16,7 +20,7 @@ Per avviare l’applicazione è sufficiente cliccare sul seguente link:
 - la cartella `views` in `frontend/` contiene il lato client dell'applicazione.
 - la cartella `themes` in `frontend/` contiene i file CSS personalizzati.
 
-## Useful links
+## Link utili Vaadin
 
 - Read the documentation at [vaadin.com/docs](https://vaadin.com/docs).
 - Follow the tutorial at [vaadin.com/docs/latest/tutorial/overview](https://vaadin.com/docs/latest/tutorial/overview).
