@@ -138,7 +138,7 @@ public class ClientES implements Servizi {
      * @param titoloDaCercare Il titolo della canzone da cercare.
      * @param autoreDaCercare L'autore della canzone da cercare.
      * @param year L'anno di pubblicazione della canzone da cercare.
-     * @param braniDaEscludere Un' {@code ArrayList} contenente i brani che devoneo essere esclusi dalla ricerca dei brani da aggiungere alla playlist.
+     * @param braniDaEscludere Un' {@code ArrayList} contenente i brani che devono essere esclusi dalla ricerca dei brani da aggiungere alla playlist.
      * @throws NessunaCanzoneTrovata Se nessuna canzone corrisponde ai criteri di ricerca.
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see ClientES
@@ -474,7 +474,7 @@ public class ClientES implements Servizi {
     }
 
     /**
-     * Permette di aggiungere brani alla playliste scelta dell'utente.
+     * Permette di aggiungere brani alla playlist scelta dell'utente.
      *
      * @param playlistId L'ID della playlist a cui aggiungere i brani.
      * @param braniSelezionati I brani da aggiungere alla playlist.
@@ -514,7 +514,7 @@ public class ClientES implements Servizi {
     }
 
     /**
-     * Permette di visualizzare le canzoni pressenti nella playlist selezionata.
+     * Permette di visualizzare le canzoni presenti nella playlist selezionata.
      *
      * @param playlistId L'ID della playlist di cui si vogliono visualizzare i brani..
      * @throws SQLException In caso di errore durante l'interazione con il database
@@ -554,7 +554,7 @@ public class ClientES implements Servizi {
     }
 
     /**
-     * Mentodo privato che permette di ottenere l'ID delle canzoni presenti nella playlist.
+     * Metodo privato che permette di ottenere l'ID delle canzoni presenti nella playlist.
      * @param playlistId L'ID della playlist di cui si vogliono visualizzare i brani.
      * @return Una lista contenente l'ID delle canzoni presenti nella playlist.
      * @throws SQLException In caso di errore durante l'interazione con il database
@@ -867,7 +867,7 @@ public class ClientES implements Servizi {
      *
      * @param playlistId L'ID della playlist in cui è presente il brano.
      * @param canzoneId L'ID della canzone da rimuovere.
-     * @return il numero delle canzoni romosse (0 o 1)
+     * @return il numero delle canzoni rimosse (0 o 1)
      * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see Servizi
      */
