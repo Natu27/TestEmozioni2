@@ -9,13 +9,13 @@ Per avviare l’applicazione è sufficiente cliccare sul seguente link:
 [EmotionalSongs](http://emotionalsongs.us-west-2.elasticbeanstalk.com)
 
 ## Link utili
-- Guide: [Manuali](https://sites.google.com/view/es-user-manual/home-page).
-- JavaDoc: [JavaDoc](https://emotionalsongsdoc.netlify.app/)
+- Guide   --> [Manuali](https://sites.google.com/view/es-user-manual/home-page).
+- JavaDoc --> [JavaDoc](https://emotionalsongsdoc.netlify.app/)
 
 ## Struttura del progetto
 
-- `MainLayout.java` in `src/main/java` contiene le impostazioni per la navigazione (il menù principale, la barra superiore e laterale). Utilizza
+- `MainLayout.java` in `src/main/java` contiene le impostazioni per la navigazione e la gestione della GUI. Utilizza
   [App Layout](https://vaadin.com/docs/components/app-layout).
-- package `views` in `src/main/java` contiene il lato server dell'applicazione.
-- la cartella `views` in `frontend/` contiene il lato client dell'applicazione.
-- la cartella `themes` in `frontend/` contiene i file CSS personalizzati.
+- package `backend` in `src/main/java/emotionalsongs/` contiene il lato server dell'applicazione.
+- package `views`   in  `src/main/java/emotionalsongs/` contiene i Frame dell'applicazione.
+- package `themes`  in  `frontend/` contiene i file CSS personalizzati.
