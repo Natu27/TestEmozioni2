@@ -10,7 +10,7 @@ Per avviare l’applicazione è sufficiente cliccare sul seguente link:
 
 ## Link utili
 - Guide: [Manuali](https://sites.google.com/view/es-user-manual/home-page).
-- JavaDoc: [ESJavaDoc](https://emotionalsongsdoc.netlify.app/)
+- JavaDoc: [JavaDoc](https://emotionalsongsdoc.netlify.app/)
 
 ## Struttura del progetto
 
