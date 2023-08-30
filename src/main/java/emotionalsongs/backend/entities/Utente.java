@@ -80,6 +80,9 @@ public class Utente {
         return nome;
     }
 
+    /**
+     * Imposta il nome per l'utente.
+     */
     public void setNome(String nome) {
         this.nome = nome;
     }
