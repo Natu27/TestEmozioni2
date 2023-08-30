@@ -30,7 +30,7 @@ public class Playlist {
      *
      * @param id        L'ID univoco della canzone.
      * @param titolo    Il titolo della canzone.
-     * @param userId    L'ID dell'utente che crea la playlist.
+     * @param userId    L'ID dell'utente a cui è associata la playlist.
      */
     public Playlist(int id, String titolo, int userId) {
         this.id = id;
@@ -54,8 +54,8 @@ public class Playlist {
     }
 
     /**
-     * Ottiene Lo userneme dell'utente a cui è associata la playlist.
-     * @return Lo userneme dell'utente a cui è associata la playlist.
+     * Ottiene L'ID dell'utente a cui è associata la playlist.
+     * @return L'ID dell'utente a cui è associata la playlist.
      */
     public int getUsername() {
         return username;
