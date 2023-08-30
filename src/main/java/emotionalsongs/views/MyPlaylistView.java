@@ -231,7 +231,7 @@ public class MyPlaylistView extends VerticalLayout {
     }
 
     /**
-     * Metodo privato che permette di aggiungere alla griglia delle playlist le colonne per visualizzare e eliminare le palylist.
+     * Metodo privato che permette di aggiungere alla griglia delle playlist le colonne per visualizzare e eliminare le playlist.
      */
     private void playlistGridColumn(){
         gridPlaylist.addColumn(
