@@ -47,7 +47,7 @@ public class InsEmozioniView extends Dialog {
     ClientES client = ClientES.getInstance();
 
     /**
-     * Costruttore per la vista per la valutazione delle amozioni associate ad una canzone.
+     * Costruttore per la vista per la valutazione delle emozioni associate ad una canzone.
      *
      * @param songSelected La canzone selezionata per la valutazione delle emozioni.
      */
@@ -130,7 +130,7 @@ public class InsEmozioniView extends Dialog {
     /**
      * Metodo privato che consente di controllare se il brano è già presente nella lista delle canzoni votate.
      * @param listaCanzoni La lista delle canzoni votate.
-     * @param song La canzone da controlare.
+     * @param song La canzone da controllare.
      * @return true se la canzone è presente, false altrimenti
      */
     private boolean branoPresente (List<Canzone> listaCanzoni, Canzone song) {
@@ -142,7 +142,7 @@ public class InsEmozioniView extends Dialog {
     }
 
     /**
-     * Metodo privato che permette la creazione della griglai contente le emozioni da valutare.
+     * Metodo privato che permette la creazione della griglia contente le emozioni da valutare.
      */
     private void getGridVotazione() {
         grid = new Grid<>(Emozione.class);
@@ -220,7 +220,7 @@ public class InsEmozioniView extends Dialog {
 
     /**
      * Metodo privato che permette di ottenere le emozioni.
-     * @return Ritoran un'{@code ArrayList} contente le emozioni.
+     * @return Ritorna un'{@code ArrayList} contente le emozioni.
      */
     private ArrayList<Emozione> getEmotions() {
         ArrayList<Emozione> emotions = new ArrayList<>();

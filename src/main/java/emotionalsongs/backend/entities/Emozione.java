@@ -6,7 +6,7 @@ package emotionalsongs.backend.entities;
  * @author Naturale Lorenzo
  * @author Volonterio Luca
  * <p></p>
- * Classe che rappresenta un'emozione'.
+ * Classe che rappresenta un'emozione.
  * @see emotionalsongs.backend.entities
  * @version 1.0
  */
