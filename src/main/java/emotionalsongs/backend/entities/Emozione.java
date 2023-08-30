@@ -60,7 +60,7 @@ public class Emozione {
 
     /**
      * Imposta il nome  dell'emozione.
-     * @param name Il commento da inserire.
+     * @param name Il dell'emozione da inserire.
      */
     public void setName(String name) {
         this.name = name;
