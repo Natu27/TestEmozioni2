@@ -147,7 +147,7 @@ public class MainLayout extends AppLayout {
     }
 
     /**
-     * Metodo privato utilizzato per cofigurare il forma di login per l'accesso all'applicazione.
+     * Metodo privato utilizzato per configurare la forma di login per l'accesso all'applicazione.
      */
     private void configureLoginForm() {
         H1 titleLogin = new H1("Login \uD83D\uDC64");
@@ -208,7 +208,7 @@ public class MainLayout extends AppLayout {
 
     /**
      * Metodo privato per effettuare il logout dall'applicazione.
-     * Invaliada la sessione in corso.
+     * Invalida la sessione in corso.
      */
     private void logout(){
         VaadinSession.getCurrent().getSession().invalidate();
@@ -224,7 +224,7 @@ public class MainLayout extends AppLayout {
 
     /**
      * Aggiunge il contenuto dell'intestazione alla barra di navigazione.
-     * Include un pulsante per aprire/chiudere il drawer e il titolo della vista corrente.
+     * Include un pulsante per aprire/chiudere il drawer ed il titolo della vista corrente.
      */
     private void addHeaderContent() {
         DrawerToggle toggle = new DrawerToggle();
@@ -237,7 +237,7 @@ public class MainLayout extends AppLayout {
     }
 
     /**
-     * Metodo privato utilizzato per impostare il titolo e il logo sopra il menù laterale.
+     * Metodo privato utilizzato per impostare il titolo ed il logo sopra il menù laterale.
      */
     private void addDrawerContent() {
         H1 appName = new H1("EmotionalSongs");
@@ -268,7 +268,7 @@ public class MainLayout extends AppLayout {
 
     /**
      * Invocato dopo che la navigazione è stata completata.
-     * Chiama il metodo di base e imposta il testo del titolo della vista corrente.
+     * Chiama il metodo di base ed imposta il testo del titolo della vista corrente.
      */
     @Override
     protected void afterNavigation() {
