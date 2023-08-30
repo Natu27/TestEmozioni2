@@ -121,7 +121,7 @@ public interface Servizi {
     List<Playlist> myPlaylist(int userId) throws SQLException;
 
     /**
-     * Permette di rimuove una playlist dell'utente specificato.
+     * Permette di rimuovere una playlist dell'utente specificato.
      * @param userId L'ID dell'utente a cui appartiene la playlist da rimuovere.
      * @param titolo Il titolo della playlist da rimuovere.
      * @throws SQLException In caso di errore durante l'interazione con il database.
@@ -140,7 +140,7 @@ public interface Servizi {
     int renamePlaylist(int userId, String nuovoTitolo, int playlistId) throws SQLException;
 
     /**
-     * Permette di aggiungere brani alla playliste scelta dell'utente.
+     * Permette di aggiungere brani alla playlist scelta dell'utente.
      * @param playlistId L'ID della playlist a cui aggiungere i brani.
      * @param brani I brani da aggiungere alla playlist.
      * @throws NessunaCanzoneTrovata Se nessuna canzone corrisponde ai criteri di ricerca.
@@ -212,7 +212,7 @@ public interface Servizi {
      * Permette di rimuovere un brano presente nella playlist.
      * @param playlistId L'ID della playlist in cui è presente il brano.
      * @param canzoneId L'ID della canzone da rimuovere.
-     * @throws SQLException In caso di errorei durante l'interazione con il database.
+     * @throws SQLException In caso di errore durante l'interazione con il database.
      * @see ClientES
      */
     int removePlaylistSong(int playlistId, int canzoneId) throws SQLException;
