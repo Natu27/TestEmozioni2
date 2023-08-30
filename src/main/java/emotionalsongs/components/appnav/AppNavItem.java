@@ -97,7 +97,7 @@ public class AppNavItem extends Component {
     /**
      * Ottine l'etichetta per l'elemento.
      * 
-     * @return L'etichetta oppure {@code null} se l'etichetta non è ancora satta impostata.
+     * @return L'etichetta oppure {@code null} se l'etichetta non è ancora stata impostata.
      */
     public String getLabel() {
         return getExistingLabelElement().map(Element::getText).orElse(null);
@@ -134,7 +134,7 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Imposta la path collegata da collegare all'elemento.
+     * Imposta la path da associare all'elemento.
      * 
      * @param path La path a cui collegarsi.
      * @return L'oggetto AppNavItem per supportare la concatenazione dei metodi.
@@ -145,7 +145,7 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Imposta la vista a cui l'elemento deve rimandare.
+     * Imposta la vista a cui l'elemento va reindirizzato.
      * 
      * @param view La vista a cui collegarsi.
      * @return L'oggetto AppNavItem per supportare la concatenazione dei metodi.
@@ -179,7 +179,7 @@ public class AppNavItem extends Component {
     }
 
     /**
-     * Ottiene la path collegata all'elemento
+     * Ottiene la path collegata all'elemento.
      * @return La path collegata all'elemento come stringa.
      */
     public String getPath() {
@@ -203,7 +203,7 @@ public class AppNavItem extends Component {
     /**
      * Imposta l'icona per l'elemento del menù.
      * @param icon L'icona da mostrare.
-     * @return this instance for chaining
+     * @return l'istanza a cui viene associata l'icona.
      */
     public AppNavItem setIcon(Component icon) {
         icon.getElement().setAttribute("slot", "prefix");
