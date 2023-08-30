@@ -16,7 +16,7 @@ import java.sql.SQLException;
  * @author Volonterio Luca
  * <p></p>
  * Classe che viene utilizzata per gestire la connessione al database.
- * Utilizza i valori di connessione letti dal file 'application.properties'.
+ * Utilizza i parametri di connessione letti dal file 'application.properties'.
  * @see emotionalsongs.backend
  * @version 1.0
  */
@@ -28,7 +28,7 @@ public class DatabaseConnection {
 
 
     /**
-     * Restituisce una connessione al database.
+     * Restituisce un'istanza di connessione al database.
      * @return Oggetto Connection rappresentante la connessione al database.
      * @throws SQLException In caso di errore durante la connessione.
      */
